@@ -3,7 +3,7 @@ define([], function () {
 
     let _getFirstName = function () {
         let firstNames = ['Mike', "John", "Mary", "Jennifer", "Greg"];
-        let random = Math.round(Math.random() * firstNames.length);
+        let random = Math.round(Math.random() * (firstNames.length - 1));
         return firstNames[random];
     };
 

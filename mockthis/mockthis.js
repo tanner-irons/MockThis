@@ -5,15 +5,21 @@ define(['mockthis.with', 'mockthis.as', 'mockthis.generate'], function (With, As
         this.blueprint = {
             schema: _schema,
             total: 1,
-            required: []
+            required: [],
+            userDefTypes: [],
+            formats: {}
         }
+
         this.as = {
-            JSON: As.JSON.bind(this)
+            JSON: As.JSON.bind(this),
+            Object: As.Object.bind(this)
         }
 
         this.with = {
             Multiple: With.Multiple.bind(this),
-            Required: With.Required.bind(this)
+            Required: With.Required.bind(this),
+            NewType: With.NewType.bind(this),
+            DateFormat: With.DateFormat.bind(this)
         }
     }
 

@@ -1,7 +1,7 @@
 define(['mockthis.types', 'mockthis.generator.factory'], function (Types, GeneratorFactory) {
     'use strict';
 
-    let _generateType = function (type) {
+    let _generateType = function (type, userDefTypes) {
         let Generator = GeneratorFactory.getInstanceOf(type);
         switch (type) {
             case Types.Name.First:
@@ -9,25 +9,39 @@ define(['mockthis.types', 'mockthis.generator.factory'], function (Types, Genera
             case Types.Date:
                 return Generator.getDate();
             case Types.String:
-                return;
+                return "I'm a string.";
             default:
-                return undefined;
+                for (let i = 0; i < userDefTypes.length; i++) {
+                    if (userDefTypes[i].type === type) {
+                        return userDefTypes[i].callback();
+                    }
+                };
+                return;
         }
     };
 
-    let _generateData = function (_blueprint) {
-
-        let tempObject;
-        tempObject = [];
-        for (let i = 0; i < _blueprint.total; i++) {
-            tempObject.push({});
-            for (let key in _blueprint.schema) {
-                let chance = Math.random();
-                tempObject[i][key] = chance >= .2 || _blueprint.required.indexOf(key) > -1 ? _generateType(_blueprint.schema[key]) : undefined;
+    let _generateObject = function (schema, required, userDefTypes) {
+        let tempObject = {};
+        for (let key in schema) {
+            let chance = required.length === 0 ? 1 : Math.random();
+            if (typeof schema[key] === 'object') {
+                tempObject[key] = _generateObject(schema[key], required, userDefTypes);
+            }
+            else {
+                tempObject[key] = chance >= .2 || required.indexOf(key) > -1 ? _generateType(schema[key], userDefTypes) : undefined;
             }
         }
 
-        return tempObject.length > 1 ? tempObject : tempObject[0];
+        return tempObject;
+    };
+
+    let _generateData = function (_blueprintRef) {
+        let tempArray = [];
+        for (let i = 0; i < _blueprintRef.total; i++) {
+            tempArray.push(_generateObject(_blueprintRef.schema, _blueprintRef.required, _blueprintRef.userDefTypes));
+        }
+
+        return tempArray.length > 1 ? tempArray : tempArray[0];
     }
 
     return {

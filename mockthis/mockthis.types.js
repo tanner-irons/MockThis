@@ -16,6 +16,7 @@ define([], function () {
         },
         Address: 'address',
         Phone: 'phone',
-        Email: 'email'
+        Email: 'email',
+        NewType: 'newType'
     };
 });
