@@ -2,12 +2,12 @@ define(['mockthis.types', 'mockthis.generate'], function (Types, GenerationServi
     'use strict';
 
     let _json = function () {
-        let generatedData = GenerationService.generateData(this.blueprint);
+        let generatedData = GenerationService.generateData.bind(this)();
         return JSON.stringify(generatedData);
     };
 
     let _object = function () {
-        return GenerationService.generateData(this.blueprint);
+        return GenerationService.generateData.bind(this)();
     }
 
     return {

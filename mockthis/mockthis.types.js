@@ -10,6 +10,11 @@ define([], function () {
         Yesterday: 'yesterday',
         Tomorrow: 'tomorrow',
         Birthday: 'birthday',
+        Text: {
+            Word: 'word',
+            Sentence: 'sentence',
+            Paragraph: 'paragraph'
+        },
         Name: {
             First: 'first',
             Last: 'last'

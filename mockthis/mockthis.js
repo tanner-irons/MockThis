@@ -17,6 +17,7 @@ define(['mockthis.with', 'mockthis.as', 'mockthis.generate'], function (With, As
 
         this.with = {
             Multiple: With.Multiple.bind(this),
+            ArrayMax: With.ArrayMax.bind(this),
             Required: With.Required.bind(this),
             NewType: With.NewType.bind(this),
             DateFormat: With.DateFormat.bind(this)

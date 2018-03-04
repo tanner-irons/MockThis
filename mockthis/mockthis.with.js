@@ -19,8 +19,13 @@ define([], function () {
         return this;
     }
 
-    let _dateFormat = function(dateFormat) {
-        this.blueprint.formats.date = dateFormat;
+    let _dateFormat = function(asString) {
+        this.blueprint.formats.date = asString;
+        return this;
+    }
+
+    let _arrayMax = function(max) {
+        this.blueprint.arrayMax = max;
         return this;
     }
 
@@ -28,6 +33,7 @@ define([], function () {
         Multiple: _multiple,
         Required: _required,
         NewType: _newType,
-        DateFormat: _dateFormat
+        DateFormat: _dateFormat,
+        ArrayMax: _arrayMax
     }
 });

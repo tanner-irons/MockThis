@@ -9,6 +9,7 @@
   "author": "Tanner Irons",
   "license": "ISC",
   "dependencies": {
+    "chance": "^1.0.13",
     "lodash": "^4.17.5",
     "requirejs": "^2.3.5"
   }
