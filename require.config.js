@@ -15,6 +15,6 @@ require.config({
         main: "chance.min"
     }]
 });
-require(["../index"], function () { 
+require(["../site"], function () { 
     
 });
