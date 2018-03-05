@@ -13,7 +13,8 @@ module.exports = function (grunt) {
                 reporters: ['progress', 'coverage'],                
                 coverageReporter: {
                     type : 'html',
-                    dir : 'coverage'
+                    dir : 'coverage',
+                    includeAllSources: true
                   }
             }
         }

@@ -7,7 +7,7 @@ define(['mockthis', 'mockthis.with'], function (MockThis, With) {
             let mock = MockThis({}).with.Multiple(2);
             expect(mock.blueprint.total).toEqual(2);
         });
-
+        
         it('should set instance of MockThis "required" property when Required([]) is called', function () {
             let mock = MockThis({}).with.Required(['test']);
             expect(mock.blueprint.required instanceof Array).toEqual(true);

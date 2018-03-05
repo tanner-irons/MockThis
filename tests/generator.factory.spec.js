@@ -18,17 +18,17 @@ define(['mockthis.types', 'generators/mockthis.generator.factory', 'generators/m
                 let Generator = GeneratorFactory.getInstanceOf(Types.Name.First);
                 expect(Generator).toEqual(NameGenerator);
             });
-            
+
             it('should return a NameGenerator object when getInstanceOf() is called with type of Name.Last', function () {
                 let Generator = GeneratorFactory.getInstanceOf(Types.Name.Last);
                 expect(Generator).toEqual(NameGenerator);
             });
-            
+
             it('should return a NumberGenerator object when getInstanceOf() is called with type of Number', function () {
                 let Generator = GeneratorFactory.getInstanceOf(Types.Number);
                 expect(Generator).toEqual(NumberGenerator);
             });
-            
+
             it('should return a StringGenerator object when getInstanceOf() is called with type of Text.Word', function () {
                 let Generator = GeneratorFactory.getInstanceOf(Types.Text.Word);
                 expect(Generator).toEqual(StringGenerator);
@@ -42,7 +42,12 @@ define(['mockthis.types', 'generators/mockthis.generator.factory', 'generators/m
             it('should return a StringGenerator object when getInstanceOf() is called with type of Text.Paragraph', function () {
                 let Generator = GeneratorFactory.getInstanceOf(Types.Text.Paragraph);
                 expect(Generator).toEqual(StringGenerator);
-            });  
+            });
+
+            it('should return undefined when getInstanceOf() is called with no type', function () {
+                let Generator = GeneratorFactory.getInstanceOf();
+                expect(Generator).toBe(undefined);
+            });
 
         });
     });

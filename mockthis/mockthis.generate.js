@@ -25,7 +25,7 @@ define(['mockthis.types', 'generators/mockthis.generator.factory'], function (Ty
             default:
                 for (let i = 0; i < this.blueprint.userDefTypes.length; i++) {
                     if (this.blueprint.userDefTypes[i].type === type) {
-                        return this.blueprint.userDefTypes[i].callback(type);
+                        return this.blueprint.userDefTypes[i].callback(_generateType, Types);
                     }
                 };
                 return;

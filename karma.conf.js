@@ -16,6 +16,9 @@ module.exports = function (config) {
         ],
         exclude: [
             '../index.js'
-        ]
+        ],
+        preprocessors: {
+            './mockthis/**/*.js': 'coverage'
+        }
     });
 };

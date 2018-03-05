@@ -21,8 +21,12 @@ define(['mockthis', 'mockthis.types', 'chance'], function (MockThis, Types, Chan
             }
         }]
     };
-    let Pets = MockThis(mockPetObject).with.Multiple(5).with.ArrayMax(5).with.NewType('Animal', () => {
-        return chance.animal();
+    let Pets = MockThis(mockPetObject).with.Multiple(5).with.ArrayMax(5).with.NewType('Animal', (typeGenerator, types) => {
+        let name = typeGenerator(types.Name.First);
+        return {
+            animal: chance.animal(),
+            name: name
+        }
     }).with.DateFormat('dd-mm-yyyy').as.Object();
     console.log(Pets);
     document.getElementsByClassName('info')[0].innerHTML = Pets;

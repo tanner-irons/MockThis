@@ -12,7 +12,8 @@ define(['mockthis.with', 'mockthis.as', 'mockthis.generate'], function (With, As
 
         this.as = {
             JSON: As.JSON.bind(this),
-            Object: As.Object.bind(this)
+            Object: As.Object.bind(this),
+            Lodash: As.Lodash.bind(this)
         }
 
         this.with = {

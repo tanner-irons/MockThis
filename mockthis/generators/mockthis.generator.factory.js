@@ -18,7 +18,6 @@ define(['mockthis.types', 'generators/mockthis.generator.string', 'generators/mo
                     case Types.Date:
                     case Types.Birthday:
                         return DateGenerator;
-
                     default:
                         return;
                 }

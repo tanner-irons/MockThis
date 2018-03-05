@@ -2,9 +2,6 @@ define([], function () {
     'use strict';
 
     let _multiple = function (amount) {
-        if (amount === this.blueprint.schema.length) {
-            return this;
-        }
         this.blueprint.total = amount;
         return this;
     };
@@ -19,12 +16,12 @@ define([], function () {
         return this;
     }
 
-    let _dateFormat = function(asString) {
+    let _dateFormat = function (asString) {
         this.blueprint.formats.date = asString;
         return this;
     }
 
-    let _arrayMax = function(max) {
+    let _arrayMax = function (max) {
         this.blueprint.arrayMax = max;
         return this;
     }
