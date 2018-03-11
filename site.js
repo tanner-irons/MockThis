@@ -21,13 +21,16 @@ define(['mockthis', 'mockthis.types', 'chance'], function (MockThis, Types, Chan
             }
         }]
     };
-    let Pets = MockThis(mockPetObject).with.Multiple(5).with.ArrayMax(5).with.NewType('Animal', (typeGenerator, types) => {
-        let name = typeGenerator(types.Name.First);
+
+    let start = performance.now();
+    let Pets = MockThis(mockPetObject).with.Multiple(1000).with.ArrayMax(50).with.NewType('Animal', (getGenerator) => {
+        let name = getGenerator('First').First();
         return {
             animal: chance.animal(),
             name: name
         }
     }).with.DateFormat('dd-mm-yyyy').as.Object();
+    console.log(performance.now() - start);
     console.log(Pets);
     document.getElementsByClassName('info')[0].innerHTML = Pets;
 });  

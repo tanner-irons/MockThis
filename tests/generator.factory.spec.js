@@ -1,5 +1,5 @@
-define(['mockthis.types', 'generators/mockthis.generator.factory', 'generators/mockthis.generator.date', 'generators/mockthis.generator.name', 'generators/mockthis.generator.number', 'generators/mockthis.generator.string', 'chance'],
-    function (Types, GeneratorFactory, DateGenerator, NameGenerator, NumberGenerator, StringGenerator, Chance) {
+define(['mockthis.types', 'generators/generator.factory', 'generators/generator.date', 'generators/generator.name', 'generators/generator.number', 'generators/generator.string', 'generators/generator.userDef', 'chance'],
+    function (Types, GeneratorFactory, DateGenerator, NameGenerator, NumberGenerator, StringGenerator, UserDefGenerator, Chance) {
         'use strict';
 
         describe('Generator Factory', function () {
@@ -44,9 +44,14 @@ define(['mockthis.types', 'generators/mockthis.generator.factory', 'generators/m
                 expect(Generator).toEqual(StringGenerator);
             });
 
-            it('should return undefined when getInstanceOf() is called with no type', function () {
+            it('should return UserDefGenerator when getInstanceOf() is called with no type', function () {
                 let Generator = GeneratorFactory.getInstanceOf();
-                expect(Generator).toBe(undefined);
+                expect(Generator).toEqual(UserDefGenerator.userDefTypes);
+            });
+
+            it('should return a UserDefGenerator object when getInstanceOf() is called with custom type', function() {
+                let Generator = GeneratorFactory.getInstanceOf('Animal');
+                expect(Generator).toEqual(UserDefGenerator.userDefTypes);
             });
 
         });

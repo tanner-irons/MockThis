@@ -1,4 +1,4 @@
-define(['mockthis', 'mockthis.with'], function (MockThis, With) {
+define(['mockthis', 'mockthis.with', 'generators/generator.factory'], function (MockThis, With, GeneratorFactory) {
     'use strict';
 
     describe('MockThis.With', function () {
@@ -18,11 +18,9 @@ define(['mockthis', 'mockthis.with'], function (MockThis, With) {
             let mock = MockThis({}).with.NewType('testType', function () {
                 return 'testData';
             });
-            expect(mock.blueprint.userDefTypes[0] instanceof Object).toEqual(true);
-            expect(typeof mock.blueprint.userDefTypes[0].type).toEqual('string');
-            expect(mock.blueprint.userDefTypes[0].type).toEqual('testType');
-            expect(mock.blueprint.userDefTypes[0].callback instanceof Function).toEqual(true);
-            expect(mock.blueprint.userDefTypes[0].callback()).toEqual('testData');
+            let Generator = GeneratorFactory.getInstanceOf('UserDef');
+            expect(Generator instanceof Object).toEqual(true);
+            expect(Generator['testType'] instanceof Function).toEqual(true);
         });
 
         it('should push type and callback to instance of MockThis "userDefTypes" property when NewType(type, callback) is called more than once', function () {
@@ -31,8 +29,9 @@ define(['mockthis', 'mockthis.with'], function (MockThis, With) {
             }).with.NewType('secondType', function () {
                 return 'secondType';
             });
-            expect(Array.isArray(mock.blueprint.userDefTypes)).toEqual(true);
-            expect(mock.blueprint.userDefTypes.length).toEqual(2);
+            let Generator = GeneratorFactory.getInstanceOf('UserDef');
+            expect(Generator['testType']).toBeDefined();
+            expect(Object.keys(Generator).length).toEqual(2);
         });
 
         it('should set instance of MockThis "formats.date" property when DateFormat(format) is called', function () {

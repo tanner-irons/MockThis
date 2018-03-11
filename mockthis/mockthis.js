@@ -1,4 +1,4 @@
-define(['mockthis.with', 'mockthis.as', 'mockthis.generate'], function (With, As, GenerationService) {
+define(['mockthis.with', 'mockthis.as'], function (With, As) {
     'use strict';
 
     function MockedObject(_schema) {
@@ -6,7 +6,6 @@ define(['mockthis.with', 'mockthis.as', 'mockthis.generate'], function (With, As
             schema: _schema,
             total: 1,
             required: [],
-            userDefTypes: [],
             formats: {}
         }
 

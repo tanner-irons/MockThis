@@ -9,6 +9,7 @@ module.exports = function (config) {
             singleRun: false
         },
         files: [
+            { pattern: './node_modules/lodash/lodash.min.js', included: false },
             { pattern: './node_modules/chance/dist/*.js', included: false },
             { pattern: './mockthis/**/*.js', included: false },
             { pattern: './tests/**/*.spec.js', included: false },

@@ -1,5 +1,5 @@
-define(['mockthis.types', 'generators/mockthis.generator.string', 'generators/mockthis.generator.number', 'generators/mockthis.generator.name', 'generators/mockthis.generator.date'],
-    function (Types, StringGenerator, NumberGenerator, NameGenerator, DateGenerator) {
+define(['mockthis.types', 'generators/generator.string', 'generators/generator.number', 'generators/generator.name', 'generators/generator.date', 'generators/generator.userDef'],
+    function (Types, StringGenerator, NumberGenerator, NameGenerator, DateGenerator, UserDefGenerator) {
         'use strict';
 
         return {
@@ -19,8 +19,8 @@ define(['mockthis.types', 'generators/mockthis.generator.string', 'generators/mo
                     case Types.Birthday:
                         return DateGenerator;
                     default:
-                        return;
+                        return UserDefGenerator.userDefTypes;
                 }
             }
         }
-    });
+    }); 

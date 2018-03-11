@@ -12,7 +12,7 @@ define(['chance'], function (Chance) {
     }
 
     return {
-        getFirstName: _getFirstName,
-        getLastName: _getLastName
+        First: _getFirstName,
+        Last: _getLastName
     }
 });

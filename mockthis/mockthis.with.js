@@ -1,4 +1,4 @@
-define([], function () {
+define(['generators/generator.userDef'], function (UserDefGenerator) {
     'use strict';
 
     let _multiple = function (amount) {
@@ -12,7 +12,7 @@ define([], function () {
     };
 
     let _newType = function (newType, callback) {
-        this.blueprint.userDefTypes.push({ type: newType, callback: callback });
+        UserDefGenerator.addType(newType, callback);
         return this;
     }
 

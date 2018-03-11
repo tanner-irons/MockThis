@@ -12,7 +12,7 @@ define(['chance'], function (Chance) {
     }
 
     return {
-        getDate: _getDate,
-        getBirthday: _getBirthday
+        Date: _getDate,
+        Birthday: _getBirthday
     }
 });

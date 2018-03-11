@@ -16,9 +16,8 @@ define(['chance'], function (Chance) {
     };
 
     return {
-        getString: _getSentence,
-        getWord: _getWord,
-        getSentence: _getSentence,
-        getParagraph: _getParagraph
+        Word: _getWord,
+        Sentence: _getSentence,
+        Paragraph: _getParagraph
     }
 });

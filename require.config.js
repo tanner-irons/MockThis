@@ -7,7 +7,7 @@ require.config({
     },
     packages: [{ 
         name: "lodash",
-        location: "../node_modules/lodash/",
+        location: "../node_modules/lodash",
         main: "lodash.min"
     }, {
         name: "chance",

@@ -2,26 +2,26 @@ define([], function () {
     'use strict';
 
     return {
-        String: 'string',
-        Number: 'number',
-        Boolean: 'boolean',
-        Date: 'date',
-        Today: 'today',
-        Yesterday: 'yesterday',
-        Tomorrow: 'tomorrow',
-        Birthday: 'birthday',
+        String: 'String',
+        Number: 'Number',
+        Boolean: 'Boolean',
+        Date: 'Date',
+        Today: 'Today',
+        Yesterday: 'Yesterday',
+        Tomorrow: 'Tomorrow',
+        Birthday: 'Birthday',
         Text: {
-            Word: 'word',
-            Sentence: 'sentence',
-            Paragraph: 'paragraph'
+            Word: 'Word',
+            Sentence: 'Sentence',
+            Paragraph: 'Paragraph'
         },
         Name: {
-            First: 'first',
-            Last: 'last'
+            First: 'First',
+            Last: 'Last'
         },
-        Address: 'address',
-        Phone: 'phone',
-        Email: 'email',
-        NewType: 'newType'
+        Address: 'Address',
+        Phone: 'Phone',
+        Email: 'Email',
+        NewType: 'NewType'
     };
 });

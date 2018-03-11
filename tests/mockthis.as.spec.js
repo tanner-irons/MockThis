@@ -1,10 +1,10 @@
-define(['mockthis', 'mockthis.as'], function (MockThis, As) {
+define(['lodash', 'mockthis', 'mockthis.as'], function (_, MockThis, As) {
     'use strict';
 
     describe('MockThis.As', function () {
 
         it('should return JSON when JSON() is called', function () {
-            let mock = MockThis({ test: 'string' }).as.JSON();
+            let mock = MockThis({ test: 'Word' }).as.JSON();
             let isJSON;
             try {
                 JSON.parse(mock);
@@ -16,7 +16,7 @@ define(['mockthis', 'mockthis.as'], function (MockThis, As) {
         });
 
         it('should return JS object when Object() is called', function () {
-            let mock = MockThis({ test: 'string' }).as.Object();
+            let mock = MockThis({ test: 'Word' }).as.Object();
             expect(mock instanceof Object).toEqual(true);
         });
 

@@ -8,6 +8,6 @@ define(['chance'], function (Chance) {
     };
 
     return {
-        getNumber: _getNumber
+        Number: _getNumber
     }
 });
