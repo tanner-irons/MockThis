@@ -9,7 +9,7 @@ define(['chance'], function (Chance) {
 
     let _getLastName = function () {
         return chance.last();
-    }
+    };
 
     return {
         First: _getFirstName,

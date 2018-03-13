@@ -3,7 +3,7 @@ define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_
 
     let _generateObject = function (schema, required, arrayMax) {
         arrayMax = arrayMax || 10;
-        let arrayLength = Math.round(Math.random() * arrayMax);        
+        let arrayLength = Math.round(Math.random() * arrayMax);
         let tempObject = {};
         let typeValue, generator, undefinedChance, i, key;
 
@@ -21,7 +21,7 @@ define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_
             else {
                 generator = GeneratorFactory.getInstanceOf(schema[key]);
                 typeValue = generator[schema[key]](GeneratorFactory.getInstanceOf);
-                tempObject[key] = chance >= .2 || required.indexOf(key) > -1 ? typeValue : undefined;
+                tempObject[key] = undefinedChance >= .2 || required.indexOf(key) > -1 ? typeValue : undefined;
             }
         }
         return tempObject;
@@ -33,25 +33,17 @@ define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_
             tempArray.push(_generateObject(blueprint.schema, blueprint.required, blueprint.arrayMax));
         }
         return tempArray.length > 1 ? tempArray : tempArray[0];
-    }
-
-    let _json = function () {
-        let generatedData = _generateData(this.blueprint);
-        return JSON.stringify(generatedData);
     };
 
-    let _object = function () {
-        return _generateData(this.blueprint);
-    }
-
-    let _lodash = function () {
-        let generatedData = _generateData(this.blueprint);
-        return _.chain(generatedData);
-    }
-
     return {
-        JSON: _json,
-        Object: _object,
-        Lodash: _lodash
+        Object: function () {
+            return _generateData(this.blueprint);
+        },
+        JSON: function () {
+            return JSON.stringify(_generateData(this.blueprint));
+        },
+        Lodash: function () {
+            return _.chain(_generateData(this.blueprint));
+        }
     }
 });

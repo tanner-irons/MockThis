@@ -23,7 +23,7 @@ define(['mockthis', 'mockthis.types', 'chance'], function (MockThis, Types, Chan
     };
 
     let start = performance.now();
-    let Pets = MockThis(mockPetObject).with.Multiple(1000).with.ArrayMax(50).with.NewType('Animal', (getGenerator) => {
+    let Pets = MockThis(mockPetObject).with.Multiple(100).with.ArrayMax(15).with.NewType('Animal', (getGenerator) => {
         let name = getGenerator('First').First();
         return {
             animal: chance.animal(),

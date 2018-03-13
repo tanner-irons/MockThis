@@ -5,11 +5,11 @@ define(['chance'], function (Chance) {
 
     let _getWord = function () {
         return chance.word();
-    }
+    };
 
     let _getSentence = function () {
         return chance.sentence();
-    }
+    };
 
     let _getParagraph = function () {
         return chance.paragraph();
