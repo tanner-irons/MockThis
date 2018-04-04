@@ -20,7 +20,8 @@ define(['mockthis.with', 'mockthis.as'], function (With, As) {
             ArrayMax: With.ArrayMax.bind(this),
             Required: With.Required.bind(this),
             NewType: With.NewType.bind(this),
-            DateFormat: With.DateFormat.bind(this)
+            DateFormat: With.DateFormat.bind(this),
+            Logic: With.Logic.bind(this)
         }
     }
 

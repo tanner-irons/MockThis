@@ -1,9 +1,11 @@
 define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_, Types, GeneratorFactory) {
     'use strict';
 
-    let _generateObject = function (schema, required, arrayMax) {
-        arrayMax = arrayMax || 10;
-        let arrayLength = Math.round(Math.random() * arrayMax);
+    let _generateObject = function (blueprint) {
+        let arrayMax = blueprint.arrays.max || 10;
+        let arrayLength = blueprint.arrays.strict ? blueprint.arrays.max : Math.round(Math.random() * arrayMax);
+        let required = blueprint.required || [];
+        let schema = blueprint.schema || {};
         let tempObject = {};
         let typeValue, generator, undefinedChance, i, key;
 
@@ -12,11 +14,13 @@ define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_
             if (schema[key] instanceof Array) {
                 tempObject[key] = [];
                 for (i = 0; i < arrayLength; i++) {
-                    tempObject[key].push(_generateObject(schema[key], required, arrayMax)[0]);
+                    blueprint.schema = schema[key];
+                    tempObject[key].push(_generateObject(blueprint)[0]);
                 }
             }
             else if (schema[key] instanceof Object) {
-                tempObject[key] = _generateObject(schema[key], required, arrayMax);
+                blueprint.schema = schema[key];
+                tempObject[key] = _generateObject(blueprint);
             }
             else {
                 generator = GeneratorFactory.getInstanceOf(schema[key]);
@@ -28,9 +32,15 @@ define(['lodash', 'mockthis.types', 'generators/generator.factory'], function (_
     };
 
     let _generateData = function (blueprint) {
+        let dataConfig = {
+            schema: blueprint.schema,
+            required: blueprint.required,
+            arrays: blueprint.arrays
+        }
         let tempArray = [];
-        for (let i = 0; i < blueprint.total; i++) {
-            tempArray.push(_generateObject(blueprint.schema, blueprint.required, blueprint.arrayMax));
+        let i;
+        for (i = 0; i < blueprint.total; i++) {
+            tempArray.push(_generateObject({...dataConfig}));
         }
         return tempArray.length > 1 ? tempArray : tempArray[0];
     };
