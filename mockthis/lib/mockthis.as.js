@@ -5,13 +5,12 @@ let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _generateObject = function (blueprint) {
     let arrayLength = blueprint.array.strict ? blueprint.array.max : Math.round(Math.random() * blueprint.array.max);
-    let required = blueprint.required || [];
     let schema = blueprint.schema || {};
     let tempObject = {};
     let typeValue, generator, undefinedChance, i, key;
 
     for (key in schema) {
-        undefinedChance = required.length === 0 ? 1 : Math.random();
+        undefinedChance = blueprint.required.length === 0 ? 1 : Math.random();
         if (schema[key] instanceof Array) {
             tempObject[key] = [];
             for (i = 0; i < arrayLength; i++) {
@@ -26,7 +25,7 @@ let _generateObject = function (blueprint) {
         else {
             generator = GeneratorFactory.getInstanceOf(schema[key]);
             typeValue = generator[schema[key]](GeneratorFactory.getInstanceOf);
-            tempObject[key] = undefinedChance >= .2 || required.indexOf(key) > -1 ? typeValue : undefined;
+            tempObject[key] = undefinedChance >= .2 || blueprint.required.indexOf(key) > -1 ? typeValue : undefined;
         }
     }
     return tempObject;

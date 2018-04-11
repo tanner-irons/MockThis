@@ -32,5 +32,13 @@ function MockedObject(_schema) {
 }
 
 module.exports = (schema) => {
+    if(!schema) {
+        throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
+        return;
+    }
+    if(!(schema instanceof Object) || schema instanceof Array){
+        throw new TypeError('Provided schema should be a valid object literal.');
+        return;
+    }
     return new MockedObject(schema);
 };

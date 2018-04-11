@@ -44,7 +44,7 @@ let mockPetObject = {
 };
 
 let start = performance.now();
-let Pets = MockThis(mockPetObject)
+let Pets = MockThis()
     .with.Multiple(100)
     .with.MaxArray(15, true)
     .with.NewType('Animal', (getGenerator) => {
