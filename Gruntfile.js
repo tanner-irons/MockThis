@@ -17,9 +17,18 @@ module.exports = function (grunt) {
             }
         },
 
+        eslint: {
+            options: {
+                configFile: 'eslint-rules.js',
+                format: 'html',
+                outputFile: 'eslint-report.html'
+            },
+            target: ['./mockthis/**/*.js', '!./mockthis/dist/*.js']
+        },
+
         watch: {
             browserify: {
-                files: ['mockthis/build/**/*.js'],
+                files: ['mockthis/lib/**/*.js'],
                 tasks: ['browserify']
             }
         },
@@ -27,12 +36,12 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 options: {
-                    transform: [['babelify', { presets: ['env', 'stage-3'] }]],
+                    transform: [['babelify', { presets: ['env', 'stage-3'] }], 'uglifyify'],
                     browserifyOptions: {
                         standalone: 'MockThis'
                     }
                 },
-                src: ['mockthis/build/mockthis.js'],
+                src: ['mockthis/lib/mockthis.js'],
                 dest: 'mockthis/dist/mockthis.js',
             }
         }
@@ -42,7 +51,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma')
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
+    grunt.loadNpmTasks('grunt-eslint');
 
     grunt.registerTask('test', ['karma']);
     grunt.registerTask('build', ['browserify']);
+    grunt.registerTask('lint', ['eslint']);
 };

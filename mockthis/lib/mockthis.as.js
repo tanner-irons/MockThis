@@ -1,7 +1,6 @@
 'use strict';
 
 let _ = require('lodash');
-let Types = require('./mockthis.types.js');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _generateObject = function (blueprint) {
@@ -43,7 +42,7 @@ let _generateData = function (blueprint) {
     let tempArray = [];
     let i;
     for (i = 0; i < blueprint.total; i++) {
-        tempArray.push(_generateObject({ ...dataConfig }));
+        tempArray.push(_generateObject(Object.assign({}, dataConfig)));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];
 };
