@@ -4,8 +4,7 @@ let _ = require('lodash');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _generateObject = function (blueprint) {
-    let arrayMax = blueprint.array.max || 10;
-    let arrayLength = blueprint.array.strict ? blueprint.array.max : Math.round(Math.random() * arrayMax);
+    let arrayLength = blueprint.array.strict ? blueprint.array.max : Math.round(Math.random() * blueprint.array.max);
     let required = blueprint.required || [];
     let schema = blueprint.schema || {};
     let tempObject = {};
