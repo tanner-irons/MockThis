@@ -10,6 +10,7 @@ function MockedObject(_schema) {
         required: [],
         formats: {},
         array: {
+            min: 0,
             max: 10,
             strict: false
         }
@@ -24,6 +25,7 @@ function MockedObject(_schema) {
     this.with = {
         Multiple: With.Multiple.bind(this),
         MaxArray: With.MaxArray.bind(this),
+        MinArray: With.MinArray.bind(this),
         Required: With.Required.bind(this),
         NewType: With.NewType.bind(this),
         DateFormat: With.DateFormat.bind(this),

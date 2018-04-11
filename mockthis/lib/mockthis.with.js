@@ -23,10 +23,18 @@ let _dateFormat = function (asString) {
 };
 
 let _maxArray = function (max, strict) {
-    this.blueprint.array = {
-        max: max,
-        strict: strict
-    };
+    this.blueprint.array.max = max
+    if (strict === true || strict === false) {
+        this.blueprint.array.strict = strict;
+    }
+    return this;
+};
+
+let _minArray = function (min, strict) {
+    this.blueprint.array.min = min
+    if (strict === true || strict === false) {
+        this.blueprint.array.strict = strict;
+    }
     return this;
 };
 
@@ -40,5 +48,6 @@ module.exports = {
     NewType: _newType,
     DateFormat: _dateFormat,
     MaxArray: _maxArray,
+    MinArray: _minArray,
     Logic: _logic
 }

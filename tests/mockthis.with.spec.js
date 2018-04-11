@@ -47,4 +47,19 @@ describe('MockThis.With', function () {
         expect(mock.blueprint.array.max).toEqual(5);
     });
 
+    it('should set instance of MockThis "array.stict" property when MaxArray(max, strict) is called', function () {
+        let mock = MockThis({}).with.MaxArray(5, true);
+        expect(mock.blueprint.array.strict).toEqual(true);
+    });
+
+    it('should set instance of MockThis "array.min" property when MinArray(max) is called', function () {
+        let mock = MockThis({}).with.MinArray(1);
+        expect(mock.blueprint.array.min).toEqual(1);
+    });
+
+    it('should set instance of MockThis "array.stict" property when MinArray(min, strict) is called', function () {
+        let mock = MockThis({}).with.MinArray(5, true);
+        expect(mock.blueprint.array.strict).toEqual(true);
+    });
+
 });

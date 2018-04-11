@@ -5,6 +5,7 @@ let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _generateObject = function (blueprint) {
     let arrayLength = blueprint.array.strict ? blueprint.array.max : Math.round(Math.random() * blueprint.array.max);
+    arrayLength = arrayLength < blueprint.array.min ? blueprint.array.min : arrayLength;
     let schema = blueprint.schema || {};
     let tempObject = {};
     let typeValue, generator, undefinedChance, i, key;
