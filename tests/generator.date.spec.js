@@ -1,6 +1,6 @@
 'use strict';
 
-let Generator = require('../mockthis/build/generators/generator.date.js');
+let Generator = require('../mockthis/lib/generators/generator.date.js');
 let Chance = require('chance');
 
 describe('Date Generator', function () {

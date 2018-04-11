@@ -1,8 +1,8 @@
 'use strict';
 
-let MockThis = require('../mockthis/build/mockthis.js');
-let With =  require('../mockthis/build/mockthis.with.js');
-let GeneratorFactory =  require('../mockthis/build/generators/generator.factory.js');
+let MockThis = require('../mockthis/lib/mockthis.js');
+let With =  require('../mockthis/lib/mockthis.with.js');
+let GeneratorFactory =  require('../mockthis/lib/generators/generator.factory.js');
 
 describe('MockThis.With', function () {
 

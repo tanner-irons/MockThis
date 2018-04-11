@@ -1,6 +1,6 @@
 'use strict';
 
-let Generator = require('../mockthis/build/generators/generator.name.js');
+let Generator = require('../mockthis/lib/generators/generator.name.js');
 let Chance = require('chance');
 
 describe('Name Generator', function () {

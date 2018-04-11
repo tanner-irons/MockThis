@@ -1,8 +1,8 @@
 'use strict';
 
 let _ = require('lodash');
-let MockThis = require('../mockthis/build/mockthis.js');
-let As =  require('../mockthis/build/mockthis.as.js');
+let MockThis = require('../mockthis/lib/mockthis.js');
+let As =  require('../mockthis/lib/mockthis.as.js');
 
 describe('MockThis.As', function () {
 

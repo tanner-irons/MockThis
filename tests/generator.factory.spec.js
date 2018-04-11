@@ -1,13 +1,13 @@
 'use strict';
 
-let GeneratorFactory = require('../mockthis/build/generators/generator.factory.js');
-let DateGenerator = require('../mockthis/build/generators/generator.date.js');
-let NameGenerator = require('../mockthis/build/generators/generator.name.js');
-let NumberGenerator = require('../mockthis/build/generators/generator.number.js');
-let StringGenerator = require('../mockthis/build/generators/generator.string.js');
-let UserDefGenerator = require('../mockthis/build/generators/generator.userDef.js');
+let GeneratorFactory = require('../mockthis/lib/generators/generator.factory.js');
+let DateGenerator = require('../mockthis/lib/generators/generator.date.js');
+let NameGenerator = require('../mockthis/lib/generators/generator.name.js');
+let NumberGenerator = require('../mockthis/lib/generators/generator.number.js');
+let StringGenerator = require('../mockthis/lib/generators/generator.string.js');
+let UserDefGenerator = require('../mockthis/lib/generators/generator.userDef.js');
+let Types = require('../mockthis/lib/mockthis.types');
 let Chance = require('chance');
-let Types = require('../mockthis/build/mockthis.types');
 
 describe('Generator Factory', function () {
 
