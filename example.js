@@ -24,8 +24,6 @@ let Types = {
     NewType: 'NewType'
 };
 
-let chance = new Chance();
-
 let mockPetObject = {
     owner: {
         firstName: Types.Name.First,

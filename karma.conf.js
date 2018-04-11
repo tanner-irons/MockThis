@@ -3,10 +3,6 @@ module.exports = function (config) {
         basePath: '.',
         frameworks: ['browserify', 'jasmine'],
         browsers: ['Chrome'],
-        port: 9876,
-        logLevel: 'DEBUG',
-        singleRun: true,
-        autoWatch: false,
         files: [
             { pattern: './mockthis/build/**/*.js' },
             { pattern: './tests/**/*.js' }

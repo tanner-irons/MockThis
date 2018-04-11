@@ -1,12 +1,18 @@
 module.exports = function (grunt) {
 
+    var debug = grunt.option('debug');
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         karma: {
             unit: {
                 options: {
-                    configFile: 'karma.conf.js'
+                    configFile: 'karma.conf.js',
+                    singleRun: !debug,
+                    autoWatch: debug,
+                    port: 9876,
+                    logLevel: 'OFF'
                 }
             }
         },
