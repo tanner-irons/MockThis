@@ -1,25 +1,29 @@
 module.exports = function (config) {
     config.set({
         basePath: '.',
-        frameworks: ['jasmine', 'requirejs'],
+        frameworks: ['browserify', 'jasmine'],
         browsers: ['Chrome'],
         port: 9876,
-        watch: {
-            background: false,
-            singleRun: false
-        },
+        logLevel: 'DEBUG',
+        singleRun: true,
+        autoWatch: false,
         files: [
-            { pattern: './node_modules/lodash/lodash.min.js', included: false },
-            { pattern: './node_modules/chance/dist/*.js', included: false },
-            { pattern: './mockthis/**/*.js', included: false },
-            { pattern: './tests/**/*.spec.js', included: false },
-            'tests/test-main.js'
-        ],
-        exclude: [
-            '../index.js'
+            { pattern: './mockthis/build/**/*.js' },
+            { pattern: './tests/**/*.js' }
         ],
         preprocessors: {
-            './mockthis/**/*.js': 'coverage'
+            './mockthis/build/**/*.js': ['browserify', 'coverage'],
+            './tests/**/*.spec.js': ['browserify']
+        },
+        browserify: {
+            watch: true,
+            transform: [['babelify', { presets: ['env', 'stage-3'] }]]
+        },
+        reporters: ['progress', 'coverage'],
+        coverageReporter: {
+            type: 'html',
+            dir: 'coverage',
+            includeAllSources: true
         }
     });
 };

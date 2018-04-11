@@ -5,8 +5,8 @@ let Types = require('./mockthis.types.js');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _generateObject = function (blueprint) {
-    let arrayMax = blueprint.arrays.max || 10;
-    let arrayLength = blueprint.arrays.strict ? blueprint.arrays.max : Math.round(Math.random() * arrayMax);
+    let arrayMax = blueprint.array.max || 10;
+    let arrayLength = blueprint.array.strict ? blueprint.array.max : Math.round(Math.random() * arrayMax);
     let required = blueprint.required || [];
     let schema = blueprint.schema || {};
     let tempObject = {};
@@ -38,7 +38,7 @@ let _generateData = function (blueprint) {
     let dataConfig = {
         schema: blueprint.schema,
         required: blueprint.required,
-        arrays: blueprint.arrays
+        array: blueprint.array
     }
     let tempArray = [];
     let i;

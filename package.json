@@ -3,39 +3,28 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "author": "Tanner Irons",
   "license": "ISC",
   "dependencies": {
     "chance": "^1.0.13",
-    "lodash": "^4.17.5",
-    "requirejs": "^2.3.5"
+    "lodash": "^4.17.5"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
     "babelify": "^8.0.0",
-    "browserify-shim": "^3.8.14",
     "grunt": "^1.0.2",
     "grunt-browserify": "^5.2.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-karma": "^2.0.0",
-    "jasmine": "^3.1.0",
     "karma": "^2.0.0",
+    "karma-babel-preprocessor": "^7.0.0",
+    "karma-browserify": "^5.2.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
-    "karma-coverage-istanbul-reporter": "^1.4.1",
     "karma-jasmine": "^1.1.1",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "karma-phantomjs-launcher": "^1.0.4",
-    "karma-requirejs": "^1.1.0",
-    "karma-spec-reporter": "0.0.32"
-  },
-  "browserify-shim": {
-    "lodash": "global:_",
-    "chance": "global:Chance"
+    "watchify": "^3.11.0"
   }
 }

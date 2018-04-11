@@ -22,8 +22,8 @@ let _dateFormat = function (asString) {
     return this;
 };
 
-let _arrayMax = function (max, strict) {
-    this.blueprint.arrays = {
+let _maxArray = function (max, strict) {
+    this.blueprint.array = {
         max: max,
         strict: strict
     };
@@ -39,6 +39,6 @@ module.exports = {
     Required: _required,
     NewType: _newType,
     DateFormat: _dateFormat,
-    ArrayMax: _arrayMax,
+    MaxArray: _maxArray,
     Logic: _logic
 }

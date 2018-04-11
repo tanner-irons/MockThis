@@ -1,7 +1,5 @@
 'use strict';
 
-let chance = new Chance();
-
 let Types = {
     String: 'String',
     Number: 'Number',
@@ -25,6 +23,8 @@ let Types = {
     Email: 'Email',
     NewType: 'NewType'
 };
+
+let chance = new Chance();
 
 let mockPetObject = {
     owner: {
@@ -52,7 +52,7 @@ let Pets = MockThis(mockPetObject)
     .with.NewType('Animal', (getGenerator) => {
         let name = getGenerator('First').First();
         return {
-            animal: chance.animal(),
+            animal: 'animal',
             name: name
         }
     })
@@ -60,4 +60,4 @@ let Pets = MockThis(mockPetObject)
     .as.Object();
 console.log(performance.now() - start);
 console.log(Pets);
-//document.getElementsByClassName('info')[0].innerHTML = Pets;
+document.getElementsByClassName('info')[0].innerHTML = Pets;

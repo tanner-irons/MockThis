@@ -1,12 +1,13 @@
-define(['generators/generator.number'], function (Generator) {
-    'use strict';
+'use strict';
 
-    describe('Number Generator', function () {
+let Generator = require('../mockthis/build/generators/generator.number.js');
+let Chance = require('chance');
 
-        it('should return a positive Integer string when getNumber() is called', function () {
-            let number = Generator.Number();
-            expect(number).toBeGreaterThan(0);
-        });
+describe('Number Generator', function () {
 
+    it('should return a positive Integer string when getNumber() is called', function () {
+        let number = Generator.Number();
+        expect(number).toBeGreaterThan(0);
     });
+
 });

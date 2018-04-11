@@ -4,24 +4,16 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         karma: {
-            options: {
-                configFile: 'karma.conf.js',
-                port: 9876,
-                logLevel: 'OFF'
-            },
             unit: {
-                reporters: ['progress', 'coverage'],
-                coverageReporter: {
-                    type: 'html',
-                    dir: 'coverage',
-                    includeAllSources: true
+                options: {
+                    configFile: 'karma.conf.js'
                 }
             }
         },
 
         watch: {
             browserify: {
-                files: ['mockthis/**/*.js'],
+                files: ['mockthis/build/**/*.js'],
                 tasks: ['browserify']
             }
         },
@@ -29,10 +21,10 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 options: {
-                    transform: ['browserify-shim', ['babelify', { presets: ['env', 'stage-3'] }]],
+                    transform: [['babelify', { presets: ['env', 'stage-3'] }]],
                     browserifyOptions: {
                         standalone: 'MockThis'
-                      }
+                    }
                 },
                 src: ['mockthis/build/mockthis.js'],
                 dest: 'mockthis/dist/mockthis.js',
