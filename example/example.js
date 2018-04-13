@@ -1,51 +1,27 @@
 'use strict';
 
-let Types = {
-    String: 'String',
-    Number: 'Number',
-    Boolean: 'Boolean',
-    Date: 'Date',
-    Today: 'Today',
-    Yesterday: 'Yesterday',
-    Tomorrow: 'Tomorrow',
-    Birthday: 'Birthday',
-    Text: {
-        Word: 'Word',
-        Sentence: 'Sentence',
-        Paragraph: 'Paragraph'
-    },
-    Name: {
-        First: 'First',
-        Last: 'Last'
-    },
-    Address: 'Address',
-    Phone: 'Phone',
-    Email: 'Email',
-    NewType: 'NewType'
-};
-
 let mockPetObject = {
     owner: {
-        firstName: Types.Name.First,
-        lastName: Types.Name.Last
+        firstName: MockThis.Types.Name.First,
+        lastName: MockThis.Types.Name.Last
     },
-    name: Types.Name.First,
-    birthday: Types.Birthday,
+    name: MockThis.Types.Name.First,
+    birthday: MockThis.Types.Birthday,
     type: 'Animal',
-    description: Types.Text.Paragraph,
+    description: MockThis.Types.Text.Paragraph,
     notes: [{
-        text: Types.Text.Sentence,
-        date: Types.Date,
+        text: MockThis.Types.Text.Sentence,
+        date: MockThis.Types.Date,
         results: {
-            test: Types.Text.Word,
-            score: Types.Number
+            test: MockThis.Types.Text.Word,
+            score: MockThis.Types.Number
         }
     }]
 };
 
 let start = performance.now();
 let Pets = MockThis(mockPetObject)
-    .with.Multiple(1000)
+    .with.Multiple(100)
     .with.MaxArray(15)
     .with.MinArray(15)
     .with.NewType('Animal', (getGenerator) => {
@@ -57,5 +33,5 @@ let Pets = MockThis(mockPetObject)
     })
     .with.DateFormat('dd-mm-yyyy')
     .as.Object();
-console.log(performance.now() - start);
+console.log('Mock data generated in: ' + (performance.now() - start) + 'ms');
 console.log(Pets);
