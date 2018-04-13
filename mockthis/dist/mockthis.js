@@ -194,7 +194,6 @@ module.exports = {
 
 var With = require('./mockthis.with.js');
 var As = require('./mockthis.as.js');
-var Types = require('./mockthis.types.js');
 
 function MockedObject() {
     return function (_schema) {
@@ -208,6 +207,8 @@ function MockedObject() {
         return this;
     }.apply(MockedObject, arguments);
 }
+
+MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
     schema: {},
@@ -227,7 +228,7 @@ MockedObject.as = {
     Lodash: As.Lodash.bind(MockedObject)
 };
 
-MockedObject.with = {
+MockedObject.with = MockedObject.and = {
     Multiple: With.Multiple.bind(MockedObject),
     MaxArray: With.MaxArray.bind(MockedObject),
     MinArray: With.MinArray.bind(MockedObject),
@@ -236,10 +237,6 @@ MockedObject.with = {
     DateFormat: With.DateFormat.bind(MockedObject),
     Logic: With.Logic.bind(MockedObject)
 };
-
-MockedObject.and = MockedObject.with;
-
-MockedObject.Types = Types;
 
 module.exports = MockedObject;
 

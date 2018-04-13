@@ -9,7 +9,7 @@ let _multiple = function (amount) {
 
 let _required = function (required) {
     this.blueprint.required = required;
-    return this;
+     return this;
 };
 
 let _newType = function (newType, callback) {

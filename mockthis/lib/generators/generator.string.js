@@ -18,4 +18,4 @@ module.exports = {
     Word: _getWord,
     Sentence: _getSentence,
     Paragraph: _getParagraph
-}
+};
