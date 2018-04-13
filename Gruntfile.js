@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 
         eslint: {
             options: {
-                configFile: 'eslint-rules.js',
+                configFile: '.eslintrc',
                 format: 'html',
                 outputFile: 'eslint-report.html'
             },
