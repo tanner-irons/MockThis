@@ -22,16 +22,16 @@ let mockPetObject = {
 let start = performance.now();
 let Pets = MockThis(mockPetObject)
     .with.Multiple(100)
-    .with.MaxArray(15)
-    .with.MinArray(15)
-    .with.NewType('Animal', (getGenerator) => {
+    .and.MaxArray(15)
+    .and.MinArray(15)
+    .and.NewType('Animal', (getGenerator) => {
         let name = getGenerator('First').First();
         return {
             animal: 'animal',
             name: name
         }
     })
-    .with.DateFormat('dd-mm-yyyy')
+    .and.DateFormat('dd-mm-yyyy')
     .as.Object();
 console.log('Mock data generated in: ' + (performance.now() - start) + 'ms');
 console.log(Pets);

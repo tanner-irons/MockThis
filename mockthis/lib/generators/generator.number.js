@@ -1,11 +1,9 @@
 'use strict';
 
-let Chance = require('chance');
-
-let chance = new Chance();
+let Chance = new (require('chance'))();
 
 let _getNumber = function () {
-    return chance.natural({ min: 1, max: 500 });
+    return Chance.natural({ min: 1, max: 500 });
 };
 
 module.exports = {
