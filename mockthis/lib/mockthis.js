@@ -3,7 +3,6 @@
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 let Types = require('./mockthis.types.js');
-let Moment = require('moment');
 
 let createMock = function (_schema) {
     if (!_schema) {
