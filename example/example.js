@@ -7,7 +7,7 @@ let mockPetObject = {
     },
     name: MockThis.Types.Name.First,
     birthday: MockThis.Types.Birthday,
-    type: 'Animal',
+    animals: ['Animal'],
     description: MockThis.Types.Text.Paragraph,
     notes: [{
         text: MockThis.Types.Text.Sentence,

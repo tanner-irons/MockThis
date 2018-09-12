@@ -17,14 +17,14 @@ let _getDefaultType = function(type) {
 }
 
 let _generateObject = function (blueprint) {
-    let arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
     let schema = blueprint.schema || {};
-    let generatedValue, typeValue, isDefined, i, key, tempObject = {};
+    let factoryValue, generatedValue, arrayLength, isDefined, i, key, tempObject = {};
 
     for (key in schema) {
         isDefined = (blueprint.required.length === 0 ? 1 : Math.random()) >= .2;
         if (schema[key] instanceof Array) {
             tempObject[key] = [];
+            arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
             for (i = 0; i < arrayLength; i++) {
                 blueprint.schema = schema[key];
                 tempObject[key].push(_generateObject(blueprint)[0]);
@@ -35,9 +35,9 @@ let _generateObject = function (blueprint) {
             tempObject[key] = _generateObject(blueprint);
         }
         else {
-            generatedValue = GeneratorFactory.getInstanceOf(schema[key]);
-            typeValue = generatedValue instanceof Function ?  generatedValue(_getDefaultType): generatedValue;
-            tempObject[key] = isDefined || blueprint.required.indexOf(key) > -1 ? typeValue : undefined;
+            factoryValue = GeneratorFactory.getInstanceOf(schema[key]);
+            generatedValue = factoryValue instanceof Function ?  factoryValue(_getDefaultType): factoryValue;
+            tempObject[key] = isDefined || blueprint.required.indexOf(key) > -1 ? generatedValue : undefined;
         }
     }
     return tempObject;
