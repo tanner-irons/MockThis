@@ -22,19 +22,13 @@ let _dateFormat = function (asString) {
     return this;
 };
 
-let _maxArray = function (max, strict) {
+let _maxArray = function (max) {
     this.blueprint.array.max = max
-    if (strict === true || strict === false) {
-        this.blueprint.array.strict = strict;
-    }
     return this;
 };
 
-let _minArray = function (min, strict) {
+let _minArray = function (min) {
     this.blueprint.array.min = min
-    if (strict === true || strict === false) {
-        this.blueprint.array.strict = strict;
-    }
     return this;
 };
 

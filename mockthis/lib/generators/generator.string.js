@@ -1,19 +1,17 @@
 'use strict';
 
-let Chance = require('chance');
-
-let chance = new Chance();
+let Chance = new (require('chance'))();
 
 let _getWord = function () {
-    return chance.word();
+    return Chance.word();
 };
 
 let _getSentence = function () {
-    return chance.sentence();
+    return Chance.sentence();
 };
 
 let _getParagraph = function () {
-    return chance.paragraph();
+    return Chance.paragraph();
 };
 
 module.exports = {

@@ -11,20 +11,25 @@ module.exports = {
     getInstanceOf: function (type) {
         switch (type) {
             case Types.String:
+                return StringGenerator.Sentence();
             case Types.Text.Word:
+                return StringGenerator.Word();
             case Types.Text.Sentence:
+                return StringGenerator.Sentence();
             case Types.Text.Paragraph:
-                return StringGenerator
+                return StringGenerator.Paragraph();
             case Types.Number:
-                return NumberGenerator;
+                return NumberGenerator.Number();
             case Types.Name.First:
+                return NameGenerator.First();
             case Types.Name.Last:
-                return NameGenerator;
+                return NameGenerator.Last();
             case Types.Date:
+                return DateGenerator.Date();
             case Types.Birthday:
-                return DateGenerator;
+                return DateGenerator.Birthday();
             default:
-                return UserDefGenerator.userDefTypes;
+                return UserDefGenerator.userDefTypes[type];
         }
     }
 }

@@ -3,44 +3,46 @@
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 
-function MockedObject(_schema) {
-    this.blueprint = {
-        schema: _schema,
-        total: 1,
-        required: [],
-        formats: {},
-        array: {
-            min: 0,
-            max: 10,
-            strict: false
+function MockedObject() {
+    return (function(_schema) {
+        if (!_schema) {
+            throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
         }
-    }
-
-    this.as = {
-        JSON: As.JSON.bind(this),
-        Object: As.Object.bind(this),
-        Lodash: As.Lodash.bind(this)
-    }
-
-    this.with = {
-        Multiple: With.Multiple.bind(this),
-        MaxArray: With.MaxArray.bind(this),
-        MinArray: With.MinArray.bind(this),
-        Required: With.Required.bind(this),
-        NewType: With.NewType.bind(this),
-        DateFormat: With.DateFormat.bind(this),
-        Logic: With.Logic.bind(this)
-    }
+        if (!(_schema instanceof Object) || _schema instanceof Array) {
+            throw new TypeError('Provided schema should be a valid object literal.');
+        }
+        this.blueprint.schema = _schema;
+        return this;
+    }).apply(MockedObject, arguments);
 }
 
-module.exports = (schema) => {
-    if(!schema) {
-        throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
-        return;
+MockedObject.Types = require('./mockthis.types.js');
+
+MockedObject.blueprint = {
+    schema: {},
+    total: 1,
+    required: [],
+    formats: {},
+    array: {
+        min: 1,
+        max: 10
     }
-    if(!(schema instanceof Object) || schema instanceof Array){
-        throw new TypeError('Provided schema should be a valid object literal.');
-        return;
-    }
-    return new MockedObject(schema);
 };
+
+MockedObject.as = {
+    JSON: As.JSON.bind(MockedObject),
+    Object: As.Object.bind(MockedObject),
+    Lodash: As.Lodash.bind(MockedObject)
+};
+
+MockedObject.with = MockedObject.and = {
+    Multiple: With.Multiple.bind(MockedObject),
+    MaxArray: With.MaxArray.bind(MockedObject),
+    MinArray: With.MinArray.bind(MockedObject),
+    Required: With.Required.bind(MockedObject),
+    NewType: With.NewType.bind(MockedObject),
+    DateFormat: With.DateFormat.bind(MockedObject),
+    Logic: With.Logic.bind(MockedObject)
+};
+
+module.exports = MockedObject;

@@ -1,15 +1,13 @@
 'use strict';
 
-let Chance = require('chance');
-
-let chance = new Chance();
+let Chance = new (require('chance'))();
 
 let _getDate = function () {
-    return chance.date({ string: true });
+    return Chance.date({ string: true });
 };
 
 let _getBirthday = function () {
-    return chance.birthday({ string: true });
+    return Chance.birthday({ string: true });
 };
 
 module.exports = {

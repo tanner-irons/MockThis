@@ -1,15 +1,13 @@
 'use strict';
 
-let Chance = require('chance');
-
-let chance = new Chance();
+let Chance = new (require('chance'))();
 
 let _getFirstName = function () {
-    return chance.first();
+    return Chance.first();
 };
 
 let _getLastName = function () {
-    return chance.last();
+    return Chance.last();
 };
 
 module.exports = {

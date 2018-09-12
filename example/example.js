@@ -45,14 +45,14 @@ let mockPetObject = {
 
 let start = performance.now();
 let Pets = MockThis(mockPetObject)
-    .with.Multiple(1000)
+    .with.Multiple(123)
     .with.MaxArray(15)
-    .with.MinArray(15)
-    .with.NewType('Animal', (getGenerator) => {
-        let name = getGenerator('First').First();
+    .with.MinArray(2)
+    .with.NewType('Animal', (getType) => {
+        let quantity = getType(MockThis.Types.Number);
         return {
-            animal: 'animal',
-            name: name
+            animal: chance.animal(),
+            quantity: quantity
         }
     })
     .with.DateFormat('dd-mm-yyyy')
