@@ -14,7 +14,18 @@
 "use strict";var Chance=new(require("chance")),_getWord=function(){return Chance.word()},_getSentence=function(){return Chance.sentence()},_getParagraph=function(){return Chance.paragraph()};module.exports={Word:_getWord,Sentence:_getSentence,Paragraph:_getParagraph};
 
 },{"chance":13}],6:[function(require,module,exports){
-"use strict";var userDefTypes={},_addUserDefType=function(e,s){userDefTypes[e]=s};module.exports={addType:_addUserDefType,userDefTypes:userDefTypes};
+'use strict';
+
+var userDefTypes = {};
+
+var _addUserDefType = function _addUserDefType(type, callback) {
+    userDefTypes[type] = callback;
+};
+
+module.exports = {
+    addType: _addUserDefType,
+    userDefTypes: userDefTypes
+};
 
 },{}],7:[function(require,module,exports){
 "use strict";var _=require("lodash"),GeneratorFactory=require("./generators/generator.factory.js"),userDefinedTypes=require("./generators/generator.userDef").userDefTypes,_getArrayLength=function(e,r){return Math.floor(Math.random()*(r-e+1))+e},_getDefaultType=function(e){if(!userDefinedTypes[e])return GeneratorFactory.getInstanceOf(e);throw new TypeError("Nested user-defined types are not allowed.")},_generateObject=function e(r){var t=_getArrayLength(r.array.min,r.array.max),n=r.schema||{},a=void 0,i=void 0,o=void 0,u=void 0,s=void 0,c={};for(s in n)if(o=(0===r.required.length?1:Math.random())>=.2,n[s]instanceof Array)for(c[s]=[],u=0;u<t;u++)r.schema=n[s],c[s].push(e(r)[0]);else n[s]instanceof Object?(r.schema=n[s],c[s]=e(r)):(i=(a=GeneratorFactory.getInstanceOf(n[s]))instanceof Function?a(_getDefaultType):a,c[s]=o||r.required.indexOf(s)>-1?i:void 0);return c},_generateData=function(e){var r={schema:e.schema,required:e.required,array:e.array},t=[],n=void 0;for(n=0;n<e.total;n++)t.push(_generateObject(Object.assign({},r)));return t.length>1?t:t[0]};module.exports={Object:function(){return _generateData(this.blueprint)},JSON:function(e){function r(){return e.apply(this,arguments)}return r.toString=function(){return e.toString()},r}(function(){return JSON.stringify(_generateData(this.blueprint))}),Lodash:function(){return _.chain(_generateData(this.blueprint))}};

@@ -9,4 +9,4 @@ let _addUserDefType = function (type, callback) {
 module.exports =  {
     addType: _addUserDefType,
     userDefTypes: userDefTypes
-}
+};

@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 
         eslint: {
             options: {
-                configFile: 'eslint-rules.js',
+                configFile: '.eslintrc',
                 format: 'html',
                 outputFile: 'eslint-report.html'
             },
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 options: {
-                    transform: [['babelify', { presets: ['env', 'stage-3'] }], 'uglifyify'],
+                    transform: [['babelify', { presets: ['env', 'stage-3'] }]],
                     browserifyOptions: {
                         standalone: 'MockThis'
                     }

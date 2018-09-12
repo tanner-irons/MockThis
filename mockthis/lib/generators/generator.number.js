@@ -8,4 +8,4 @@ let _getNumber = function () {
 
 module.exports = {
     Number: _getNumber
-}
+};

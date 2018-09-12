@@ -13,4 +13,4 @@ let _getLastName = function () {
 module.exports = {
     First: _getFirstName,
     Last: _getLastName
-}
+};
