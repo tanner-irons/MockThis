@@ -1,58 +1,89 @@
 'use strict';
 
 let _ = require('lodash');
+let unflatten = require('flat').unflatten;
 
 let GeneratorFactory = require('./generators/generator.factory.js');
 let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
 
-let _getArrayLength = function(min, max) {
+let _getArrayLength = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 };
 
-let _getDefaultType = function(type) {
+let _getDefaultType = function (type) {
     if (!userDefinedTypes[type]) {
         return GeneratorFactory.getInstanceOf(type);
     }
     throw new TypeError('Nested user-defined types are not allowed.');
 };
 
-let _generateObject = function (blueprint) {
-    let schema = blueprint.schema || {};
-    let factoryValue, generatedValue, arrayLength, isDefined, i, key, tempObject = {};
+let _generateValue = function (blueprint, prop) {
+    let factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
+    if (factoryValue instanceof Function) {
+        return factoryValue(_getDefaultType);
+    }
+    if (blueprint.required.includes(prop) || Math.random() >= .2) {
+        return factoryValue;
+    }
+    return;
+};
 
-    for (key in schema) {
-        isDefined = (blueprint.required.length === 0 ? 1 : Math.random()) >= .2;
-        if (schema[key] instanceof Array) {
-            tempObject[key] = [];
+let _generateObject = function (blueprint) {
+    let tempObject = {};
+    let generatedValue, formattedProp, arrayLength, i;
+
+    let dependentProps = blueprint.logic.map((logic) => logic.property.replace(/[[]/, '0').replace(/[\]]/, ''));
+
+    Object.keys(blueprint.schema).forEach((prop) => {
+        if ((/.0/g).test(prop)) {
             arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
             for (i = 0; i < arrayLength; i++) {
-                blueprint.schema = schema[key];
-                tempObject[key].push(_generateObject(blueprint)[0]);
+                formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
+                generatedValue = _generateValue(blueprint, formattedProp);
+                let newKey = prop.replace(/0/g, i);
+                generatedValue && (tempObject[newKey] = generatedValue);
+
             }
         }
-        else if (schema[key] instanceof Object) {
-            blueprint.schema = schema[key];
-            tempObject[key] = _generateObject(blueprint);
+
+        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
+        generatedValue = _generateValue(blueprint, formattedProp);
+        generatedValue && (tempObject[formattedProp] = generatedValue);
+    });
+
+    dependentProps.forEach((prop) => {
+        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '').replace(/.0$/g, '');
+        let propValue = tempObject[formattedProp];
+        if (propValue instanceof Array) {
+            propValue.forEach((prop, index) => {
+                let logicPlan = blueprint.logic.find((logic) => {
+                    return logic.property = prop;
+                });
+                let dependencies = logicPlan.dependencies.map((dep) => {
+                    return tempObject[dep.replace(/0/, index)];
+                });
+                tempObject[formattedProp][index] = logicPlan.callback.apply(null, dependencies);
+            });
         }
         else {
-            factoryValue = GeneratorFactory.getInstanceOf(schema[key]);
-            generatedValue = factoryValue instanceof Function ?  factoryValue(_getDefaultType): factoryValue;
-            tempObject[key] = isDefined || blueprint.required.indexOf(key) > -1 ? generatedValue : undefined;
+            let logicPlan = blueprint.logic.find((logic) => {
+                return logic.property = prop;
+            });
+            let dependencies = logicPlan.dependencies.map((dep) => {
+                return tempObject[dep];
+            });
+            tempObject[formattedProp] = logicPlan.callback.apply(null, dependencies);
         }
-    }
-    return tempObject;
+    });
+
+    return unflatten(tempObject);
 };
 
 let _generateData = function (blueprint) {
-    let dataConfig = {
-        schema: blueprint.schema,
-        required: blueprint.required,
-        array: blueprint.array
-    }
     let tempArray = [];
     let i;
     for (i = 0; i < blueprint.total; i++) {
-        tempArray.push(_generateObject(Object.assign({}, dataConfig)));
+        tempArray.push(_generateObject(Object.assign({}, blueprint)));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];
 };

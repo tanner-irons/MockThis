@@ -39,7 +39,7 @@ let Pets = MockThis(mockPetObject)
         }
         return 'This owner\'s name is less than 6 characters long.'
     }])
-    .and.DateFormat('hello')
+    .and.DateFormat('dd-mm-yyyy')
     .as.Object();
 console.log('Mock data generated in: ' + (performance.now() - start) + 'ms');
 console.log(Pets);

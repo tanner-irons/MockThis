@@ -24,6 +24,7 @@ MockedObject.blueprint = {
     schema: {},
     total: 1,
     required: [],
+    optional: [],
     formats: {},
     logic: [],
     array: {

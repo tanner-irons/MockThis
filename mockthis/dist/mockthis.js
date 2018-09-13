@@ -125,6 +125,7 @@ module.exports = {
 'use strict';
 
 var _ = require('lodash');
+var unflatten = require('flat').unflatten;
 
 var GeneratorFactory = require('./generators/generator.factory.js');
 var userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
@@ -140,47 +141,76 @@ var _getDefaultType = function _getDefaultType(type) {
     throw new TypeError('Nested user-defined types are not allowed.');
 };
 
-var _generateObject = function _generateObject(blueprint) {
-    var schema = blueprint.schema || {};
-    var factoryValue = void 0,
-        generatedValue = void 0,
-        arrayLength = void 0,
-        isDefined = void 0,
-        i = void 0,
-        key = void 0,
-        tempObject = {};
+var _generateValue = function _generateValue(blueprint, prop) {
+    var factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
+    if (factoryValue instanceof Function) {
+        return factoryValue(_getDefaultType);
+    }
+    if (blueprint.required.includes(prop) || Math.random() >= .2) {
+        return factoryValue;
+    }
+    return;
+};
 
-    for (key in schema) {
-        isDefined = (blueprint.required.length === 0 ? 1 : Math.random()) >= .2;
-        if (schema[key] instanceof Array) {
-            tempObject[key] = [];
+var _generateObject = function _generateObject(blueprint) {
+    var tempObject = {};
+    var generatedValue = void 0,
+        formattedProp = void 0,
+        arrayLength = void 0,
+        i = void 0;
+
+    var dependentProps = blueprint.logic.map(function (logic) {
+        return logic.property.replace(/[[]/, '0').replace(/[\]]/, '');
+    });
+
+    Object.keys(blueprint.schema).forEach(function (prop) {
+        if (/.0/g.test(prop)) {
             arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
             for (i = 0; i < arrayLength; i++) {
-                blueprint.schema = schema[key];
-                tempObject[key].push(_generateObject(blueprint)[0]);
+                formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
+                generatedValue = _generateValue(blueprint, formattedProp);
+                var newKey = prop.replace(/0/g, i);
+                generatedValue && (tempObject[newKey] = generatedValue);
             }
-        } else if (schema[key] instanceof Object) {
-            blueprint.schema = schema[key];
-            tempObject[key] = _generateObject(blueprint);
-        } else {
-            factoryValue = GeneratorFactory.getInstanceOf(schema[key]);
-            generatedValue = factoryValue instanceof Function ? factoryValue(_getDefaultType) : factoryValue;
-            tempObject[key] = isDefined || blueprint.required.indexOf(key) > -1 ? generatedValue : undefined;
         }
-    }
-    return tempObject;
+
+        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
+        generatedValue = _generateValue(blueprint, formattedProp);
+        generatedValue && (tempObject[formattedProp] = generatedValue);
+    });
+
+    dependentProps.forEach(function (prop) {
+        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '').replace(/.0$/g, '');
+        var propValue = tempObject[formattedProp];
+        if (propValue instanceof Array) {
+            propValue.forEach(function (prop, index) {
+                var logicPlan = blueprint.logic.find(function (logic) {
+                    return logic.property = prop;
+                });
+                var dependencies = logicPlan.dependencies.map(function (dep) {
+                    return tempObject[dep.replace(/0/, index)];
+                });
+                tempObject[formattedProp][index] = logicPlan.callback.apply(null, dependencies);
+            });
+        } else {
+            var logicPlan = blueprint.logic.find(function (logic) {
+                return logic.property = prop;
+            });
+            var dependencies = logicPlan.dependencies.map(function (dep) {
+                return tempObject[dep];
+            });
+            tempObject[formattedProp] = logicPlan.callback.apply(null, dependencies);
+        }
+    });
+
+    return unflatten(tempObject);
 };
 
 var _generateData = function _generateData(blueprint) {
-    var dataConfig = {
-        schema: blueprint.schema,
-        required: blueprint.required,
-        array: blueprint.array
-    };
     var tempArray = [];
     var i = void 0;
     for (i = 0; i < blueprint.total; i++) {
-        tempArray.push(_generateObject(Object.assign({}, dataConfig)));
+        tempArray.push(_generateObject(Object.assign({}, blueprint)));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];
 };
@@ -207,7 +237,7 @@ module.exports = {
     }
 };
 
-},{"./generators/generator.factory.js":2,"./generators/generator.userDef":6,"lodash":17}],8:[function(require,module,exports){
+},{"./generators/generator.factory.js":2,"./generators/generator.userDef":6,"flat":14,"lodash":17}],8:[function(require,module,exports){
 'use strict';
 
 var flatten = require('flat');
@@ -234,6 +264,7 @@ MockedObject.blueprint = {
     schema: {},
     total: 1,
     required: [],
+    optional: [],
     formats: {},
     logic: [],
     array: {
@@ -296,7 +327,7 @@ var UserDefGenerator = require('./generators/generator.userDef.js');
 
 var _multiple = function _multiple(amount) {
     if (isNaN(amount)) {
-        throw new TypeError('Multiple arguement must be a string.');
+        throw new TypeError('Multiple argument must be a string.');
     }
     this.blueprint.total = amount;
     return this;
@@ -314,6 +345,18 @@ var _required = function _required(required) {
     return this;
 };
 
+var _optional = function _optional(optional) {
+    if (!(optional instanceof Array)) {
+        throw new TypeError('Optional properties must be an array.');
+    }
+    if (this.blueprint.optional.length > 0) {
+        console.warn('Optional properties have already been declared. Please call optional method only once.');
+        return this;
+    }
+    this.blueprint.optional = optional;
+    return this;
+};
+
 var _newType = function _newType(newType, callback) {
     if (typeof newType != 'string') {
         throw new TypeError('User defined property name must be a string.');
@@ -326,16 +369,16 @@ var _newType = function _newType(newType, callback) {
 };
 
 var _dateFormat = function _dateFormat(dateFormat) {
-    if (!moment(new Date().toISOString(), dateFormat).isValid()) {
-        throw new TypeError('Date format arguement must be a valid date format.');
-    }
+    // if (!(moment((new Date()).toISOString(), dateFormat).isValid())) {
+    //     throw new TypeError('Date format argument must be a valid date format.');
+    // }
     this.blueprint.formats.date = dateFormat;
     return this;
 };
 
 var _maxArray = function _maxArray(max) {
     if (isNaN(max)) {
-        throw new TypeError('Max array arguement must be a number.');
+        throw new TypeError('Max array argument must be a number.');
     }
     this.blueprint.array.max = max;
     return this;
@@ -343,7 +386,7 @@ var _maxArray = function _maxArray(max) {
 
 var _minArray = function _minArray(min) {
     if (isNaN(min)) {
-        throw new TypeError('Max array arguement must be a number.');
+        throw new TypeError('Max array argument must be a number.');
     }
     this.blueprint.array.min = min;
     return this;
@@ -351,7 +394,7 @@ var _minArray = function _minArray(min) {
 
 var _logic = function _logic(prop, callbackArray) {
     var callback = callbackArray.pop();
-    if (!(callbackArray instanceof Function)) {
+    if (!(callback instanceof Function)) {
         throw new TypeError('Last item in callback array must be a function.');
     }
 
@@ -366,6 +409,7 @@ var _logic = function _logic(prop, callbackArray) {
 module.exports = {
     Multiple: _multiple,
     Required: _required,
+    Optional: _optional,
     NewType: _newType,
     DateFormat: _dateFormat,
     MaxArray: _maxArray,
