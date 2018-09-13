@@ -33,7 +33,8 @@ let Pets = MockThis(mockPetObject)
             quantity: quantity
         }
     })
-    .with.Logic('owner.description', ['owner.firstName', (firstName) => {
+    .with.Logic('owner.description', ['owner.firstName', (firstName, defaultValue) => {
+        console.log(defaultValue);
         if (firstName.length >= 6) {
             return 'This owners name is over 6 characters long.'
         }

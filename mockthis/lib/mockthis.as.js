@@ -34,6 +34,7 @@ let _generateObject = function (blueprint) {
 
     let dependentProps = blueprint.logic.map((logic) => logic.property.replace(/[[]/, '0').replace(/[\]]/, ''));
 
+    //TODO: Sort properties based on dependant properties to avoid looping through dependencies twice.
     Object.keys(blueprint.schema).forEach((prop) => {
         if ((/.0/g).test(prop)) {
             arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
@@ -62,6 +63,7 @@ let _generateObject = function (blueprint) {
                 let dependencies = logicPlan.dependencies.map((dep) => {
                     return tempObject[dep.replace(/0/, index)];
                 });
+                dependencies.push(propValue);
                 tempObject[formattedProp][index] = logicPlan.callback.apply(null, dependencies);
             });
         }
@@ -72,6 +74,7 @@ let _generateObject = function (blueprint) {
             let dependencies = logicPlan.dependencies.map((dep) => {
                 return tempObject[dep];
             });
+            dependencies.push(propValue);
             tempObject[formattedProp] = logicPlan.callback.apply(null, dependencies);
         }
     });
