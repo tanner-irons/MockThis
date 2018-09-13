@@ -1,8 +1,8 @@
 'use strict';
 
 let _ = require('lodash');
-let GeneratorFactory = require('./generators/generator.factory.js');
 
+let GeneratorFactory = require('./generators/generator.factory.js');
 let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
 
 let _getArrayLength = function(min, max) {
@@ -14,7 +14,7 @@ let _getDefaultType = function(type) {
         return GeneratorFactory.getInstanceOf(type);
     }
     throw new TypeError('Nested user-defined types are not allowed.');
-}
+};
 
 let _generateObject = function (blueprint) {
     let schema = blueprint.schema || {};
@@ -61,8 +61,8 @@ module.exports = {
     Object: function () {
         return _generateData(this.blueprint);
     },
-    JSON: function () {
-        return JSON.stringify(_generateData(this.blueprint));
+    JSON: function (replacer, space) {
+        return JSON.stringify(_generateData(this.blueprint), replacer, space);
     },
     Lodash: function () {
         return _.chain(_generateData(this.blueprint));

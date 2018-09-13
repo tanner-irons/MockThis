@@ -1,5 +1,7 @@
 'use strict';
 
+let flatten = require('flat');
+
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 
@@ -11,7 +13,7 @@ function MockedObject() {
         if (!(_schema instanceof Object) || _schema instanceof Array) {
             throw new TypeError('Provided schema should be a valid object literal.');
         }
-        this.blueprint.schema = _schema;
+        this.blueprint.schema = flatten(_schema);
         return this;
     }).apply(MockedObject, arguments);
 }
@@ -23,6 +25,7 @@ MockedObject.blueprint = {
     total: 1,
     required: [],
     formats: {},
+    logic: [],
     array: {
         min: 1,
         max: 10
