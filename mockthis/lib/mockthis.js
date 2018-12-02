@@ -45,6 +45,7 @@ MockedObject.with = MockedObject.and = {
     MinArray: With.MinArray.bind(MockedObject),
     Required: With.Required.bind(MockedObject),
     NewType: With.NewType.bind(MockedObject),
+    NewRandom: With.NewRandom.bind(MockedObject),
     DateFormat: With.DateFormat.bind(MockedObject),
     Logic: With.Logic.bind(MockedObject)
 };

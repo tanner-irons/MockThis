@@ -2,10 +2,15 @@
 
 let Chance = new (require('chance'))();
 
-let _animal = function () {
+let _getAnimal = () => {
     return Chance.animal();
 };
 
+let _getPhoneNumber = () => {
+    return Chance.phone();
+}
+
 module.exports = {
-    Animal: _animal
+    Animal: _getAnimal,
+    PhoneNumber: _getPhoneNumber
 }

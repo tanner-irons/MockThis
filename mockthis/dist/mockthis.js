@@ -16,15 +16,17 @@ module.exports = {
     Birthday: _getBirthday
 };
 
-},{"chance":13}],2:[function(require,module,exports){
+},{"chance":15}],2:[function(require,module,exports){
 'use strict';
 
 var Types = require('../mockthis.types.js');
 var StringGenerator = require('./generator.string.js');
 var NumberGenerator = require('./generator.number.js');
 var NameGenerator = require('./generator.name.js');
+var LocationGenerator = require('./generator.location');
 var DateGenerator = require('./generator.date.js');
 var UserDefGenerator = require('./generator.userDef.js');
+var MiscGenerator = require('./generator.misc');
 
 module.exports = {
     getInstanceOf: function getInstanceOf(type) {
@@ -37,6 +39,18 @@ module.exports = {
                 return StringGenerator.Sentence();
             case Types.Text.Paragraph:
                 return StringGenerator.Paragraph();
+            case Types.Location.Address:
+                return LocationGenerator.Address();
+            case Types.Location.City:
+                return LocationGenerator.City();
+            case Types.Location.Coordinates:
+                return LocationGenerator.Coordinates();
+            case Types.Location.State:
+                return LocationGenerator.State();
+            case Types.Location.ZipCode:
+                return LocationGenerator.ZipCode();
+            case Types.PhoneNumber:
+                return MiscGenerator.PhoneNumber();
             case Types.Number:
                 return NumberGenerator.Number();
             case Types.Name.First:
@@ -53,7 +67,58 @@ module.exports = {
     }
 };
 
-},{"../mockthis.types.js":9,"./generator.date.js":1,"./generator.name.js":3,"./generator.number.js":4,"./generator.string.js":5,"./generator.userDef.js":6}],3:[function(require,module,exports){
+},{"../mockthis.types.js":11,"./generator.date.js":1,"./generator.location":3,"./generator.misc":4,"./generator.name.js":5,"./generator.number.js":6,"./generator.string.js":7,"./generator.userDef.js":8}],3:[function(require,module,exports){
+'use strict';
+
+var Chance = new (require('chance'))();
+
+var _getCity = function _getCity() {
+    return Chance.city();
+};
+
+var _getState = function _getState() {
+    return Chance.state({ country: 'us', 'full': true });
+};
+
+var _getCoordinates = function _getCoordinates() {
+    return Chance.coordinates();
+};
+
+var _getZipCode = function _getZipCode() {
+    return Chance.zip();
+};
+
+var _getAddress = function _getAddress() {
+    return Chance.address();
+};
+
+module.exports = {
+    Address: _getAddress,
+    City: _getCity,
+    Coordinates: _getCoordinates,
+    State: _getState,
+    ZipCode: _getZipCode
+};
+
+},{"chance":15}],4:[function(require,module,exports){
+'use strict';
+
+var Chance = new (require('chance'))();
+
+var _getAnimal = function _getAnimal() {
+    return Chance.animal();
+};
+
+var _getPhoneNumber = function _getPhoneNumber() {
+    return Chance.phone();
+};
+
+module.exports = {
+    Animal: _getAnimal,
+    PhoneNumber: _getPhoneNumber
+};
+
+},{"chance":15}],5:[function(require,module,exports){
 'use strict';
 
 var Chance = new (require('chance'))();
@@ -71,7 +136,7 @@ module.exports = {
     Last: _getLastName
 };
 
-},{"chance":13}],4:[function(require,module,exports){
+},{"chance":15}],6:[function(require,module,exports){
 'use strict';
 
 var Chance = new (require('chance'))();
@@ -84,7 +149,7 @@ module.exports = {
     Number: _getNumber
 };
 
-},{"chance":13}],5:[function(require,module,exports){
+},{"chance":15}],7:[function(require,module,exports){
 'use strict';
 
 var Chance = new (require('chance'))();
@@ -107,7 +172,7 @@ module.exports = {
     Paragraph: _getParagraph
 };
 
-},{"chance":13}],6:[function(require,module,exports){
+},{"chance":15}],8:[function(require,module,exports){
 'use strict';
 
 var userDefTypes = {};
@@ -121,32 +186,38 @@ module.exports = {
     userDefTypes: userDefTypes
 };
 
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 var _ = require('lodash');
 var unflatten = require('flat').unflatten;
 
 var GeneratorFactory = require('./generators/generator.factory.js');
-var userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
+// let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
 
 var _getArrayLength = function _getArrayLength(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var _getDefaultType = function _getDefaultType(type) {
-    if (!userDefinedTypes[type]) {
-        return GeneratorFactory.getInstanceOf(type);
-    }
-    throw new TypeError('Nested user-defined types are not allowed.');
+var _getDefaultType = function _getDefaultType(callingName) {
+    return function (type) {
+        if (callingName && callingName === type) {
+            throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
+        }
+        var instance = GeneratorFactory.getInstanceOf(type);
+        if (instance instanceof Function) {
+            return instance();
+        }
+        return instance;
+    };
 };
 
 var _generateValue = function _generateValue(blueprint, prop) {
     var factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
     if (factoryValue instanceof Function) {
-        return factoryValue(_getDefaultType);
+        return factoryValue(_getDefaultType(factoryValue.userType));
     }
-    if (blueprint.required.includes(prop) || Math.random() >= .2) {
+    if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
         return factoryValue;
     }
     return;
@@ -240,7 +311,7 @@ module.exports = {
     }
 };
 
-},{"./generators/generator.factory.js":2,"./generators/generator.userDef":6,"flat":14,"lodash":17}],8:[function(require,module,exports){
+},{"./generators/generator.factory.js":2,"flat":16,"lodash":19}],10:[function(require,module,exports){
 'use strict';
 
 var flatten = require('flat');
@@ -288,13 +359,14 @@ MockedObject.with = MockedObject.and = {
     MinArray: With.MinArray.bind(MockedObject),
     Required: With.Required.bind(MockedObject),
     NewType: With.NewType.bind(MockedObject),
+    NewRandom: With.NewRandom.bind(MockedObject),
     DateFormat: With.DateFormat.bind(MockedObject),
     Logic: With.Logic.bind(MockedObject)
 };
 
 module.exports = MockedObject;
 
-},{"./mockthis.as.js":7,"./mockthis.types.js":9,"./mockthis.with.js":10,"flat":14}],9:[function(require,module,exports){
+},{"./mockthis.as.js":9,"./mockthis.types.js":11,"./mockthis.with.js":12,"flat":16}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -315,13 +387,19 @@ module.exports = {
         First: 'First',
         Last: 'Last'
     },
-    Address: 'Address',
-    Phone: 'Phone',
+    Location: {
+        Address: 'Address',
+        City: 'City',
+        Coordinates: 'Coordinates',
+        State: 'State',
+        ZipCode: 'ZipCode'
+    },
+    PhoneNumber: 'PhoneNumber',
     Email: 'Email',
     NewType: 'NewType'
 };
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var moment = require('moment');
@@ -330,7 +408,7 @@ var UserDefGenerator = require('./generators/generator.userDef.js');
 
 var _multiple = function _multiple(amount) {
     if (isNaN(amount)) {
-        throw new TypeError('Multiple argument must be a string.');
+        throw new TypeError('Multiple argument must be an integer.');
     }
     this.blueprint.total = amount;
     return this;
@@ -367,8 +445,17 @@ var _newType = function _newType(newType, callback) {
     if (!(callback instanceof Function)) {
         throw new TypeError('User defined property callback must be a function.');
     }
+    callback.userType = newType;
     UserDefGenerator.addType(newType, callback);
     return this;
+};
+
+var _newRandom = function _newRandom(newRandom, items) {
+    var randomCallback = function randomCallback() {
+        var random = Math.floor(Math.random() * items.length);
+        return items[random];
+    };
+    return _newType.call(this, newRandom, randomCallback);
 };
 
 var _dateFormat = function _dateFormat(dateFormat) {
@@ -414,13 +501,14 @@ module.exports = {
     Required: _required,
     Optional: _optional,
     NewType: _newType,
+    NewRandom: _newRandom,
     DateFormat: _dateFormat,
     MaxArray: _maxArray,
     MinArray: _minArray,
     Logic: _logic
 };
 
-},{"./generators/generator.userDef.js":6,"moment":18}],11:[function(require,module,exports){
+},{"./generators/generator.userDef.js":8,"moment":20}],13:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -538,7 +626,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2276,7 +2364,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":11,"ieee754":16}],13:[function(require,module,exports){
+},{"base64-js":13,"ieee754":18}],15:[function(require,module,exports){
 (function (Buffer){
 //  Chance.js 1.0.13
 //  http://chancejs.com
@@ -9659,7 +9747,7 @@ function numberIsNaN (obj) {
 })();
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":12}],14:[function(require,module,exports){
+},{"buffer":14}],16:[function(require,module,exports){
 var isBuffer = require('is-buffer')
 
 module.exports = flatten
@@ -9771,7 +9859,7 @@ function unflatten (target, opts) {
   return result
 }
 
-},{"is-buffer":15}],15:[function(require,module,exports){
+},{"is-buffer":17}],17:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -9784,7 +9872,7 @@ module.exports = function isBuffer (obj) {
     typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -9870,7 +9958,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -26971,7 +27059,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -31479,5 +31567,5 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 })));
 
-},{}]},{},[8])(8)
+},{}]},{},[10])(10)
 });

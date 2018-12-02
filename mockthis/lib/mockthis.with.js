@@ -6,7 +6,7 @@ let UserDefGenerator = require('./generators/generator.userDef.js');
 
 let _multiple = function (amount) {
     if (isNaN(amount)) {
-        throw new TypeError('Multiple argument must be a string.')
+        throw new TypeError('Multiple argument must be an integer.')
     }
     this.blueprint.total = amount;
     return this;
@@ -43,8 +43,17 @@ let _newType = function (newType, callback) {
     if (!(callback instanceof Function)) {
         throw new TypeError('User defined property callback must be a function.')
     }
+    callback.userType = newType;
     UserDefGenerator.addType(newType, callback);
     return this;
+};
+
+let _newRandom = function(newRandom, items) {
+    let randomCallback = function() {
+        let random = Math.floor(Math.random() * items.length);
+        return items[random]
+    }
+    return _newType.call(this, newRandom, randomCallback);
 };
 
 let _dateFormat = function (dateFormat) {
@@ -90,6 +99,7 @@ module.exports = {
     Required: _required,
     Optional: _optional,
     NewType: _newType,
+    NewRandom: _newRandom,
     DateFormat: _dateFormat,
     MaxArray: _maxArray,
     MinArray: _minArray,

@@ -4,25 +4,31 @@ let _ = require('lodash');
 let unflatten = require('flat').unflatten;
 
 let GeneratorFactory = require('./generators/generator.factory.js');
-let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
+// let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
 
 let _getArrayLength = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
 };
 
-let _getDefaultType = function (type) {
-    if (!userDefinedTypes[type]) {
-        return GeneratorFactory.getInstanceOf(type);
+let _getDefaultType = function (callingName) {
+    return function (type) {
+        if (callingName && callingName === type) {
+            throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
+        }
+        let instance = GeneratorFactory.getInstanceOf(type);
+        if (instance instanceof Function) {
+            return instance();
+        }
+        return instance;
     }
-    throw new TypeError('Nested user-defined types are not allowed.');
-};
+}
 
 let _generateValue = function (blueprint, prop) {
     let factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
     if (factoryValue instanceof Function) {
-        return factoryValue(_getDefaultType);
+        return factoryValue(_getDefaultType(factoryValue.userType));
     }
-    if (blueprint.required.includes(prop) || Math.random() >= .2) {
+    if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
         return factoryValue;
     }
     return;

@@ -18,8 +18,14 @@ module.exports = {
         First: 'First',
         Last: 'Last'
     },
-    Address: 'Address',
-    Phone: 'Phone',
+    Location: {
+        Address: 'Address',
+        City: 'City',
+        Coordinates: 'Coordinates',
+        State: 'State',
+        ZipCode: 'ZipCode'
+    },
+    PhoneNumber: 'PhoneNumber',
     Email: 'Email',
     NewType: 'NewType'
 };
