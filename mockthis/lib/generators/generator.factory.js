@@ -11,6 +11,7 @@ let MiscGenerator = require('./generator.misc');
 
 module.exports = {
     getInstanceOf: function (type) {
+        if (!type) return null;
         switch (type) {
             case Types.String:
                 return StringGenerator.Sentence();

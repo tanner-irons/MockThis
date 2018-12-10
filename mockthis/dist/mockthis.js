@@ -191,6 +191,7 @@ module.exports = {
 
 var _ = require('lodash');
 var unflatten = require('flat').unflatten;
+var topsort = require('topsort');
 
 var GeneratorFactory = require('./generators/generator.factory.js');
 // let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
@@ -205,75 +206,72 @@ var _getDefaultType = function _getDefaultType(callingName) {
             throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
         }
         var instance = GeneratorFactory.getInstanceOf(type);
-        if (instance instanceof Function) {
-            return instance();
-        }
-        return instance;
+        return instance instanceof Function ? instance() : instance;
     };
 };
 
-var _generateValue = function _generateValue(blueprint, prop) {
-    var factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
-    if (factoryValue instanceof Function) {
-        return factoryValue(_getDefaultType(factoryValue.userType));
+var _generateValue = function _generateValue(blueprint, prop, tempObject) {
+    var item = blueprint.schema.find(function (item) {
+        return item.property === prop;
+    });
+    if (item.dependencies.length < 1) {
+        var factoryValue = GeneratorFactory.getInstanceOf(item.type);
+        if (factoryValue instanceof Function) {
+            return factoryValue(_getDefaultType(factoryValue.userType));
+        }
+        if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
+            return factoryValue;
+        }
+    } else {
+        var _factoryValue = GeneratorFactory.getInstanceOf(item.property);
+        var dependencies = item.dependencies.map(function (dep) {
+            return tempObject[dep];
+        });
+        return _factoryValue.apply(null, dependencies);
     }
-    if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
-        return factoryValue;
-    }
+
     return;
+};
+
+var _sortSchema = function _sortSchema(blueprint) {
+    var deps = [];
+    blueprint.schema.forEach(function (prop) {
+        if (prop.dependencies.length > 0) {
+            prop.dependencies.forEach(function (dep) {
+                return deps.push([dep, prop.property]);
+            });
+        } else {
+            deps.push([prop.property]);
+        }
+    });
+    var sortedDeps = topsort(deps);
+    var sortedSchema = sortedDeps.map(function (dep) {
+        return blueprint.schema.find(function (item) {
+            return item.property === dep;
+        });
+    });
+
+    return sortedSchema;
 };
 
 var _generateObject = function _generateObject(blueprint) {
     var tempObject = {};
     var generatedValue = void 0,
-        formattedProp = void 0,
         arrayLength = void 0,
         i = void 0;
+    var sortedSchema = _sortSchema(blueprint);
 
-    var dependentProps = blueprint.logic.map(function (logic) {
-        return logic.property.replace(/[[]/, '0').replace(/[\]]/, '');
-    });
-
-    //TODO: Sort properties based on dependant properties to avoid looping through dependencies twice.
-    Object.keys(blueprint.schema).forEach(function (prop) {
-        if (/.0/g.test(prop)) {
-            arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
+    sortedSchema.forEach(function (prop) {
+        if (/.0/g.test(prop.property)) {
+            arrayLength = blueprint.array.min !== blueprint.array.max ? _getArrayLength(blueprint.array.min, blueprint.array.max) : blueprint.array.min;
             for (i = 0; i < arrayLength; i++) {
-                formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
-                generatedValue = _generateValue(blueprint, formattedProp);
-                var newKey = prop.replace(/0/g, i);
+                generatedValue = _generateValue(blueprint, prop.property, tempObject);
+                var newKey = prop.property.replace(/0/g, i);
                 generatedValue && (tempObject[newKey] = generatedValue);
             }
-        }
-
-        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
-        generatedValue = _generateValue(blueprint, formattedProp);
-        generatedValue && (tempObject[formattedProp] = generatedValue);
-    });
-
-    dependentProps.forEach(function (prop) {
-        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '').replace(/.0$/g, '');
-        var propValue = tempObject[formattedProp];
-        if (propValue instanceof Array) {
-            propValue.forEach(function (prop, index) {
-                var logicPlan = blueprint.logic.find(function (logic) {
-                    return logic.property = prop;
-                });
-                var dependencies = logicPlan.dependencies.map(function (dep) {
-                    return tempObject[dep.replace(/0/, index)];
-                });
-                dependencies.push(propValue);
-                tempObject[formattedProp][index] = logicPlan.callback.apply(null, dependencies);
-            });
         } else {
-            var logicPlan = blueprint.logic.find(function (logic) {
-                return logic.property = prop;
-            });
-            var dependencies = logicPlan.dependencies.map(function (dep) {
-                return tempObject[dep];
-            });
-            dependencies.push(propValue);
-            tempObject[formattedProp] = logicPlan.callback.apply(null, dependencies);
+            generatedValue = _generateValue(blueprint, prop.property, tempObject);
+            generatedValue && (tempObject[prop.property] = generatedValue);
         }
     });
 
@@ -283,7 +281,8 @@ var _generateObject = function _generateObject(blueprint) {
 var _generateData = function _generateData(blueprint) {
     var tempArray = [];
     var i = void 0;
-    for (i = 0; i < blueprint.total; i++) {
+    var arrayLength = blueprint.total.min !== blueprint.total.max ? _getArrayLength(blueprint.total.min, blueprint.total.max) : blueprint.total.min;
+    for (i = 0; i < arrayLength; i++) {
         tempArray.push(_generateObject(Object.assign({}, blueprint)));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];
@@ -311,7 +310,7 @@ module.exports = {
     }
 };
 
-},{"./generators/generator.factory.js":2,"flat":16,"lodash":19}],10:[function(require,module,exports){
+},{"./generators/generator.factory.js":2,"flat":16,"lodash":19,"topsort":21}],10:[function(require,module,exports){
 'use strict';
 
 var flatten = require('flat');
@@ -327,7 +326,14 @@ function MockedObject() {
         if (!(_schema instanceof Object) || _schema instanceof Array) {
             throw new TypeError('Provided schema should be a valid object literal.');
         }
-        this.blueprint.schema = flatten(_schema);
+        var flatSchema = flatten(_schema);
+        this.blueprint.schema = Object.keys(flatSchema).map(function (prop) {
+            return {
+                property: prop,
+                type: flatSchema[prop],
+                dependencies: []
+            };
+        });
         return this;
     }.apply(MockedObject, arguments);
 }
@@ -335,8 +341,8 @@ function MockedObject() {
 MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
-    schema: {},
-    total: 1,
+    schema: null,
+    total: { min: 1, max: 1 },
     required: [],
     optional: [],
     formats: {},
@@ -355,8 +361,7 @@ MockedObject.as = {
 
 MockedObject.with = MockedObject.and = {
     Multiple: With.Multiple.bind(MockedObject),
-    MaxArray: With.MaxArray.bind(MockedObject),
-    MinArray: With.MinArray.bind(MockedObject),
+    ArrayLength: With.ArrayLength.bind(MockedObject),
     Required: With.Required.bind(MockedObject),
     NewType: With.NewType.bind(MockedObject),
     NewRandom: With.NewRandom.bind(MockedObject),
@@ -396,7 +401,8 @@ module.exports = {
     },
     PhoneNumber: 'PhoneNumber',
     Email: 'Email',
-    NewType: 'NewType'
+    NewType: 'NewType',
+    Dependent: 'Dependent'
 };
 
 },{}],12:[function(require,module,exports){
@@ -406,11 +412,11 @@ var moment = require('moment');
 
 var UserDefGenerator = require('./generators/generator.userDef.js');
 
-var _multiple = function _multiple(amount) {
+var _multiple = function _multiple(amount, max) {
     if (isNaN(amount)) {
         throw new TypeError('Multiple argument must be an integer.');
     }
-    this.blueprint.total = amount;
+    this.blueprint.total = { min: amount, max: max || amount };
     return this;
 };
 
@@ -466,19 +472,14 @@ var _dateFormat = function _dateFormat(dateFormat) {
     return this;
 };
 
-var _maxArray = function _maxArray(max) {
+var _arrayLength = function _arrayLength(min, max) {
     if (isNaN(max)) {
         throw new TypeError('Max array argument must be a number.');
     }
-    this.blueprint.array.max = max;
-    return this;
-};
-
-var _minArray = function _minArray(min) {
-    if (isNaN(min)) {
-        throw new TypeError('Max array argument must be a number.');
-    }
-    this.blueprint.array.min = min;
+    this.blueprint.array = {
+        min: min,
+        max: max || min
+    };
     return this;
 };
 
@@ -488,11 +489,19 @@ var _logic = function _logic(prop, callbackArray) {
         throw new TypeError('Last item in callback array must be a function.');
     }
 
-    this.blueprint.logic.push({
-        property: prop,
-        dependencies: callbackArray,
-        callback: callback
+    var item = this.blueprint.schema.find(function (item) {
+        return item.property === prop || item.property === prop + '.0';
     });
+    if (!item) {
+        throw new Error('Property ' + item.property + ' does not exist');
+    }
+    if (/.0/g.test(item.property)) {
+        UserDefGenerator.addType(prop + '.0', callback);
+    } else {
+        UserDefGenerator.addType(prop, callback);
+    }
+    callbackArray.length && (item.dependencies = callbackArray);
+
     return this;
 };
 
@@ -503,8 +512,7 @@ module.exports = {
     NewType: _newType,
     NewRandom: _newRandom,
     DateFormat: _dateFormat,
-    MaxArray: _maxArray,
-    MinArray: _minArray,
+    ArrayLength: _arrayLength,
     Logic: _logic
 };
 
@@ -31566,6 +31574,118 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
     return hooks;
 
 })));
+
+},{}],21:[function(require,module,exports){
+/*
+* @author Samuel Neff (https://github.com/samuelneff)
+*
+* based almost entirely on gist from
+*
+* @author SHIN Suzuki (shinout310@gmail.com)
+*
+* https://gist.github.com/shinout/1232505
+*/
+/// <reference path="../typings/node/node.d.ts" />
+var EdgeNode = (function () {
+    function EdgeNode(id) {
+        this.id = id;
+        this.afters = [];
+    }
+    return EdgeNode;
+})();
+
+function sortDesc(a, b) {
+    if (a < b)
+        return 1;
+    if (a > b)
+        return -1;
+
+    // a must be equal to b
+    return 0;
+}
+
+/**
+* general topological sort
+* @param edges : list of edges. each edge forms Array<ID,ID> e.g. [12 , 3]
+* @param options When provided with 'continueOnCircularDependency' set to true, sorting will continue even if a
+*                  circular dependency is found. The precise sort is not guaranteed.
+* @returns Array : topological sorted list of IDs
+**/
+function topsort(edges, options) {
+    var nodes = {};
+    options = options || { continueOnCircularDependency: false };
+
+    var sorted = [];
+
+    // hash: id of already visited node => true
+    var visited = {};
+
+    // 1. build data structures
+    edges.forEach(function (edge) {
+        var fromEdge = edge[0];
+        var fromStr = fromEdge.toString();
+        var fromNode;
+
+        if (!(fromNode = nodes[fromStr])) {
+            fromNode = nodes[fromStr] = new EdgeNode(fromEdge);
+        }
+
+        edge.forEach(function (toEdge) {
+            // since from and to are in same array, we'll always see from again, so make sure we skip it..
+            if (toEdge == fromEdge) {
+                return;
+            }
+
+            var toEdgeStr = toEdge.toString();
+
+            if (!nodes[toEdgeStr]) {
+                nodes[toEdgeStr] = new EdgeNode(toEdge);
+            }
+            fromNode.afters.push(toEdge);
+        });
+    });
+
+    // 2. topological sort
+    var keys = Object.keys(nodes);
+    keys.sort(sortDesc);
+    keys.forEach(function visit(idstr, ancestorsIn) {
+        var node = nodes[idstr];
+        var id = node.id;
+
+        // if already exists, do nothing
+        if (visited[idstr]) {
+            return;
+        }
+
+        var ancestors = Array.isArray(ancestorsIn) ? ancestorsIn : [];
+
+        ancestors.push(id);
+        visited[idstr] = true;
+
+        node.afters.sort(sortDesc);
+        node.afters.forEach(function (afterID) {
+            // if already in ancestors, a closed chain exists.
+            if (ancestors.indexOf(afterID) >= 0) {
+                if (options.continueOnCircularDependency) {
+                    return;
+                }
+                throw new Error('Circular chain found: ' + id + ' must be before ' + afterID + ' due to a direct order specification, but ' + afterID + ' must be before ' + id + ' based on other specifications.');
+            }
+
+            // recursive call
+            visit(afterID.toString(), ancestors.map(function (v) {
+                return v;
+            }));
+        });
+
+        sorted.unshift(id);
+    });
+
+    return sorted;
+}
+
+module.exports = topsort;
+
 
 },{}]},{},[10])(10)
 });

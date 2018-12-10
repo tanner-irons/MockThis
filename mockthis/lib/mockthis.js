@@ -6,14 +6,21 @@ let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 
 function MockedObject() {
-    return (function(_schema) {
+    return (function (_schema) {
         if (!_schema) {
             throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
         }
         if (!(_schema instanceof Object) || _schema instanceof Array) {
             throw new TypeError('Provided schema should be a valid object literal.');
         }
-        this.blueprint.schema = flatten(_schema);
+        let flatSchema = flatten(_schema);
+        this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
+            return {
+                property: prop,
+                type: flatSchema[prop],
+                dependencies: []
+            }
+        });
         return this;
     }).apply(MockedObject, arguments);
 }
@@ -21,8 +28,11 @@ function MockedObject() {
 MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
-    schema: {},
-    total: 1,
+    schema: null,
+    total: {
+        min: 1,
+        max: 1
+    },
     required: [],
     optional: [],
     formats: {},
@@ -41,8 +51,7 @@ MockedObject.as = {
 
 MockedObject.with = MockedObject.and = {
     Multiple: With.Multiple.bind(MockedObject),
-    MaxArray: With.MaxArray.bind(MockedObject),
-    MinArray: With.MinArray.bind(MockedObject),
+    ArrayLength: With.ArrayLength.bind(MockedObject),
     Required: With.Required.bind(MockedObject),
     NewType: With.NewType.bind(MockedObject),
     NewRandom: With.NewRandom.bind(MockedObject),

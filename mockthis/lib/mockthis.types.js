@@ -27,5 +27,6 @@ module.exports = {
     },
     PhoneNumber: 'PhoneNumber',
     Email: 'Email',
-    NewType: 'NewType'
+    NewType: 'NewType',
+    Dependent: 'Dependent'
 };

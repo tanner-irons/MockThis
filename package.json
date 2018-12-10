@@ -10,7 +10,8 @@
     "chance": "^1.0.13",
     "flat": "^4.1.0",
     "lodash": "^4.17.5",
-    "moment": "^2.22.2"
+    "moment": "^2.22.2",
+    "topsort": "0.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

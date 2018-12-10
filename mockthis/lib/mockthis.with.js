@@ -4,11 +4,11 @@ let moment = require('moment');
 
 let UserDefGenerator = require('./generators/generator.userDef.js');
 
-let _multiple = function (amount) {
+let _multiple = function (amount, max) {
     if (isNaN(amount)) {
         throw new TypeError('Multiple argument must be an integer.')
     }
-    this.blueprint.total = amount;
+    this.blueprint.total = { min: amount, max: max || amount };
     return this;
 };
 
@@ -48,8 +48,8 @@ let _newType = function (newType, callback) {
     return this;
 };
 
-let _newRandom = function(newRandom, items) {
-    let randomCallback = function() {
+let _newRandom = function (newRandom, items) {
+    let randomCallback = function () {
         let random = Math.floor(Math.random() * items.length);
         return items[random]
     }
@@ -64,19 +64,17 @@ let _dateFormat = function (dateFormat) {
     return this;
 };
 
-let _maxArray = function (max) {
-    if (isNaN(max)) {
-        throw new TypeError('Max array argument must be a number.');
-    }
-    this.blueprint.array.max = max
-    return this;
-};
-
-let _minArray = function (min) {
+let _arrayLength = function (min, max) {
     if (isNaN(min)) {
+        throw new TypeError('Min array argument must be a number.');
+    }
+    if (max && isNaN(max)) {
         throw new TypeError('Max array argument must be a number.');
     }
-    this.blueprint.array.min = min
+    this.blueprint.array = {
+        min: min,
+        max: max || min
+    };
     return this;
 };
 
@@ -86,11 +84,18 @@ let _logic = function (prop, callbackArray) {
         throw new TypeError('Last item in callback array must be a function.');
     }
 
-    this.blueprint.logic.push({
-        property: prop,
-        dependencies: callbackArray,
-        callback: callback
-    });
+    let item = this.blueprint.schema.find((item) => item.property === prop || item.property === prop + '.0');
+    if (!item) {
+        throw new Error('Property ' + item.property + ' does not exist');
+    }
+    if ((/.0/g).test(item.property)) {
+        UserDefGenerator.addType(prop + '.0', callback);
+    }
+    else {
+        UserDefGenerator.addType(prop, callback);
+    }
+    callbackArray.length && (item.dependencies = callbackArray);
+
     return this;
 };
 
@@ -101,7 +106,6 @@ module.exports = {
     NewType: _newType,
     NewRandom: _newRandom,
     DateFormat: _dateFormat,
-    MaxArray: _maxArray,
-    MinArray: _minArray,
+    ArrayLength: _arrayLength,
     Logic: _logic
 }

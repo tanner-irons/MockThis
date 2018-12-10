@@ -2,6 +2,7 @@
 
 let _ = require('lodash');
 let unflatten = require('flat').unflatten;
+let topsort = require('topsort');
 
 let GeneratorFactory = require('./generators/generator.factory.js');
 // let userDefinedTypes = require('./generators/generator.userDef').userDefTypes;
@@ -16,72 +17,64 @@ let _getDefaultType = function (callingName) {
             throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
         }
         let instance = GeneratorFactory.getInstanceOf(type);
-        if (instance instanceof Function) {
-            return instance();
-        }
-        return instance;
+        return instance instanceof Function ? instance() : instance;
     }
 }
 
-let _generateValue = function (blueprint, prop) {
-    let factoryValue = GeneratorFactory.getInstanceOf(blueprint.schema[prop]);
-    if (factoryValue instanceof Function) {
-        return factoryValue(_getDefaultType(factoryValue.userType));
+let _generateValue = function (blueprint, prop, tempObject) {
+    let item = blueprint.schema.find(item => item.property === prop);
+    if (item.dependencies.length < 1) {
+        let factoryValue = GeneratorFactory.getInstanceOf(item.type);
+        if (factoryValue instanceof Function) {
+            return factoryValue(_getDefaultType(factoryValue.userType));
+        }
+        if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
+            return factoryValue;
+        }
+    } else {
+        let factoryValue = GeneratorFactory.getInstanceOf(item.property);
+        let dependencies = item.dependencies.map((dep) => {
+            return tempObject[dep];
+        });
+        return factoryValue.apply(null, dependencies);
     }
-    if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
-        return factoryValue;
-    }
+
     return;
+};
+
+let _sortSchema = (blueprint) => {
+    let deps = [];
+    blueprint.schema.forEach((prop) => {
+        if (prop.dependencies.length > 0) {
+            prop.dependencies.forEach((dep) => deps.push([dep, prop.property]));
+        } else {
+            deps.push([prop.property]);
+        }
+    });
+    let sortedDeps = topsort(deps);
+    let sortedSchema = sortedDeps.map((dep) => {
+        return blueprint.schema.find((item) => item.property === dep);
+    });
+
+    return sortedSchema;
 };
 
 let _generateObject = function (blueprint) {
     let tempObject = {};
-    let generatedValue, formattedProp, arrayLength, i;
+    let generatedValue, arrayLength, i;
+    let sortedSchema = _sortSchema(blueprint);
 
-    let dependentProps = blueprint.logic.map((logic) => logic.property.replace(/[[]/, '0').replace(/[\]]/, ''));
-
-    //TODO: Sort properties based on dependant properties to avoid looping through dependencies twice.
-    Object.keys(blueprint.schema).forEach((prop) => {
-        if ((/.0/g).test(prop)) {
-            arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
+    sortedSchema.forEach((prop) => {
+        if ((/.0/g).test(prop.property)) {
+            arrayLength = blueprint.array.min !== blueprint.array.max ? _getArrayLength(blueprint.array.min, blueprint.array.max) : blueprint.array.min;
             for (i = 0; i < arrayLength; i++) {
-                formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
-                generatedValue = _generateValue(blueprint, formattedProp);
-                let newKey = prop.replace(/0/g, i);
+                generatedValue = _generateValue(blueprint, prop.property, tempObject);
+                let newKey = prop.property.replace(/0/g, i);
                 generatedValue && (tempObject[newKey] = generatedValue);
-
             }
-        }
-
-        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '');
-        generatedValue = _generateValue(blueprint, formattedProp);
-        generatedValue && (tempObject[formattedProp] = generatedValue);
-    });
-
-    dependentProps.forEach((prop) => {
-        formattedProp = prop.replace(/[[]/, '0').replace(/[\]]/, '').replace(/.0$/g, '');
-        let propValue = tempObject[formattedProp];
-        if (propValue instanceof Array) {
-            propValue.forEach((prop, index) => {
-                let logicPlan = blueprint.logic.find((logic) => {
-                    return logic.property = prop;
-                });
-                let dependencies = logicPlan.dependencies.map((dep) => {
-                    return tempObject[dep.replace(/0/, index)];
-                });
-                dependencies.push(propValue);
-                tempObject[formattedProp][index] = logicPlan.callback.apply(null, dependencies);
-            });
-        }
-        else {
-            let logicPlan = blueprint.logic.find((logic) => {
-                return logic.property = prop;
-            });
-            let dependencies = logicPlan.dependencies.map((dep) => {
-                return tempObject[dep];
-            });
-            dependencies.push(propValue);
-            tempObject[formattedProp] = logicPlan.callback.apply(null, dependencies);
+        } else {
+            generatedValue = _generateValue(blueprint, prop.property, tempObject);
+            generatedValue && (tempObject[prop.property] = generatedValue);
         }
     });
 
@@ -91,7 +84,8 @@ let _generateObject = function (blueprint) {
 let _generateData = function (blueprint) {
     let tempArray = [];
     let i;
-    for (i = 0; i < blueprint.total; i++) {
+    let arrayLength = blueprint.total.min !== blueprint.total.max ? _getArrayLength(blueprint.total.min, blueprint.total.max) : blueprint.total.min;
+    for (i = 0; i < arrayLength; i++) {
         tempArray.push(_generateObject(Object.assign({}, blueprint)));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];

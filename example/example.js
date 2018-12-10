@@ -5,14 +5,18 @@
 
 let mockPetObject = {
     id: MockThis.Types.Number,
-    color: 'Color',
+    names: [MockThis.Types.Dependent],
     owner: {
         firstName: MockThis.Types.Name.First,
         lastName: MockThis.Types.Name.Last,
         birthday: MockThis.Types.Birthday,
-        description: MockThis.Types.Text.Paragraph
+        address: MockThis.Types.Location.Address,
+        city: MockThis.Types.Location.City,
+        state: MockThis.Types.Location.State,
+        zip: MockThis.Types.Location.ZipCode,
+        favoriteColor: 'Color',
+        bio: MockThis.Types.Dependent
     },
-    location: MockThis.Types.Location.State,
     animals: ['Animal'],
     notes: [{
         text: MockThis.Types.Text.Sentence,
@@ -26,9 +30,8 @@ let mockPetObject = {
 
 //let start = performance.now();
 let Pets = MockThis(mockPetObject)
-    .with.Multiple(200)
-    .with.MaxArray(15)
-    .with.MinArray(2)
+    .with.Multiple(100, 150)
+    .with.ArrayLength(2, 15)
     .with.NewRandom('Color', ['blue', 'red', 'purple'])
     .with.NewType('Animal', (getType) => {
         let quantity = getType(MockThis.Types.Number);
@@ -38,11 +41,13 @@ let Pets = MockThis(mockPetObject)
             color: getType('Color')
         }
     })
-    .with.Logic('owner.description', ['owner.firstName', (firstName, defaultValue) => {
-        if (firstName && firstName.length >= 6) {
-            return firstName + '\'s name is over 6 characters long.'
-        }
-        return firstName + '\'s name is less than 6 characters long.'
+    .with.Logic('owner.bio',
+        ['owner.firstName', 'owner.lastName', 'owner.birthday', 'owner.address', 'owner.city', 'owner.state', 'owner.zip', 'owner.favoriteColor',
+            (firstName, lastName, birthday, address, city, state, zip, favoriteColor) => {
+                return `${firstName} ${lastName} was born on ${birthday} and raised at ${address} ${city}, ${state} ${zip}. ${firstName}'s favorite color is ${favoriteColor}.`;
+            }])
+    .with.Logic('names', ['owner.favoriteColor', (color) => {
+        return color;
     }])
     .and.DateFormat('dd-mm-yyyy')
     .as.Object();
