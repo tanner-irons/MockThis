@@ -53,7 +53,11 @@ let _sortSchema = (blueprint) => {
     });
     let sortedDeps = topsort(deps);
     let sortedSchema = sortedDeps.map((dep) => {
-        return blueprint.schema.find((item) => item.property === dep);
+        let item = blueprint.schema.find((item) => item.property === dep);
+        if (!item) {
+            item = blueprint.schema.find((item) => item.property === dep + '.0');
+        }
+        return item;
     });
 
     return sortedSchema;

@@ -1,7 +1,5 @@
 'use strict';
 
-let moment = require('moment');
-
 let UserDefGenerator = require('./generators/generator.userDef.js');
 
 let _multiple = function (amount, max) {
