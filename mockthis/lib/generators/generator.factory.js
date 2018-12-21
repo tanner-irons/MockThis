@@ -10,10 +10,9 @@ let UserDefGenerator = require('./generator.userDef.js');
 let MiscGenerator = require('./generator.misc');
 
 let TypesMap = new Map([
-    [Types.String, StringGenerator.Sentence],
-    [Types.Text.Word, StringGenerator.Word],
-    [Types.Text.Sentence, StringGenerator.Sentence],
-    [Types.Text.Paragraph, StringGenerator.Paragraph],
+    [Types.String.Word, StringGenerator.Word],
+    [Types.String.Sentence, StringGenerator.Sentence],
+    [Types.String.Paragraph, StringGenerator.Paragraph],
     [Types.Location.Address, LocationGenerator.Address],
     [Types.Location.City, LocationGenerator.City],
     [Types.Location.Coordinates, LocationGenerator.Coordinates],
@@ -31,7 +30,7 @@ module.exports = {
     typesMap: TypesMap,
     getInstanceOf: function (type) {
         if (type) {
-            return TypesMap.has(type) ? TypesMap.get(type)() : UserDefGenerator.userDefTypes[type];
+            return TypesMap.has(type) ? TypesMap.get(type) : UserDefGenerator.userDefTypes[type];
         }
         return null;
     }

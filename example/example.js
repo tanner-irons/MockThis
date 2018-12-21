@@ -5,7 +5,7 @@
 
 let mockPetObject = {
     id: MockThis.Types.Number,
-    note: MockThis.Types.Text.Paragraph,
+    note: MockThis.Types.String.Paragraph,
     owner: {
         firstName: MockThis.Types.Name.First,
         lastName: MockThis.Types.Name.Last,
@@ -32,7 +32,7 @@ let Pets = MockThis(mockPetObject)
             birthdate: getType(MockThis.Types.Birthday),
             adoptedDate: getType(MockThis.Types.Date),
             favoriteActivity: getType('Activity'),
-            notes: getType(MockThis.Types.Text.Paragraph)
+            notes: getType(MockThis.Types.String.Paragraph)
         };
     })
     .with.Logic('owner.bio',

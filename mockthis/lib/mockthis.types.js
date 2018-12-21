@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = {
-    String: 'String',
     Number: 'Number',
     Boolean: 'Boolean',
     Date: 'Date',
@@ -9,7 +8,7 @@ module.exports = {
     Yesterday: 'Yesterday',
     Tomorrow: 'Tomorrow',
     Birthday: 'Birthday',
-    Text: {
+    String: {
         Word: 'Word',
         Sentence: 'Sentence',
         Paragraph: 'Paragraph'

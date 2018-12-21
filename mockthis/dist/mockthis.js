@@ -28,13 +28,13 @@ var DateGenerator = require('./generator.date.js');
 var UserDefGenerator = require('./generator.userDef.js');
 var MiscGenerator = require('./generator.misc');
 
-var TypesMap = new Map([[Types.String, StringGenerator.Sentence], [Types.Text.Word, StringGenerator.Word], [Types.Text.Sentence, StringGenerator.Sentence], [Types.Text.Paragraph, StringGenerator.Paragraph], [Types.Location.Address, LocationGenerator.Address], [Types.Location.City, LocationGenerator.City], [Types.Location.Coordinates, LocationGenerator.Coordinates], [Types.Location.State, LocationGenerator.State], [Types.Location.ZipCode, LocationGenerator.ZipCode], [Types.PhoneNumber, MiscGenerator.PhoneNumber], [Types.Number, NumberGenerator.Number], [Types.Name.First, NameGenerator.First], [Types.Name.Last, NameGenerator.Last], [Types.Date, DateGenerator.Date], [Types.Birthday, DateGenerator.Birthday]]);
+var TypesMap = new Map([[Types.String.Word, StringGenerator.Word], [Types.String.Sentence, StringGenerator.Sentence], [Types.String.Paragraph, StringGenerator.Paragraph], [Types.Location.Address, LocationGenerator.Address], [Types.Location.City, LocationGenerator.City], [Types.Location.Coordinates, LocationGenerator.Coordinates], [Types.Location.State, LocationGenerator.State], [Types.Location.ZipCode, LocationGenerator.ZipCode], [Types.PhoneNumber, MiscGenerator.PhoneNumber], [Types.Number, NumberGenerator.Number], [Types.Name.First, NameGenerator.First], [Types.Name.Last, NameGenerator.Last], [Types.Date, DateGenerator.Date], [Types.Birthday, DateGenerator.Birthday]]);
 
 module.exports = {
     typesMap: TypesMap,
     getInstanceOf: function getInstanceOf(type) {
         if (type) {
-            return TypesMap.has(type) ? TypesMap.get(type)() : UserDefGenerator.userDefTypes[type];
+            return TypesMap.has(type) ? TypesMap.get(type) : UserDefGenerator.userDefTypes[type];
         }
         return null;
     }
@@ -177,8 +177,7 @@ var _getDefaultType = function _getDefaultType(callingName) {
         if (callingName && callingName === type) {
             throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
         }
-        var instance = GeneratorFactory.getInstanceOf(type);
-        return instance instanceof Function ? instance() : instance;
+        return GeneratorFactory.getInstanceOf(type)();
     };
 };
 
@@ -186,14 +185,10 @@ var _generateValue = function _generateValue(blueprint, prop, tempObject) {
     var item = blueprint.schema.find(function (item) {
         return item.property === prop;
     });
-
     if (item.dependencies.length < 1) {
-        var factoryValue = GeneratorFactory.getInstanceOf(item.type);
         if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
-            if (factoryValue instanceof Function) {
-                return factoryValue(_getDefaultType(factoryValue.userType));
-            }
-            return factoryValue;
+            var factoryValue = GeneratorFactory.getInstanceOf(item.type);
+            return factoryValue(_getDefaultType(factoryValue.userType));
         }
         return null;
     }
@@ -274,7 +269,6 @@ module.exports = {
 'use strict';
 
 var flatten = require('flat');
-
 var With = require('./mockthis.with.js');
 var As = require('./mockthis.as.js');
 
@@ -308,7 +302,6 @@ MockedObject.blueprint = {
         max: 1
     },
     required: [],
-    optional: [],
     formats: {},
     logic: [],
     array: {
@@ -338,7 +331,6 @@ module.exports = MockedObject;
 'use strict';
 
 module.exports = {
-    String: 'String',
     Number: 'Number',
     Boolean: 'Boolean',
     Date: 'Date',
@@ -346,7 +338,7 @@ module.exports = {
     Yesterday: 'Yesterday',
     Tomorrow: 'Tomorrow',
     Birthday: 'Birthday',
-    Text: {
+    String: {
         Word: 'Word',
         Sentence: 'Sentence',
         Paragraph: 'Paragraph'
@@ -459,18 +451,6 @@ var _required = function _required(required) {
     return this;
 };
 
-var _optional = function _optional(optional) {
-    if (!(optional instanceof Array)) {
-        throw new TypeError('Optional properties must be an array.');
-    }
-    if (this.blueprint.optional.length > 0) {
-        console.warn('Optional properties have already been declared. Please call optional method only once.');
-        return this;
-    }
-    this.blueprint.optional = optional;
-    return this;
-};
-
 var _dateFormat = function _dateFormat(dateFormat) {
     // if (!(moment((new Date()).toISOString(), dateFormat).isValid())) {
     //     throw new TypeError('Date format argument must be a valid date format.');
@@ -482,7 +462,6 @@ var _dateFormat = function _dateFormat(dateFormat) {
 module.exports = {
     Multiple: _multiple,
     Required: _required,
-    Optional: _optional,
     NewType: _newType,
     NewRandom: _newRandom,
     DateFormat: _dateFormat,

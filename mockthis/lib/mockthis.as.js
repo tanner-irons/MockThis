@@ -13,21 +13,16 @@ let _getDefaultType = function (callingName) {
         if (callingName && callingName === type) {
             throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
         }
-        let instance = GeneratorFactory.getInstanceOf(type);
-        return instance instanceof Function ? instance() : instance;
+        return GeneratorFactory.getInstanceOf(type)();
     }
 }
 
-let _generateValue = function (blueprint, prop, tempObject) {  
+let _generateValue = function (blueprint, prop, tempObject) {
     let item = blueprint.schema.find(item => item.property === prop);
-
     if (item.dependencies.length < 1) {
-        let factoryValue = GeneratorFactory.getInstanceOf(item.type);
         if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
-            if (factoryValue instanceof Function) {
-                return factoryValue(_getDefaultType(factoryValue.userType));
-            }
-            return factoryValue;
+            let factoryValue = GeneratorFactory.getInstanceOf(item.type);
+            return factoryValue(_getDefaultType(factoryValue.userType));
         }
         return null;
     }
@@ -35,7 +30,7 @@ let _generateValue = function (blueprint, prop, tempObject) {
     let dependencies = item.dependencies.map((dep) => {
         return tempObject[dep];
     });
-    
+
     return GeneratorFactory.getInstanceOf(item.property).apply(null, dependencies);
 };
 
