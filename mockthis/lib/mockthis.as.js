@@ -78,7 +78,7 @@ let _generateData = function (blueprint) {
     let arrayLength = blueprint.total.min !== blueprint.total.max ? _getArrayLength(blueprint.total.min, blueprint.total.max) : blueprint.total.min;
     blueprint.sortedSchema = _sortSchema(blueprint);
     for (let i = 0; i < arrayLength; i++) {
-        tempArray.push(_generateObject(Object.assign({}, blueprint)));
+        tempArray.push(_generateObject(blueprint));
     }
     return tempArray.length > 1 ? tempArray : tempArray[0];
 };

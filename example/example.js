@@ -21,7 +21,7 @@ let mockPetObject = {
 
 let start = performance.now();
 let Pets = MockThis(mockPetObject)
-    .with.Multiple(100, 150)
+    .with.Multiple(100, 100)
     .with.ArrayLength(2, 15)
     .with.NewRandom('Activity', ['run', 'sleep', 'eat'])
     .with.NewType('Animal', (getType) => {

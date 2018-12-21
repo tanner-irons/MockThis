@@ -35,7 +35,6 @@ MockedObject.blueprint = {
         max: 1
     },
     required: [],
-    optional: [],
     formats: {},
     logic: [],
     array: {

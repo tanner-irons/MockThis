@@ -92,18 +92,6 @@ let _required = function (required) {
     return this;
 };
 
-let _optional = function (optional) {
-    if (!(optional instanceof Array)) {
-        throw new TypeError('Optional properties must be an array.')
-    }
-    if (this.blueprint.optional.length > 0) {
-        console.warn('Optional properties have already been declared. Please call optional method only once.');
-        return this;
-    }
-    this.blueprint.optional = optional;
-    return this;
-};
-
 let _dateFormat = function (dateFormat) {
     // if (!(moment((new Date()).toISOString(), dateFormat).isValid())) {
     //     throw new TypeError('Date format argument must be a valid date format.');
@@ -115,7 +103,6 @@ let _dateFormat = function (dateFormat) {
 module.exports = {
     Multiple: _multiple,
     Required: _required,
-    Optional: _optional,
     NewType: _newType,
     NewRandom: _newRandom,
     DateFormat: _dateFormat,
