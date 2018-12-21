@@ -5,7 +5,7 @@ let topsort = require('topsort');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _getArrayLength = function (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
+    return max && min !== max ? Math.floor(Math.random() * (max - min + 1)) + min : min
 };
 
 let _getDefaultType = function (callingName) {
@@ -53,7 +53,7 @@ let _generateObject = function (blueprint) {
     blueprint.sortedSchema.forEach((prop) => {
         let generatedValue;
         if ((/.0/g).test(prop.property)) {
-            let arrayLength = blueprint.array.min !== blueprint.array.max ? _getArrayLength(blueprint.array.min, blueprint.array.max) : blueprint.array.min;
+            let arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
             for (let i = 0; i < arrayLength; i++) {
                 generatedValue = _generateValue(blueprint, prop.property, tempObject);
                 let newKey = prop.property.replace(/0/g, i);
@@ -70,7 +70,7 @@ let _generateObject = function (blueprint) {
 
 let _generateData = function (blueprint) {
     let tempArray = [];
-    let arrayLength = blueprint.total.min !== blueprint.total.max ? _getArrayLength(blueprint.total.min, blueprint.total.max) : blueprint.total.min;
+    let arrayLength = _getArrayLength(blueprint.total.min, blueprint.total.max);
     blueprint.sortedSchema = _sortSchema(blueprint);
     for (let i = 0; i < arrayLength; i++) {
         tempArray.push(_generateObject(blueprint));
