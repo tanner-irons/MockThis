@@ -2,11 +2,11 @@
 
 let Chance = new (require('chance'))();
 
-let _getAnimal = () => {
+let _getAnimal = function () {
     return Chance.animal();
 };
 
-let _getPhoneNumber = () => {
+let _getPhoneNumber = function () {
     return Chance.phone();
 }
 

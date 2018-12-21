@@ -5,6 +5,7 @@
 
 let mockPetObject = {
     id: MockThis.Types.Number,
+    note: MockThis.Types.Text.Paragraph,
     owner: {
         firstName: MockThis.Types.Name.First,
         lastName: MockThis.Types.Name.Last,

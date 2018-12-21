@@ -11,52 +11,48 @@ let Chance = require('chance');
 
 describe('Generator Factory', function () {
 
+    beforeEach(() => {
+        spyOn(GeneratorFactory.typesMap, 'get').and.callThrough();
+    });
+
     it('should call Chance date function when getInstanceOf() is called with type of Date', function () {
-        spyOn(DateGenerator, 'Date').and.callThrough();
         let date = GeneratorFactory.getInstanceOf(Types.Date);
-        expect(DateGenerator.Date).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Date);
     });
 
     it('should call Chance birthday function when getInstanceOf() is called with type of Birthday', function () {
-        spyOn(DateGenerator, 'Birthday').and.callThrough();
         let birthday = GeneratorFactory.getInstanceOf(Types.Birthday);
-        expect(DateGenerator.Birthday).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Birthday);
     });
 
     it('should call Chance first name function when getInstanceOf() is called with type of Name.First', function () {
-        spyOn(NameGenerator, 'First').and.callThrough();
         let firstName = GeneratorFactory.getInstanceOf(Types.Name.First);
-        expect(NameGenerator.First).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Name.First);
     });
 
     it('should call Chance last name function when getInstanceOf() is called with type of Name.Last', function () {
-        spyOn(NameGenerator, 'Last').and.callThrough();
         let lastName = GeneratorFactory.getInstanceOf(Types.Name.Last);
-        expect(NameGenerator.Last).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Name.Last);
     });
 
     it('should call Chance number function when getInstanceOf() is called with type of Number', function () {
-        spyOn(NumberGenerator, 'Number').and.callThrough();
         let number = GeneratorFactory.getInstanceOf(Types.Number);
-        expect(NumberGenerator.Number).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Number);
     });
 
     it('should call Chance Word function when getInstanceOf() is called with type of Text.Word', function () {
-        spyOn(StringGenerator, 'Word').and.callThrough();
         let word = GeneratorFactory.getInstanceOf(Types.Text.Word);
-        expect(StringGenerator.Word).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Text.Word);
     });
 
     it('should call Chance Sentence function when getInstanceOf() is called with type of Text.Sentence', function () {
-        spyOn(StringGenerator, 'Sentence').and.callThrough();
         let sentence = GeneratorFactory.getInstanceOf(Types.Text.Sentence);
-        expect(StringGenerator.Sentence).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Text.Sentence);
     });
 
     it('should call Chance Paragraph function when getInstanceOf() is called with type of Text.Paragraph', function () {
-        spyOn(StringGenerator, 'Paragraph').and.callThrough();
         let paragraph = GeneratorFactory.getInstanceOf(Types.Text.Paragraph);
-        expect(StringGenerator.Paragraph).toHaveBeenCalled();
+        expect(GeneratorFactory.typesMap.get).toHaveBeenCalledWith(Types.Text.Paragraph);
     });
 
     it('should return null when getInstanceOf() is called with no type', function () {

@@ -8,12 +8,15 @@ module.exports = function (config) {
             { pattern: './tests/**/*.js' }
         ],
         preprocessors: {
-            './mockthis/build/**/*.js': ['browserify', 'coverage'],
+            './mockthis/build/**/*.js': ['browserify'],
             './tests/**/*.spec.js': ['browserify']
         },
         browserify: {
             watch: true,
-            transform: [['babelify', { presets: ['env', 'stage-3'] }]]
+            transform: [
+                ['coverageify', { ignores: [new RegExp('/tests/')] }],
+                ['babelify', { presets: ['env', 'stage-3'] }]
+            ]
         },
         reporters: ['progress', 'coverage'],
         coverageReporter: {

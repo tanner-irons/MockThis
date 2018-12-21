@@ -2,23 +2,23 @@
 
 let Chance = new (require('chance'))();
 
-let _getCity = () => {
+let _getCity = function () {
     return Chance.city();
 };
 
-let _getState = () => {
+let _getState = function () {
     return Chance.state({ country: 'us', 'full': true });
 }
 
-let _getCoordinates = () => {
+let _getCoordinates = function () {
     return Chance.coordinates();
 }
 
-let _getZipCode = () => {
+let _getZipCode = function () {
     return Chance.zip();
 }
 
-let _getAddress = () => {
+let _getAddress = function () {
     return Chance.address();
 }
 

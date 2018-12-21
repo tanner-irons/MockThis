@@ -1,6 +1,5 @@
 'use strict';
 
-let _ = require('lodash');
 let MockThis = require('../mockthis/lib/mockthis.js');
 let As =  require('../mockthis/lib/mockthis.as.js');
 

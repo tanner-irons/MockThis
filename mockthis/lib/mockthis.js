@@ -29,6 +29,7 @@ MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
     schema: null,
+    sortedSchema: null,
     total: {
         min: 1,
         max: 1
@@ -45,8 +46,7 @@ MockedObject.blueprint = {
 
 MockedObject.as = {
     JSON: As.JSON.bind(MockedObject),
-    Object: As.Object.bind(MockedObject),
-    Lodash: As.Lodash.bind(MockedObject)
+    Object: As.Object.bind(MockedObject)
 };
 
 MockedObject.with = MockedObject.and = {
