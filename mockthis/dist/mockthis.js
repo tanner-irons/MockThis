@@ -295,8 +295,8 @@ function MockedObject() {
 MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
-    schema: null,
-    sortedSchema: null,
+    schema: {},
+    sortedSchema: {},
     total: {
         min: 1,
         max: 1
@@ -331,33 +331,33 @@ module.exports = MockedObject;
 'use strict';
 
 module.exports = {
-    Number: 'Number',
-    Boolean: 'Boolean',
-    Date: 'Date',
-    Today: 'Today',
-    Yesterday: 'Yesterday',
-    Tomorrow: 'Tomorrow',
-    Birthday: 'Birthday',
+    Number: Symbol('Number'),
+    Boolean: Symbol('Boolean'),
+    Date: Symbol('Date'),
+    Today: Symbol('Today'),
+    Yesterday: Symbol('Yesterday'),
+    Tomorrow: Symbol('Tomorrow'),
+    Birthday: Symbol('Birthday'),
     String: {
-        Word: 'Word',
-        Sentence: 'Sentence',
-        Paragraph: 'Paragraph'
+        Word: Symbol('String.Word'),
+        Sentence: Symbol('String.Sentence'),
+        Paragraph: Symbol('String.Paragraph')
     },
     Name: {
-        First: 'First',
-        Last: 'Last'
+        First: Symbol('Name.First'),
+        Last: Symbol('Name.Last')
     },
     Location: {
-        Address: 'Address',
-        City: 'City',
-        Coordinates: 'Coordinates',
-        State: 'State',
-        ZipCode: 'ZipCode'
+        Address: Symbol('Location.Address'),
+        City: Symbol('Location.City'),
+        Coordinates: Symbol('Location.Coordinates'),
+        State: Symbol('Location.State'),
+        ZipCode: Symbol('Location.ZipCode')
     },
-    PhoneNumber: 'PhoneNumber',
-    Email: 'Email',
-    NewType: 'NewType',
-    Dependent: 'Dependent'
+    PhoneNumber: Symbol('PhoneNumber'),
+    Email: Symbol('Email'),
+    NewType: Symbol('NewType'),
+    Dependent: Symbol('Dependent')
 };
 
 },{}],12:[function(require,module,exports){

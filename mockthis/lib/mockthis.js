@@ -27,8 +27,8 @@ function MockedObject() {
 MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
-    schema: null,
-    sortedSchema: null,
+    schema: {},
+    sortedSchema: {},
     total: {
         min: 1,
         max: 1
