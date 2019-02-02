@@ -1,5 +1,6 @@
 'use strict';
 
+require("@babel/polyfill");
 let flatten = require('flat');
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
@@ -52,7 +53,8 @@ MockedObject.with = MockedObject.and = {
     ArrayLength: With.ArrayLength.bind(MockedObject),
     Required: With.Required.bind(MockedObject),
     NewType: With.NewType.bind(MockedObject),
-    NewRandom: With.NewRandom.bind(MockedObject),
+    Random: With.Random.bind(MockedObject),
+    Sequence: With.Sequence.bind(MockedObject),
     DateFormat: With.DateFormat.bind(MockedObject),
     Logic: With.Logic.bind(MockedObject)
 };

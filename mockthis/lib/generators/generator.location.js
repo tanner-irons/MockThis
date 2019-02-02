@@ -10,6 +10,10 @@ let _getState = function () {
     return Chance.state({ country: 'us', 'full': true });
 }
 
+let _getCountry = function() {
+    return Chance.country({ full: true });
+}
+
 let _getCoordinates = function () {
     return Chance.coordinates();
 }
@@ -26,6 +30,7 @@ module.exports = {
     Address: _getAddress,
     City: _getCity,
     Coordinates: _getCoordinates,
+    Country: _getCountry,
     State: _getState,
     ZipCode: _getZipCode
 };

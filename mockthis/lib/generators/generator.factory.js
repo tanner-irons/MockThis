@@ -18,6 +18,7 @@ let TypesMap = new Map([
     [Types.Location.Coordinates, LocationGenerator.Coordinates],
     [Types.Location.State, LocationGenerator.State],
     [Types.Location.ZipCode, LocationGenerator.ZipCode],
+    [Types.Location.Country, LocationGenerator.Country],
     [Types.PhoneNumber, MiscGenerator.PhoneNumber],
     [Types.Number, NumberGenerator.Number],
     [Types.Name.First, NameGenerator.First],

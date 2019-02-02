@@ -5,13 +5,13 @@ let topsort = require('topsort');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
 let _getArrayLength = function (min, max) {
-    return max && min !== max ? Math.floor(Math.random() * (max - min + 1)) + min : min
+    return max && min !== max ? Math.floor(Math.random() * (max - min + 1)) + min : min;
 };
 
 let _getDefaultType = function (callingName) {
     return function (type) {
         if (callingName && callingName === type) {
-            throw new TypeError('Cannot nest user-defined type: ' + type + ' inside user-defined type:' + type);
+            throw new TypeError('Cannot nest user-defined type: ' + type + ' inside of itself.');
         }
         return GeneratorFactory.getInstanceOf(type)();
     }

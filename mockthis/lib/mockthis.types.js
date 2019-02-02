@@ -22,6 +22,7 @@ module.exports = {
         City: Symbol('Location.City'),
         Coordinates: Symbol('Location.Coordinates'),
         State: Symbol('Location.State'),
+        Country: Symbol('Location.Country'),
         ZipCode: Symbol('Location.ZipCode')
     },
     PhoneNumber: Symbol('PhoneNumber'),

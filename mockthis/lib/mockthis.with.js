@@ -14,17 +14,40 @@ let _newType = function (newType, callback) {
     return this;
 };
 
-let _newRandom = function (newRandom, items) {
+let _random = function (randomName, items) {
     let randomCallback = () => {
         let random = Math.floor(Math.random() * items.length);
         return items[random]
     }
-    return _newType.call(this, newRandom, randomCallback);
+    return _newType.call(this, randomName, randomCallback);
 };
+
+let _sequence = function (sequenceName, items) {
+    let sequenceGenerator = function* () {
+        let index = 0;
+        while (true) {
+            if (!items[index]) {
+                return;
+            }
+            yield items[index];
+            index++;
+        }
+    }
+    let sequence = sequenceGenerator(items);
+
+    return _newType.call(this, sequenceName, () => {
+        let result = sequence.next();
+        if (result.done) {
+            sequence = sequenceGenerator(items);
+            return sequence.next().value;
+        }
+        return result.value;
+    });
+}
 
 let _logic = function (prop, deps) {
     if (deps instanceof Function) {
-        throw new Error('Please add depedency array or use the NewType method.');
+        throw new Error('Please add dependency array or use the NewType method.');
     }
     let callback = deps.pop();
     if (!(callback instanceof Function)) {
@@ -53,9 +76,9 @@ let _multiple = function (min, max) {
     else if (max < 0) {
         throw new Error('Max argument must be a postive integer or 0.');
     }
-    this.blueprint.total = { 
-        min: min, 
-        max: max || min 
+    this.blueprint.total = {
+        min: min,
+        max: max || min
     };
     return this;
 };
@@ -70,7 +93,7 @@ let _arrayLength = function (min, max) {
     else if (max && isNaN(max)) {
         throw new TypeError('Max argument must be a number.');
     }
-    else if (max < 0) {
+    else if (max && max < 0) {
         throw new Error('Max argument must be a postive integer or 0.');
     }
     this.blueprint.array = {
@@ -104,7 +127,8 @@ module.exports = {
     Multiple: _multiple,
     Required: _required,
     NewType: _newType,
-    NewRandom: _newRandom,
+    Random: _random,
+    Sequence: _sequence,
     DateFormat: _dateFormat,
     ArrayLength: _arrayLength,
     Logic: _logic

@@ -6,6 +6,7 @@
 let mockPetObject = {
     id: MockThis.Types.Number,
     note: MockThis.Types.String.Paragraph,
+    number: 'Num',
     owner: {
         firstName: MockThis.Types.Name.First,
         lastName: MockThis.Types.Name.Last,
@@ -23,7 +24,8 @@ let start = performance.now();
 let Pets = MockThis(mockPetObject)
     .with.Multiple(100, 100)
     .with.ArrayLength(2, 15)
-    .with.NewRandom('Activity', ['run', 'sleep', 'eat'])
+    .with.Random('Activity', ['run', 'sleep', 'eat'])
+    .with.Sequence('Num', ['1', '2', '3'])
     .with.NewType('Animal', (getType) => {
         return {
             type: chance.animal(),
@@ -35,11 +37,10 @@ let Pets = MockThis(mockPetObject)
             notes: getType(MockThis.Types.String.Paragraph)
         };
     })
-    .with.Logic('owner.bio',
-        ['owner.firstName', 'owner.lastName', 'owner.address', 'owner.city', 'owner.state', 'owner.zip', 'animals.0',
-            (firstName, lastName, address, city, state, zip, animal) => {
-                return `${firstName} ${lastName} adopted ${animal.name} on ${animal.adoptedDate}. They live at ${address} ${city}, ${state} ${zip}. ${animal.name} loves to ${animal.favoriteActivity}.`;
-            }])
+    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.address', 'owner.city', 'owner.state', 'owner.zip', 'animals.0',
+        (firstName, lastName, address, city, state, zip, animal) => {
+            return `${firstName} ${lastName} adopted ${animal.name} on ${animal.adoptedDate}. They live at ${address} ${city}, ${state} ${zip}. ${animal.name} loves to ${animal.favoriteActivity}.`;
+        }])
     .and.DateFormat('dd-mm-yyyy')
     .as.Object();
 console.log('Mock data generated in: ' + (performance.now() - start) + 'ms');

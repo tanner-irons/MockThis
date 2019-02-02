@@ -38,8 +38,9 @@ module.exports = function (grunt) {
                 options: {
                     transform: [['babelify', { presets: ['env', 'stage-3'] }]],
                     browserifyOptions: {
-                        standalone: 'MockThis'
-                    }
+                        standalone: 'MockThis',
+                        debug: true
+                    },
                 },
                 src: ['mockthis/lib/mockthis.js'],
                 dest: 'mockthis/dist/mockthis.js',
