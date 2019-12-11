@@ -1,0 +1,26 @@
+{
+ "id": 474,
+ "animal": {
+  "age": 23,
+  "type": "Helmetshrike",
+  "name": "Marc",
+  "color": "red",
+  "notes": "Ucfo cinuhoz keksag za ebinuru re tobopiz ti emaacbol vipcute ginhe tolodo jo goez bi ruimge. Ficug sewu tesiv alnilwus gi zisar koh tensadfot lewob udihuzhe fococje tansed eja. Uzuda othov velja tulefifa galug emavute fiuvec ake suulza la le wusic ozpob po.",
+  "weight": "222lbs",
+  "birthdate": "1996-05-22",
+  "adoptedDate": "2057-01-18T21:54:46.534Z",
+  "favoriteActivity": "eat"
+ },
+ "owner": {
+  "bio": "Maurice Curry adopted Marc the helmetshrike on Thu Jan 18 2057 15:54:46 GMT-0600 (Central Standard Time). They live at 780 Ojhog Pike Zigwuret, Mississippi 05731. Marc loves to eat.",
+  "birthday": "1984-03-12T13:28:41.536Z",
+  "lastName": "Curry",
+  "firstName": "Maurice",
+  "address": {
+   "zip": "05731",
+   "city": "Zigwuret",
+   "state": "Mississippi",
+   "street": "780 Ojhog Pike"
+  }
+ }
+}

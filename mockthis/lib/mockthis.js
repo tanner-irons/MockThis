@@ -1,7 +1,6 @@
 'use strict';
 
 require("@babel/polyfill");
-let flatten = require('flat');
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 

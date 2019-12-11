@@ -68,10 +68,27 @@ let _generateObject = function (blueprint) {
     return unflatten(tempObject);
 };
 
+function makeUnflat(schema) {
+    let unflat = {};
+    let keys = Object.keys(schema);
+    for (var i = 0; i < keys.length - 1; i++) {
+        let parts = keys[i].split('.');//reduceRight
+        for (var j = 0; j < parts.length - 1; j++) {
+            if (!unflat[parts[j]]) {
+                unflat[parts[j]] = {}
+                unflat = unflat[parts[j]]
+            }
+        }
+
+        unflat[parts[parts.length - 1]] = schema[keys[i]];
+    }
+    return unflat;
+}
+
 let _generateData = function (blueprint) {
     let tempArray = [];
-    let arrayLength = _getArrayLength(blueprint.total.min, blueprint.total.max);
     blueprint.sortedSchema = _sortSchema(blueprint);
+    let arrayLength = _getArrayLength(blueprint.total.min, blueprint.total.max);
     for (let i = 0; i < arrayLength; i++) {
         tempArray.push(_generateObject(blueprint));
     }
