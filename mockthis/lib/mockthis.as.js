@@ -1,6 +1,5 @@
 'use strict';
 
-let unflatten = require('flat').unflatten;
 let topsort = require('topsort');
 let GeneratorFactory = require('./generators/generator.factory.js');
 
@@ -8,12 +7,12 @@ let _getArrayLength = function (min, max) {
     return max && min !== max ? Math.floor(Math.random() * (max - min + 1)) + min : min;
 };
 
-let _getDefaultType = function (callingName) {
+let _getDefaultType = function (blueprint, callingName) {
     return function (type) {
         if (callingName && callingName === type) {
             throw new TypeError('Cannot nest user-defined type: ' + type + ' inside of itself.');
         }
-        return GeneratorFactory.getInstanceOf(type)();
+        return GeneratorFactory.getInstanceOf(type)(null, blueprint);
     }
 }
 
@@ -22,7 +21,7 @@ let _generateValue = function (blueprint, prop, tempObject) {
     if (item.dependencies.length < 1) {
         if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
             let factoryValue = GeneratorFactory.getInstanceOf(item.type);
-            return factoryValue(_getDefaultType(factoryValue.userType));
+            return factoryValue(_getDefaultType(blueprint, factoryValue.userType), blueprint);
         }
         return null;
     }
@@ -48,6 +47,24 @@ let _sortSchema = function (blueprint) {
     });
 };
 
+let makeUnflat = function (schema) {
+    let unflat = {};
+    let keys = Object.keys(schema);
+    for (let i = 0; i < keys.length; i++) {
+        let current = unflat;
+        let parts = keys[i].split('.');
+        for (let j = 0; j < parts.length - 1; j++) {
+            if (!current[parts[j]]) {
+                current[parts[j]] = {};
+            }
+            current = current[parts[j]];
+        }
+        current[parts[parts.length - 1]] = schema[keys[i]];
+    }
+    
+    return unflat;
+}
+
 let _generateObject = function (blueprint) {
     let tempObject = {};
     blueprint.sortedSchema.forEach((prop) => {
@@ -65,25 +82,8 @@ let _generateObject = function (blueprint) {
         }
     });
 
-    return unflatten(tempObject);
+    return makeUnflat(tempObject);
 };
-
-function makeUnflat(schema) {
-    let unflat = {};
-    let keys = Object.keys(schema);
-    for (var i = 0; i < keys.length - 1; i++) {
-        let parts = keys[i].split('.');//reduceRight
-        for (var j = 0; j < parts.length - 1; j++) {
-            if (!unflat[parts[j]]) {
-                unflat[parts[j]] = {}
-                unflat = unflat[parts[j]]
-            }
-        }
-
-        unflat[parts[parts.length - 1]] = schema[keys[i]];
-    }
-    return unflat;
-}
 
 let _generateData = function (blueprint) {
     let tempArray = [];

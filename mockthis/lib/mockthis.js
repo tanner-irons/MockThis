@@ -12,7 +12,7 @@ function MockedObject() {
         if (!(_schema instanceof Object) || _schema instanceof Array) {
             throw new TypeError('Provided schema should be a valid object literal.');
         }
-        // let flatSchema = flatten(_schema);
+
         let flatSchema = makeFlat(_schema);
 
         this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
@@ -26,8 +26,8 @@ function MockedObject() {
     }).apply(MockedObject, arguments);
 }
 
-function makeFlat(schema) {
-    let flat = {};
+let makeFlat = function(schema) {
+    let flattened = {};
     let stack = [{ parent: null, nodes: schema }];
 
     while (stack.length > 0) {
@@ -45,11 +45,12 @@ function makeFlat(schema) {
                 });
             }
             else {
-                flat[key] = current.nodes[keys[i]];
+                flattened[key] = current.nodes[keys[i]];
             }
         }
     }
-    return flat;
+
+    return flattened;
 }
 
 MockedObject.Types = require('./mockthis.types.js');

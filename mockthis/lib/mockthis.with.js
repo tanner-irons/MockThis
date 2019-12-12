@@ -1,6 +1,7 @@
 'use strict';
 
 let UserDefGenerator = require('./generators/generator.userDef.js');
+const moment = require('moment');
 
 let _newType = function (newType, callback) {
     if (typeof newType != 'string') {
@@ -116,9 +117,9 @@ let _required = function (required) {
 };
 
 let _dateFormat = function (dateFormat) {
-    // if (!(moment((new Date()).toISOString(), dateFormat).isValid())) {
-    //     throw new TypeError('Date format argument must be a valid date format.');
-    // }
+    if (moment().format(dateFormat).toString() === 'InvalidDate') {
+        throw new TypeError('Date format argument must be a valid date format.');
+    }
     this.blueprint.formats.date = dateFormat;
     return this;
 };

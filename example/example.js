@@ -13,16 +13,16 @@ const mockPetObject = {
     owner: {
         firstName: MockThis.Types.Name.First,
         lastName: MockThis.Types.Name.Last,
-        birthday: MockThis.Types.Birthday,
+        birthdate: MockThis.Types.Birthday,
         address: {
             street: MockThis.Types.Location.Address,
             city: MockThis.Types.Location.City,
             state: MockThis.Types.Location.State,
             zip: MockThis.Types.Location.ZipCode
         },
-        bio: MockThis.Types.Dependent
+        bio: MockThis.Types.Dependent,
+        animal: 'Animal'
     },
-    animal: 'Animal'
 };
 
 const start = performance.now();
@@ -32,7 +32,7 @@ const Pets = MockThis(mockPetObject)
     .with.Random('Activity', ['run', 'sleep', 'eat'])
     .with.Sequence('Color', ['red', 'blue', 'green', 'yellow'])
     .with.NewType('Animal', (getType) => {
-        const birthdate = moment(getType(MockThis.Types.Birthday)).format('YYYY-MM-DD');
+        const birthdate = getType(MockThis.Types.Birthday);
         const age = moment().diff(birthdate, 'year');
         const adoptedDate = getType(MockThis.Types.Date);
         return {
@@ -44,14 +44,14 @@ const Pets = MockThis(mockPetObject)
             age,
             adoptedDate,
             favoriteActivity: getType('Activity'),
-            notes: getType(MockThis.Types.String.Paragraph)
+            bio: getType(MockThis.Types.String.Paragraph)
         };
     })
-    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.address.street', 'owner.address.city', 'owner.address.state', 'owner.address.zip', 'animal',
+    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.address.street', 'owner.address.city', 'owner.address.state', 'owner.address.zip', 'owner.animal',
         (firstName, lastName, address, city, state, zip, animal) => {
             return `${firstName} ${lastName} adopted ${animal.name} the ${animal.type.toLowerCase()} on ${animal.adoptedDate}. They live at ${address} ${city}, ${state} ${zip}. ${animal.name} loves to ${animal.favoriteActivity}.`;
         }])
-    .and.DateFormat('dd-mm-yyyy')
+    .and.DateFormat('YYYY-MM-DD')
     .as.JSON(null, 1);
 
 console.log('Mock data generated in: ' + (performance.now() - start) + ' ms');

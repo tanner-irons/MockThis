@@ -1,26 +1,132 @@
-{
- "id": 474,
- "animal": {
-  "age": 23,
-  "type": "Helmetshrike",
-  "name": "Marc",
-  "color": "red",
-  "notes": "Ucfo cinuhoz keksag za ebinuru re tobopiz ti emaacbol vipcute ginhe tolodo jo goez bi ruimge. Ficug sewu tesiv alnilwus gi zisar koh tensadfot lewob udihuzhe fococje tansed eja. Uzuda othov velja tulefifa galug emavute fiuvec ake suulza la le wusic ozpob po.",
-  "weight": "222lbs",
-  "birthdate": "1996-05-22",
-  "adoptedDate": "2057-01-18T21:54:46.534Z",
-  "favoriteActivity": "eat"
+[
+ {
+  "id": 232,
+  "owner": {
+   "address": {
+    "city": "Rohtaesa",
+    "state": "Missouri",
+    "street": "1207 Ufbe Road",
+    "zip": "59816"
+   },
+   "animal": {
+    "type": "Wildcat",
+    "color": "red",
+    "name": "Gregory",
+    "weight": "221lbs",
+    "birthdate": "1983-11-19",
+    "age": 36,
+    "adoptedDate": "2086-05-22",
+    "favoriteActivity": "run",
+    "bio": "Vemib bahwis sug inu uf hubpaog letesvo ke vasig ob feulizi pogifuje avowipez toop. Zimife vasodola tiz zugcin hevcagbah nefhulog efu wufiveh uduvkej lat nuugupu beiwu vo ijgu susha ak nob wa. Hogolu jolif ricacuzoj zobe uj jil wow unbarob tolic omi cago ufe lun woztoroc. Dagu nev jazwauj ceh pu veog dektesni bemvi ka lozed co roz osevivu fa li iho."
+   },
+   "birthdate": "1987-09-27",
+   "firstName": "Hattie",
+   "lastName": "Doyle",
+   "bio": "Hattie Doyle adopted Gregory the wildcat on 2086-05-22. They live at 1207 Ufbe Road Rohtaesa, Missouri 59816. Gregory loves to run."
+  }
  },
- "owner": {
-  "bio": "Maurice Curry adopted Marc the helmetshrike on Thu Jan 18 2057 15:54:46 GMT-0600 (Central Standard Time). They live at 780 Ojhog Pike Zigwuret, Mississippi 05731. Marc loves to eat.",
-  "birthday": "1984-03-12T13:28:41.536Z",
-  "lastName": "Curry",
-  "firstName": "Maurice",
-  "address": {
-   "zip": "05731",
-   "city": "Zigwuret",
-   "state": "Mississippi",
-   "street": "780 Ojhog Pike"
+ {
+  "id": 214,
+  "owner": {
+   "address": {
+    "city": "Hirzosdab",
+    "state": "Massachusetts",
+    "street": "1124 Ibri Pass",
+    "zip": "06381"
+   },
+   "animal": {
+    "type": "Indian Gharial",
+    "color": "blue",
+    "name": "Randall",
+    "weight": "55lbs",
+    "birthdate": "1996-10-29",
+    "age": 23,
+    "adoptedDate": "2057-12-17",
+    "favoriteActivity": "run",
+    "bio": "Wupiji tenag igdec vonpafa aj jiefuvo veadep wi gokug es obufim ac tavbu ka. Zoj kuir gehi sivki ippe cezsa polidbuz pa pivi tobfi weploh bificlo mih uwgot rikfoesi. Ut vi mo ocewo nense ado sennov bow fakuzgon olfu jaw zujedu iso. Wutiz ejoohem kow un zupo ru vugzif tikodum lovigo vumeb ag gafi vavovu ficisih kibef abatoj serjop. El hi wisul rogli legcuk vugu pumin foleppap viehi he oho reduduta igolel gilzik dijdairi. Asjo ca ogize fepvap ohcetib igidid arehapepe bifobasu somwohsa gevtogap azijatfe cafowehi be lehijup uzu kekige agci."
+   },
+   "birthdate": "1998-04-17",
+   "firstName": "Ola",
+   "lastName": "Black",
+   "bio": "Ola Black adopted Randall the indian gharial on 2057-12-17. They live at 1124 Ibri Pass Hirzosdab, Massachusetts 06381. Randall loves to run."
+  }
+ },
+ {
+  "id": 305,
+  "owner": {
+   "address": {
+    "city": "Vejloco",
+    "state": "New Hampshire",
+    "street": "396 Atoik Ridge",
+    "zip": "55960"
+   },
+   "animal": {
+    "type": "Beluga Whale",
+    "color": "green",
+    "name": "Alan",
+    "weight": "144lbs",
+    "birthdate": "1956-03-26",
+    "age": 63,
+    "adoptedDate": "2113-05-04",
+    "favoriteActivity": "run",
+    "bio": "Bejmofli gigenih joka ko favufil bokzuh biezo iroghan lizgu tocbaati ofnavso duto son uj uswa uv. Huvza oradifre co hovducob nohuhirel hug luv nigirpo zib salga jioba adzor zivuv paunifa. Vusob odize kaen ok livakes zeahjal tehi ta voci ipve rirwa an ir zenaduap ocu ran. Jejvozo maktipa uperidum tezvonuv sepbevref wojakos evke penaj cak manmiweg zapmidrut vu da mosdoje edawo il. Kohdasem anhotso zitlec houradi iwupimjo kukfufju fewak haeb teig nonlefu nizpigja riklivo ihafueg. Dejjekaf lafu bebwu muwsa cel kumbi jis aculri wim ijimidju fildosu ki ko. Vawic ji hepeput saza vippahso je boscid haat zo se rafa nitis wawubaf pigopaobi sivite foscuce."
+   },
+   "birthdate": "1959-04-22",
+   "firstName": "Caroline",
+   "lastName": "Curtis",
+   "bio": "Caroline Curtis adopted Alan the beluga whale on 2113-05-04. They live at 396 Atoik Ridge Vejloco, New Hampshire 55960. Alan loves to run."
+  }
+ },
+ {
+  "id": 57,
+  "owner": {
+   "address": {
+    "city": "Hiipuzap",
+    "state": "California",
+    "street": "1680 Ohoun Center",
+    "zip": "01564"
+   },
+   "animal": {
+    "type": "Sea Lion",
+    "color": "yellow",
+    "name": "Christopher",
+    "weight": "158lbs",
+    "birthdate": "1987-01-02",
+    "age": 32,
+    "adoptedDate": "2053-08-31",
+    "favoriteActivity": "eat",
+    "bio": "Ziipozah ki ir faziz luizki ten ir kaawuha lobpo lug lob wilmuvce gu vucu mogoh hovto aloakud fivcepmi. Uftekado cijig caz mu cud kecmaofe ise wakuzfi ruvlidup daebi doze kusik owebuzke gusucesu luce fecumefij. Ozli debojus bib muso to deogi su zobvek zubizlow koabosa upa zuezi se fe kovawa. So ruufuna lalif afapo raji doku baphac sukiltan vihgema verfuf bem tal na egi. Zec jelvespuf gemcu etwirjom anubuzmos jad hozpaggi jah ce pagudti tecrad hokevo mulopi. Suk hunvag keg resolu modtamem fu apsetkez catoguji joze fuv mukwuric befpemut. Za zitu za utsa celbes cawlu sochi etitunil ga egsanbe zonpa puh iwpuk guke."
+   },
+   "birthdate": "1977-04-30",
+   "firstName": "Mason",
+   "lastName": "Copeland",
+   "bio": "Mason Copeland adopted Christopher the sea lion on 2053-08-31. They live at 1680 Ohoun Center Hiipuzap, California 01564. Christopher loves to eat."
+  }
+ },
+ {
+  "id": 487,
+  "owner": {
+   "address": {
+    "city": "Haswumi",
+    "state": "Colorado",
+    "street": "1385 Elukar Lane",
+    "zip": "70558"
+   },
+   "animal": {
+    "type": "Ratfish",
+    "color": "red",
+    "name": "Blake",
+    "weight": "82lbs",
+    "birthdate": "1997-04-26",
+    "age": 22,
+    "adoptedDate": "2095-12-25",
+    "favoriteActivity": "run",
+    "bio": "Tozap gilaif ovsi su fodleku wijiz avu awusnar ho jo nuw parre iseji be pimahi irkoguc. Ok nupup mi mo hevnog uwifovu tic kugum ojbel epenim gefbigkiv ocimevim. Nalaj hungafo dof hev fazzas topvanvis olono imepaj hor pef gelik ebewojom guwmi bi janadfu uc cofsodhe. Ajwusciz mozsotzu osuvwab uzugu duvcigohi numokaf saaz gekin mobiowi wi uropi muemi udahiace joake adejanu begkun. Pahiik nif imu benovtu ow ku pubma epaifo hain ike rabarkop nesu maknuc iwa tugirdag amum. Ti wise sahno vapajno uneju cohnadleh bid gadcik iwomamcos racohap re muefces ug ojicu comzuija. Basrusu niferjaz gucsad tep ub sanagi piuswug at bew ojes ib locrichuf rinvihe mifzejpu."
+   },
+   "birthdate": "1962-05-30",
+   "firstName": "Jay",
+   "lastName": "Young",
+   "bio": "Jay Young adopted Blake the ratfish on 2095-12-25. They live at 1385 Elukar Lane Haswumi, Colorado 70558. Blake loves to run."
   }
  }
-}
+]
