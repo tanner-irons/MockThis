@@ -47,7 +47,7 @@ let _sortSchema = function (blueprint) {
     });
 };
 
-let makeUnflat = function (schema) {
+let _makeUnflat = function (schema) {
     let unflat = {};
     let keys = Object.keys(schema);
     for (let i = 0; i < keys.length; i++) {
@@ -82,7 +82,7 @@ let _generateObject = function (blueprint) {
         }
     });
 
-    return makeUnflat(tempObject);
+    return _makeUnflat(tempObject);
 };
 
 let _generateData = function (blueprint) {
