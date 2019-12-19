@@ -1,6 +1,6 @@
 'use strict';
 
-const MockThis = require("../mockthis/dist/mockthis.js");
+const MockThis = require("../mockthis/dist/mockthis.min.js");
 const { performance } = require('perf_hooks');
 const chance = new (require("chance"))();
 const { pretty } = require('js-object-pretty-print');
