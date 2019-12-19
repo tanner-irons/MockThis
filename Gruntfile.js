@@ -36,14 +36,17 @@ module.exports = function (grunt) {
         browserify: {
             dist: {
                 options: {
-                    transform: [['babelify', { presets: ['env', 'stage-3'] }]],
+                    transform: [
+                        ['babelify', { presets: ['env', 'stage-3'] }],
+                        ['uglifyify', { global: true }]
+                    ],
                     browserifyOptions: {
                         standalone: 'MockThis',
-                        debug: true
+                        debug: false
                     },
                 },
                 src: ['mockthis/lib/mockthis.js'],
-                dest: 'mockthis/dist/mockthis.js',
+                dest: 'mockthis/dist/mockthis.min.js',
             }
         }
     });
@@ -53,6 +56,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-eslint');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.registerTask('test', ['karma']);
     grunt.registerTask('build', ['browserify']);
