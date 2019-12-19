@@ -1,106 +1,132 @@
 [
  {
-  "id": 143,
+  "id": 227,
   "owner": {
    "address": {
-    "city": "Ublumte",
-    "state": "Connecticut",
-    "street": "728 Wadom Pass",
-    "zip": "41554"
+    "city": "Katohah",
+    "state": "Massachusetts",
+    "street": "1117 Lovet Mill",
+    "zip": "30645"
    },
    "animal": {
-    "type": "Hedgehog",
+    "type": "Fin Whale",
     "color": "red",
-    "name": "Myrtie",
-    "weight": "438lbs",
-    "birthdate": "1980-02-06",
-    "age": 39,
-    "adoptedDate": "2103-07-13",
+    "name": "Callie",
+    "weight": "275lbs",
+    "birthdate": "1999-12-22",
+    "age": 19,
+    "adoptedDate": "2053-11-17",
     "favoriteActivity": "run",
-    "bio": "Mifliri dege kiri fun esacga lusisene unabaleh ojmag lik cuwanu ik mifo ke hovegjo nof owuul. Kipif ikitabi ti mo guv kuhpo iwivev me ve seosieb necosizi higlutij lizcu. Wudiz relrucdep wacipi wemwub sel tazozo ubogo wot adusa mivukudom me hogimufo nibdo mu rabeta ut."
+    "bio": "Rotgek rebrega gem vuvubebu no jatcadje kenecja ev zo zatlim ikabihe mek ifuhi rug gucedo. Wera vosgo tuoj un ufosuje kevuegu zik zeruzu sutoje epuko febezihun lufu. Cep gadra horrefhob nop maho ihweufi fulug fewadfe tezeduhi siz ac pikawi isoraer izigij. Mehmoj rorgav ku nu omar hilcipoh zazepis wa uvoab raw sonure oh zoski vit. Fe jucoje sehrac kapetfuc sigcowiz owibo mido kazi rokipde hacezos jeg ecauza uzo ziftuk fud ikfep. Vaguci ceji benol ikbuduf tu rof zawela nol nu nafagugof zu worez tihjuk meizizod ifija vor. Tabe edra wif wodhuwaw bezuvteg lovduoc hujcup wegpal be va wafzufino gem pecgutwef ge ima zepi ofbah."
    },
-   "birthdate": "1971-12-21",
-   "firstName": "Eugene",
-   "lastName": "Böhm",
-   "bio": "Eugene Böhm adopted Myrtie the hedgehog on 2103-07-13. They live at 728 Wadom Pass Ublumte, Connecticut 41554. Myrtie loves to run."
+   "birthdate": "1993-03-29",
+   "firstName": "Darrell",
+   "lastName": "Giannetti",
+   "bio": "Darrell Giannetti adopted Callie the fin whale on 2053-11-17. They live at 1117 Lovet Mill Katohah, Massachusetts 30645. Callie loves to run."
   }
  },
  {
-  "id": 150,
+  "id": 125,
   "owner": {
    "address": {
-    "city": "Goluro",
-    "state": "Missouri",
-    "street": "1803 Imza Pike",
-    "zip": "72813"
+    "city": "Ahdufa",
+    "state": "New Hampshire",
+    "street": "1527 Rujha View",
+    "zip": "09957"
    },
    "animal": {
-    "type": "Hamsters",
+    "type": "Trumpeter",
     "color": "blue",
-    "name": "Olga",
-    "weight": "398lbs",
-    "birthdate": "1987-03-21",
-    "age": 32,
-    "adoptedDate": "2090-11-16",
+    "name": "Martin",
+    "weight": "382lbs",
+    "birthdate": "1955-11-19",
+    "age": 64,
+    "adoptedDate": "2109-12-13",
     "favoriteActivity": "eat",
-    "bio": "Oto wucrom bufik lajud igtukud pacfudlu lebi be zozal fid joraz uhumion jujeluze. Unpobo ohtevtuj ekri isapec detige hu pehebo rekzu lifod wogatuw nucrerev ewwilwol cewnekje. Ve butapezub pigrikaw gem ecofom id fahonuzeb vejvicev luabumam op wabtovnid co itsid vomuhda hetufu. Nazhege zocopdut hi hib ka eraom wu sejales jim aniri wafoc deapto va difo tesevi jucamvo."
+    "bio": "Viubiti moob onagim ucewugzuf zejoza me ilesid awesilav kavvaw bomijpe objata iguoljik fisdetdac. Kiwofer gugrif emgofib orukocu suh konusi bagehi lic woacev gicusas bak folhi. Ridsoz fev boilafoz we ime zukmip buj se jelu kirog hicgovsos mudko. Edulew zasar etu fobewa hug je pi wupcolhe fop wosadka hek ravkufma iwrukip wod."
    },
-   "birthdate": "1988-12-27",
-   "firstName": "Jared",
-   "lastName": "Schaap",
-   "bio": "Jared Schaap adopted Olga the hamsters on 2090-11-16. They live at 1803 Imza Pike Goluro, Missouri 72813. Olga loves to eat."
+   "birthdate": "1973-06-27",
+   "firstName": "Tommy",
+   "lastName": "Phillips",
+   "bio": "Tommy Phillips adopted Martin the trumpeter on 2109-12-13. They live at 1527 Rujha View Ahdufa, New Hampshire 09957. Martin loves to eat."
   }
  },
  {
-  "id": 146,
+  "id": 480,
   "owner": {
    "address": {
-    "city": "Peslezej",
-    "state": "Pennsylvania",
-    "street": "1674 Cowgug Turnpike",
-    "zip": "53230"
+    "city": "Wispibin",
+    "state": "Arizona",
+    "street": "609 Pemu Avenue",
+    "zip": "02385"
    },
    "animal": {
-    "type": "Bison",
+    "type": "Buffalo",
     "color": "green",
-    "name": "Floyd",
-    "weight": "335lbs",
-    "birthdate": "1997-05-06",
-    "age": 22,
-    "adoptedDate": "2073-09-25",
-    "favoriteActivity": "sleep",
-    "bio": "Okomoso bovip mesoci ozjevzid jovmojeh utwe hibguf cunta bonokrad efekob biriaf avlizihi idujuw lewel cicwoder be vizozo efoafoowe. Cut vijzohi rejeri fepunin vew konre gaz kium sov zubsiwuc icuecru wisfu viwtem. Divam vog cijgubat vumu vo pinecig temi odureaso focosu luuvi wa wov cumzos jinto ono. Gugpo iwnepar cuwco ajsuwji civujewi lah hegpis kahha vudpeg idbec efe ewkueni kanu. Kaovous dirzic tegko suh ojajoges evaag nohah ekakiapo zihmu uz unuremas facespa cele. Ikaburi jobbis ez viaw ninuw lu dekko efidug gocampec rabjiw remi fu ez ow vul."
+    "name": "Trevor",
+    "weight": "245lbs",
+    "birthdate": "1978-08-26",
+    "age": 41,
+    "adoptedDate": "2070-07-01",
+    "favoriteActivity": "eat",
+    "bio": "Hemim ma zerajeni novu mirwe ga vecaj pekeci raftinas fumhah isugu tavas zofijji menooci wel adwi notlalpil iba. Jit nuholcel vil kovup kacuhva rokzihhar se ro ebo bihledvot dih naj awhutoz. Zot ewiti cehepcef vu dawnutac zujumfol hi bi ja abehowka wekocku imumug cuhmi kebob josadcat hidad wul viomuire. Bo gubako dedsisez fes wo newawo ajav ru je vutavez tekhac litfef ki ovfu."
    },
-   "birthdate": "1983-08-29",
-   "firstName": "Adele",
-   "lastName": "Takagi",
-   "bio": "Adele Takagi adopted Floyd the bison on 2073-09-25. They live at 1674 Cowgug Turnpike Peslezej, Pennsylvania 53230. Floyd loves to sleep."
+   "birthdate": "1996-08-20",
+   "firstName": "Lee",
+   "lastName": "Le RouxRoux",
+   "bio": "Lee Le RouxRoux adopted Trevor the buffalo on 2070-07-01. They live at 609 Pemu Avenue Wispibin, Arizona 02385. Trevor loves to eat."
   }
  },
  {
-  "id": 6,
+  "id": 112,
   "owner": {
    "address": {
-    "city": "Pubazeju",
-    "state": "Tennessee",
-    "street": "1130 Hipkif Park",
-    "zip": "17327"
+    "city": "Uhvutjo",
+    "state": "Missouri",
+    "street": "138 Bavmac Pike",
+    "zip": "90626"
    },
    "animal": {
-    "type": "Grison",
+    "type": "Whistler",
     "color": "yellow",
-    "name": "Ronnie",
-    "weight": "447lbs",
-    "birthdate": "1985-06-22",
-    "age": 34,
-    "adoptedDate": "2090-04-06",
-    "favoriteActivity": "eat",
-    "bio": "Nu ebopuwmuv kibtokcev coite conkegil tok fu kercekkol avogiru pe ed simdi itifoz niz sanrid jahewu mul lespi. Ice ufa ahde kivju fihmah zowuwig oderow mirmozom hew pibam tagog soozuh de ormere lilekhol. Jo ze vagulod lud sufvug ug foz esuhel zoam ahsessi noki unhita jajtiw tivcec niz. Abifod bosom difmukbi wivgi unipisiw pin vacjatbel zoz gejedo sinnifiwu miripom zinoja konu ze fe re gul ile."
+    "name": "Harry",
+    "weight": "16lbs",
+    "birthdate": "1993-10-11",
+    "age": 26,
+    "adoptedDate": "2037-01-31",
+    "favoriteActivity": "run",
+    "bio": "Efubocuw vi cocaggak is ehokepku zekab ifivof vihhulga lu of jur kitfij wubufu ri. Nuceklo gokba le miki arhij wawafwas atdo boseb nacorkov omedaode ak dunijiv eb musofhov al oluer. Fabowas goof te du elano pap wukonda ivwuj gefdihuf novpod nudem vohhac wihlodbiv aw."
    },
-   "birthdate": "1995-04-18",
-   "firstName": "Philip",
-   "lastName": "Saez",
-   "bio": "Philip Saez adopted Ronnie the grison on 2090-04-06. They live at 1130 Hipkif Park Pubazeju, Tennessee 17327. Ronnie loves to eat."
+   "birthdate": "1988-09-11",
+   "firstName": "Gertrude",
+   "lastName": "Romiti",
+   "bio": "Gertrude Romiti adopted Harry the whistler on 2037-01-31. They live at 138 Bavmac Pike Uhvutjo, Missouri 90626. Harry loves to run."
+  }
+ },
+ {
+  "id": 465,
+  "owner": {
+   "address": {
+    "city": "Mehheroma",
+    "state": "Wyoming",
+    "street": "1311 Cudu Road",
+    "zip": "72748"
+   },
+   "animal": {
+    "type": "Mice",
+    "color": "red",
+    "name": "Julian",
+    "weight": "255lbs",
+    "birthdate": "1980-09-26",
+    "age": 39,
+    "adoptedDate": "2079-04-13",
+    "favoriteActivity": "run",
+    "bio": "Gaw tukologi ev ogvizfu vubev veri mufod wabewozeh juzozo pap tujko mimsi ifa. Da girew ekniep tirew sul zi ebwace cam bezjuc gepba senunic fogigof sughabew. Lega ralol vedvug uh tiv jogwovvec zagvi veroejo mod atikug hebpu kofed feocuza zir hotfij wabgok podzupa. Jefilol cew rejnaruz sokujlus ulu zanip ujegace onokuifu cap ulu idego alwur pesu giguwpi mivnul. Ukre neb owazodic ravbi tugul nid ama ohifzit vo wifetzi fesafbi gus nelur buzuda goswika ehwirnu dimam nocpetel."
+   },
+   "birthdate": "1991-04-01",
+   "firstName": "Virginia",
+   "lastName": "Banks",
+   "bio": "Virginia Banks adopted Julian the mice on 2079-04-13. They live at 1311 Cudu Road Mehheroma, Wyoming 72748. Julian loves to run."
   }
  }
 ]
