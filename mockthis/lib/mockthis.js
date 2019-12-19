@@ -4,29 +4,7 @@ require("@babel/polyfill");
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
 
-function MockedObject() {
-    return (function (_schema) {
-        if (!_schema) {
-            throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
-        }
-        if (!(_schema instanceof Object) || _schema instanceof Array) {
-            throw new TypeError('Provided schema should be a valid object literal.');
-        }
-
-        let flatSchema = makeFlat(_schema);
-
-        this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
-            return {
-                property: prop,
-                type: flatSchema[prop],
-                dependencies: []
-            }
-        });
-        return this;
-    }).apply(MockedObject, arguments);
-}
-
-let makeFlat = function(schema) {
+let _makeFlat = function(schema) {
     let flattened = {};
     let stack = [{ parent: null, nodes: schema }];
 
@@ -51,6 +29,28 @@ let makeFlat = function(schema) {
     }
 
     return flattened;
+}
+
+function MockedObject() {
+    return (function (_schema) {
+        if (!_schema) {
+            throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
+        }
+        if (!(_schema instanceof Object) || _schema instanceof Array) {
+            throw new TypeError('Provided schema should be a valid object literal.');
+        }
+
+        let flatSchema = _makeFlat(_schema);
+
+        this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
+            return {
+                property: prop,
+                type: flatSchema[prop],
+                dependencies: []
+            }
+        });
+        return this;
+    }).apply(MockedObject, arguments);
 }
 
 MockedObject.Types = require('./mockthis.types.js');
