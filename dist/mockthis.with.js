@@ -14,7 +14,9 @@ require("regenerator-runtime/runtime");
 
 var UserDefGenerator = _interopRequireWildcard(require("./generators/generator.userDef.js"));
 
-var moment = _interopRequireWildcard(require("moment"));
+var _moment = _interopRequireDefault(require("moment"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
@@ -108,11 +110,11 @@ var _logic = function _logic(prop, deps) {
   }
 
   var item = this.blueprint.schema.find(function (item) {
-    return item.property === prop || item.property === prop + '.0';
+    return item.property === prop || item.property === "".concat(prop, ".0");
   });
 
   if (!item) {
-    throw new Error('Property: ' + item.property + ' does not exist');
+    throw new Error("Property: ".concat(item.property, " does not exist"));
   }
 
   _newType.call(this, prop, callback);
@@ -172,7 +174,7 @@ var _required = function _required(required) {
 };
 
 var _dateFormat = function _dateFormat(dateFormat) {
-  if (moment().format(dateFormat).toString() === 'InvalidDate') {
+  if ((0, _moment["default"])().format(dateFormat).toString() === 'InvalidDate') {
     throw new TypeError('Date format argument must be a valid date format.');
   }
 

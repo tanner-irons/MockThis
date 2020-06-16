@@ -1,23 +1,27 @@
 'use strict';
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var _chance = _interopRequireDefault(require("chance"));
 
-var chance = _interopRequireWildcard(require("chance"));
+var _moment = _interopRequireDefault(require("moment"));
 
-var moment = _interopRequireWildcard(require("moment"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+var Chance = new _chance["default"]();
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var _getDate = function _getDate(blueprint) {
+  if (blueprint && blueprint.formats && blueprint.formats.date) {
+    return (0, _moment["default"])(Chance.date(), _moment["default"].defaultFormat).format(blueprint.formats.date);
+  }
 
-var Chance = new chance();
-
-var _getDate = function _getDate(getType, blueprint) {
-  return moment(Chance.date()).format(blueprint.formats.date);
+  return (0, _moment["default"])(Chance.date(), _moment["default"].defaultFormat).format();
 };
 
-var _getBirthday = function _getBirthday(getType, blueprint) {
-  return moment(Chance.birthday()).format(blueprint.formats.date);
+var _getBirthday = function _getBirthday(blueprint) {
+  if (blueprint && blueprint.formats && blueprint.formats.date) {
+    return (0, _moment["default"])(Chance.birthday(), _moment["default"].defaultFormat).format(blueprint.formats.date);
+  }
+
+  return (0, _moment["default"])(Chance.birthday(), _moment["default"].defaultFormat).format();
 };
 
 module.exports = {

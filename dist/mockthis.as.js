@@ -46,13 +46,15 @@ require("core-js/modules/web.dom-collections.for-each");
 
 require("core-js/modules/web.dom-collections.iterator");
 
-var topsort = _interopRequireWildcard(require("topsort"));
+var _topsort = _interopRequireDefault(require("topsort"));
 
 var GeneratorFactory = _interopRequireWildcard(require("./generators/generator.factory.js"));
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -84,7 +86,7 @@ var _generateValue = function _generateValue(blueprint, prop, tempObject) {
   if (item.dependencies.length < 1) {
     if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
       var factoryValue = GeneratorFactory.getInstanceOf(item.type);
-      return factoryValue(_getDefaultType(blueprint, factoryValue.userType), blueprint);
+      return factoryValue(blueprint);
     }
 
     return null;
@@ -104,7 +106,7 @@ var _sortSchema = function _sortSchema(blueprint) {
       return acc;
     }, [[prop.property]])));
   });
-  return topsort(deps).map(function (dep) {
+  return (0, _topsort["default"])(deps).map(function (dep) {
     return blueprint.schema.find(function (item) {
       return item.property === dep || item.property === dep + '.0';
     });
