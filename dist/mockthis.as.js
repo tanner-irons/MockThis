@@ -26,8 +26,6 @@ require("core-js/modules/es.array.reduce");
 
 require("core-js/modules/es.date.to-string");
 
-require("core-js/modules/es.object.keys");
-
 require("core-js/modules/es.object.to-string");
 
 require("core-js/modules/es.regexp.exec");
@@ -40,8 +38,6 @@ require("core-js/modules/es.string.iterator");
 
 require("core-js/modules/es.string.replace");
 
-require("core-js/modules/es.string.split");
-
 require("core-js/modules/web.dom-collections.for-each");
 
 require("core-js/modules/web.dom-collections.iterator");
@@ -49,6 +45,8 @@ require("core-js/modules/web.dom-collections.iterator");
 var _topsort = _interopRequireDefault(require("topsort"));
 
 var GeneratorFactory = _interopRequireWildcard(require("./generators/generator.factory.js"));
+
+var _mockthis = require("./mockthis.utilities");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
@@ -63,20 +61,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-var _getArrayLength = function _getArrayLength(min, max) {
-  return max && min !== max ? Math.floor(Math.random() * (max - min + 1)) + min : min;
-};
-
-var _getDefaultType = function _getDefaultType(blueprint, callingName) {
-  return function (type) {
-    if (callingName && callingName === type) {
-      throw new TypeError('Cannot nest user-defined type: ' + type + ' inside of itself.');
-    }
-
-    return GeneratorFactory.getInstanceOf(type)(null, blueprint);
-  };
-};
 
 var _generateValue = function _generateValue(blueprint, prop, tempObject) {
   var item = blueprint.schema.find(function (item) {
@@ -113,35 +97,13 @@ var _sortSchema = function _sortSchema(blueprint) {
   });
 };
 
-var _makeUnflat = function _makeUnflat(schema) {
-  var unflat = {};
-  var keys = Object.keys(schema);
-
-  for (var i = 0; i < keys.length; i++) {
-    var current = unflat;
-    var parts = keys[i].split('.');
-
-    for (var j = 0; j < parts.length - 1; j++) {
-      if (!current[parts[j]]) {
-        current[parts[j]] = {};
-      }
-
-      current = current[parts[j]];
-    }
-
-    current[parts[parts.length - 1]] = schema[keys[i]];
-  }
-
-  return unflat;
-};
-
 var _generateObject = function _generateObject(blueprint) {
   var tempObject = {};
   blueprint.sortedSchema.forEach(function (prop) {
     var generatedValue;
 
     if (/.0/g.test(prop.property)) {
-      var arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
+      var arrayLength = (0, _mockthis.getRandomArrayLength)(blueprint.array.min, blueprint.array.max);
 
       for (var i = 0; i < arrayLength; i++) {
         generatedValue = _generateValue(blueprint, prop.property, tempObject);
@@ -153,14 +115,13 @@ var _generateObject = function _generateObject(blueprint) {
       generatedValue && (tempObject[prop.property] = generatedValue);
     }
   });
-  return _makeUnflat(tempObject);
+  return (0, _mockthis.makeUnflat)(tempObject);
 };
 
 var _generateData = function _generateData(blueprint) {
   var tempArray = [];
   blueprint.sortedSchema = _sortSchema(blueprint);
-
-  var arrayLength = _getArrayLength(blueprint.total.min, blueprint.total.max);
+  var arrayLength = (0, _mockthis.getRandomArrayLength)(blueprint.total.min, blueprint.total.max);
 
   for (var i = 0; i < arrayLength; i++) {
     tempArray.push(_generateObject(blueprint));
