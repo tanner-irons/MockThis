@@ -3,6 +3,7 @@
 require("@babel/polyfill");
 let With = require('./mockthis.with.js');
 let As = require('./mockthis.as.js');
+let Types = require('./mockthis.types.js');
 
 let _makeFlat = function(schema) {
     let flattened = {};
@@ -41,8 +42,7 @@ function MockedObject() {
         }
 
         let flatSchema = _makeFlat(_schema);
-
-        this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
+        this.blueprint.schema = Object.keys(flatSchema).map(prop => {
             return {
                 property: prop,
                 type: flatSchema[prop],
@@ -52,8 +52,6 @@ function MockedObject() {
         return this;
     }).apply(MockedObject, arguments);
 }
-
-MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
     schema: {},
@@ -68,7 +66,8 @@ MockedObject.blueprint = {
     array: {
         min: 1,
         max: 10
-    }
+    },
+    nullChance: .25
 };
 
 MockedObject.as = {
@@ -84,7 +83,11 @@ MockedObject.with = MockedObject.and = {
     Random: With.Random.bind(MockedObject),
     Sequence: With.Sequence.bind(MockedObject),
     DateFormat: With.DateFormat.bind(MockedObject),
-    Logic: With.Logic.bind(MockedObject)
+    Logic: With.Logic.bind(MockedObject),
+    NullChance: With.NullChance.bind(MockedObject)
 };
 
-module.exports = MockedObject;
+module.exports = {
+    MockThis: MockedObject,
+    MockedTypes: Types,
+};

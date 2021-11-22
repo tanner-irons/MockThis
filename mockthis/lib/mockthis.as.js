@@ -10,7 +10,7 @@ let _getArrayLength = function (min, max) {
 let _getDefaultType = function (blueprint, callingName) {
     return function (type) {
         if (callingName && callingName === type) {
-            throw new TypeError('Cannot nest user-defined type: ' + type + ' inside of itself.');
+            throw new TypeError(`Cannot nest user-defined type: ${type} inside of itself.`);
         }
         return GeneratorFactory.getInstanceOf(type)(null, blueprint);
     }
@@ -19,32 +19,33 @@ let _getDefaultType = function (blueprint, callingName) {
 let _generateValue = function (blueprint, prop, tempObject) {
     let item = blueprint.schema.find(item => item.property === prop);
     if (item.dependencies.length < 1) {
-        if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= .2) {
+        if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= blueprint.nullChance) {
             let factoryValue = GeneratorFactory.getInstanceOf(item.type);
             return factoryValue(_getDefaultType(blueprint, factoryValue.userType), blueprint);
         }
         return null;
     }
 
-    let dependencies = item.dependencies.map((dep) => {
-        return tempObject[dep];
-    });
-
+    let dependencies = item.dependencies.map(dep => tempObject[dep]);
     return GeneratorFactory.getInstanceOf(item.property).apply(null, dependencies);
 };
 
 let _sortSchema = function (blueprint) {
     let deps = [];
-    blueprint.schema.forEach((prop) => {
+    blueprint.schema.forEach(prop => {
         deps.push(...prop.dependencies.reduce((acc, curr) => {
+            if (prop.property.includes(curr)) {
+                throw new Error(`Property "${prop.property}" has invalid dependency "${curr}". A property cannot depend on the entirety of itself or its ancestors.`)
+            }
             acc.push([curr, prop.property]);
             return acc;
         }, [[prop.property]]));
     });
-
-    return topsort(deps).map((dep) => {
-        return blueprint.schema.find((item) => item.property === dep || item.property === dep + '.0');
-    });
+    return topsort(deps)
+        .flatMap(dep => {
+            return blueprint.schema.filter(item => (item.property.includes(dep) || item.property.includes(dep + '.0')))
+        })
+        .filter(dep => !!dep);
 };
 
 let _makeUnflat = function (schema) {
@@ -61,13 +62,13 @@ let _makeUnflat = function (schema) {
         }
         current[parts[parts.length - 1]] = schema[keys[i]];
     }
-    
+
     return unflat;
 }
 
 let _generateObject = function (blueprint) {
     let tempObject = {};
-    blueprint.sortedSchema.forEach((prop) => {
+    blueprint.sortedSchema.forEach(prop => {
         let generatedValue;
         if ((/.0/g).test(prop.property)) {
             let arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);

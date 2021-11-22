@@ -54,9 +54,9 @@ let _logic = function (prop, deps) {
     if (!(callback instanceof Function)) {
         throw new TypeError('Last argument in the dependency array must be a function.');
     }
-    let item = this.blueprint.schema.find((item) => item.property === prop || item.property === prop + '.0');
+    let item = this.blueprint.schema.find(item => item.property === prop || item.property === prop + '.0');
     if (!item) {
-        throw new Error('Property: ' + item.property + ' does not exist');
+        throw new Error(`Property: ${item.property} does not exist`);
     }
     _newType.call(this, prop, callback);
     deps.length && (item.dependencies = deps);
@@ -124,6 +124,17 @@ let _dateFormat = function (dateFormat) {
     return this;
 };
 
+let _nullChance = function (nullChance) {
+    if (isNaN(nullChance)) {
+        throw new TypeError('Null chance argument must be a number.');
+    }
+    if (nullChance < 0 || nullChance > 1) {
+        throw new Error('Null chance argument must be a number between 0 and 1.');
+    }
+    this.blueprint.nullChance = nullChance;
+    return this;
+};
+
 module.exports = {
     Multiple: _multiple,
     Required: _required,
@@ -132,5 +143,6 @@ module.exports = {
     Sequence: _sequence,
     DateFormat: _dateFormat,
     ArrayLength: _arrayLength,
-    Logic: _logic
+    Logic: _logic,
+    NullChance: _nullChance
 }

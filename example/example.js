@@ -1,6 +1,6 @@
 'use strict';
 
-const MockThis = require("../mockthis/dist/mockthis.min.js");
+const { MockThis, MockedTypes } = require("../mockthis/dist/mockthis.min.js");
 const { performance } = require('perf_hooks');
 const chance = new (require("chance"))();
 const { pretty } = require('js-object-pretty-print');
@@ -9,18 +9,18 @@ const { exec } = require('child_process');
 const moment = require('moment');
 
 const mockPetObject = {
-    id: MockThis.Types.Number,
+    id: MockedTypes.Number,
     owner: {
-        firstName: MockThis.Types.Name.First,
-        lastName: MockThis.Types.Name.Last,
-        birthdate: MockThis.Types.Birthday,
+        firstName: MockedTypes.Name.First,
+        lastName: MockedTypes.Name.Last,
+        birthdate: MockedTypes.Birthday,
         address: {
-            street: MockThis.Types.Location.Address,
-            city: MockThis.Types.Location.City,
-            state: MockThis.Types.Location.State,
-            zip: MockThis.Types.Location.ZipCode
+            street: MockedTypes.Location.Address,
+            city: MockedTypes.Location.City,
+            state: MockedTypes.Location.State,
+            zip: MockedTypes.Location.ZipCode
         },
-        bio: MockThis.Types.Dependent,
+        bio: MockedTypes.Logic,
         animal: 'Animal'
     },
 };
@@ -31,29 +31,30 @@ const Pets = MockThis(mockPetObject)
     .with.ArrayLength(1, 10)
     .with.Random('Activity', ['run', 'sleep', 'eat'])
     .with.Sequence('Color', ['red', 'blue', 'green', 'yellow'])
-    .with.NewType('Animal', (getType) => {
-        const birthdate = getType(MockThis.Types.Birthday);
+    .with.NewType('Animal', getType => {
+        const birthdate = getType(MockedTypes.Birthday);
         const age = moment().diff(birthdate, 'year');
-        const adoptedDate = getType(MockThis.Types.Date);
+        const adoptedDate = getType(MockedTypes.Date);
         return {
             type: chance.animal(),
             color: getType('Color'),
-            name: getType(MockThis.Types.Name.First),
-            weight: `${getType(MockThis.Types.Number)}lbs`,
+            name: getType(MockedTypes.Name.First),
+            weight: `${getType(MockedTypes.Number)}lbs`,
             birthdate,
             age,
             adoptedDate,
             favoriteActivity: getType('Activity'),
-            bio: getType(MockThis.Types.String.Paragraph)
+            bio: getType(MockedTypes.String.Paragraph),
+            isGoodestBoy: true
         };
     })
-    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.address.street', 'owner.address.city', 'owner.address.state', 'owner.address.zip', 'owner.animal',
-        (firstName, lastName, address, city, state, zip, animal) => {
-            return `${firstName} ${lastName} adopted ${animal.name} the ${animal.type.toLowerCase()} on ${animal.adoptedDate}. They live at ${address} ${city}, ${state} ${zip}. ${animal.name} loves to ${animal.favoriteActivity}.`;
-        }])
+    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.animal', (firstName, lastName, animal) => {
+        return `${firstName} ${lastName} adopted ${animal.name} the ${animal.type.toLowerCase()} on ${animal.adoptedDate}. ${animal.name} loves to ${animal.favoriteActivity}.`;
+    }])
     .and.DateFormat('YYYY-MM-DD')
+    .and.NullChance(1)
     .as.JSON(null, 1);
 
 console.log('Mock data generated in: ' + (performance.now() - start) + ' ms');
-fs.writeFile('./example/example.json', Pets, () => {});
+fs.writeFile('./example/example.json', Pets, () => { });
 exec('code ./example/example.json');
