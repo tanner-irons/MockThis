@@ -1,9 +1,9 @@
 'use strict';
 
-let UserDefGenerator = require('./generators/generator.userDef.js');
+const UserDefGenerator = require('./generators/generator.userDef.js');
 const moment = require('moment');
 
-let _newType = function (newType, callback) {
+const _newType = function (newType, callback) {
     if (typeof newType != 'string') {
         throw new TypeError('User defined property name must be a string.')
     }
@@ -15,7 +15,7 @@ let _newType = function (newType, callback) {
     return this;
 };
 
-let _random = function (randomName, items) {
+const _random = function (randomName, items) {
     let randomCallback = () => {
         let random = Math.floor(Math.random() * items.length);
         return items[random]
@@ -23,8 +23,8 @@ let _random = function (randomName, items) {
     return _newType.call(this, randomName, randomCallback);
 };
 
-let _sequence = function (sequenceName, items) {
-    let sequenceGenerator = function* () {
+const _sequence = function (sequenceName, items) {
+    const sequenceGenerator = function* () {
         let index = 0;
         while (true) {
             if (!items[index]) {
@@ -37,7 +37,7 @@ let _sequence = function (sequenceName, items) {
     let sequence = sequenceGenerator(items);
 
     return _newType.call(this, sequenceName, () => {
-        let result = sequence.next();
+        const result = sequence.next();
         if (result.done) {
             sequence = sequenceGenerator(items);
             return sequence.next().value;
@@ -46,25 +46,24 @@ let _sequence = function (sequenceName, items) {
     });
 }
 
-let _logic = function (prop, deps) {
-    if (deps instanceof Function) {
+const _dependencies = function (prop, deps, callback) {
+    if (!(deps instanceof Array)) {
         throw new Error('Please add dependency array or use the NewType method.');
     }
-    let callback = deps.pop();
-    if (!(callback instanceof Function)) {
-        throw new TypeError('Last argument in the dependency array must be a function.');
+    if (callback && !(callback instanceof Function)) {
+        throw new TypeError('Callback must be a function.');
     }
     let item = this.blueprint.schema.find(item => item.property === prop || item.property === prop + '.0');
     if (!item) {
-        throw new Error(`Property: ${item.property} does not exist`);
+        throw new Error(`Property: ${item.property} does not exist.`);
     }
-    _newType.call(this, prop, callback);
+    callback && _newType.call(this, prop, callback);
     deps.length && (item.dependencies = deps);
 
     return this;
 };
 
-let _multiple = function (min, max) {
+const _multiple = function (min, max) {
     if (isNaN(min)) {
         throw new TypeError('Min argument must be a number.');
     }
@@ -84,7 +83,7 @@ let _multiple = function (min, max) {
     return this;
 };
 
-let _arrayLength = function (min, max) {
+const _arrayLength = function (min, max) {
     if (isNaN(min)) {
         throw new TypeError('Min argument must be a number.');
     }
@@ -104,7 +103,7 @@ let _arrayLength = function (min, max) {
     return this;
 };
 
-let _required = function (required) {
+const _required = function (required) {
     if (!(required instanceof Array)) {
         throw new TypeError('Required properties must be an array.')
     }
@@ -116,7 +115,7 @@ let _required = function (required) {
     return this;
 };
 
-let _dateFormat = function (dateFormat) {
+const _dateFormat = function (dateFormat) {
     if (moment().format(dateFormat).toString() === 'InvalidDate') {
         throw new TypeError('Date format argument must be a valid date format.');
     }
@@ -124,7 +123,7 @@ let _dateFormat = function (dateFormat) {
     return this;
 };
 
-let _nullChance = function (nullChance) {
+const _nullChance = function (nullChance) {
     if (isNaN(nullChance)) {
         throw new TypeError('Null chance argument must be a number.');
     }
@@ -143,6 +142,6 @@ module.exports = {
     Sequence: _sequence,
     DateFormat: _dateFormat,
     ArrayLength: _arrayLength,
-    Logic: _logic,
+    Dependencies: _dependencies,
     NullChance: _nullChance
 }

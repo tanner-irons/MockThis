@@ -48,11 +48,10 @@ const Pets = MockThis(mockPetObject)
             isGoodestBoy: true
         };
     })
-    .with.Logic('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.animal', (firstName, lastName, animal) => {
-        return `${firstName} ${lastName} adopted ${animal.name} the ${animal.type.toLowerCase()} on ${animal.adoptedDate}. ${animal.name} loves to ${animal.favoriteActivity}.`;
-    }])
-    .and.DateFormat('YYYY-MM-DD')
-    .and.NullChance(1)
+    .with.Dependencies('owner.bio', ['owner.firstName', 'owner.lastName', 'owner.animal'], ({ owner: { firstName, lastName, animal } }) => {
+        return `${firstName} ${lastName} adopted ${animal.name} the ${animal.type.toLowerCase()} on ${moment(animal.adoptedDate).format("dddd, MMMM Do YYYY")}. ${animal.name} loves to ${animal.favoriteActivity}.`;
+    })
+    .and.NullChance(1)//broken
     .as.JSON(null, 1);
 
 console.log('Mock data generated in: ' + (performance.now() - start) + ' ms');
