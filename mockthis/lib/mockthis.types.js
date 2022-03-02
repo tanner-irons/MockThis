@@ -28,5 +28,5 @@ module.exports = {
     PhoneNumber: Symbol('PhoneNumber'),
     Email: Symbol('Email'),
     NewType: Symbol('NewType'),
-    Dependent: Symbol('Dependent')
+    Logic: Symbol('Logic')
 };
