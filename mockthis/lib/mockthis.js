@@ -1,10 +1,11 @@
 'use strict';
 
 require("@babel/polyfill");
-let With = require('./mockthis.with.js');
-let As = require('./mockthis.as.js');
+const With = require('./mockthis.with.js');
+const As = require('./mockthis.as.js');
+const Types = require('./mockthis.types.js');
 
-let _makeFlat = function(schema) {
+const _makeFlat = function(schema) {
     let flattened = {};
     let stack = [{ parent: null, nodes: schema }];
 
@@ -40,9 +41,8 @@ function MockedObject() {
             throw new TypeError('Provided schema should be a valid object literal.');
         }
 
-        let flatSchema = _makeFlat(_schema);
-
-        this.blueprint.schema = Object.keys(flatSchema).map((prop) => {
+        const flatSchema = _makeFlat(_schema);
+        this.blueprint.schema = Object.keys(flatSchema).map(prop => {
             return {
                 property: prop,
                 type: flatSchema[prop],
@@ -52,8 +52,6 @@ function MockedObject() {
         return this;
     }).apply(MockedObject, arguments);
 }
-
-MockedObject.Types = require('./mockthis.types.js');
 
 MockedObject.blueprint = {
     schema: {},
@@ -68,7 +66,8 @@ MockedObject.blueprint = {
     array: {
         min: 1,
         max: 10
-    }
+    },
+    nullChance: .25
 };
 
 MockedObject.as = {
@@ -84,7 +83,11 @@ MockedObject.with = MockedObject.and = {
     Random: With.Random.bind(MockedObject),
     Sequence: With.Sequence.bind(MockedObject),
     DateFormat: With.DateFormat.bind(MockedObject),
-    Logic: With.Logic.bind(MockedObject)
+    Dependencies: With.Dependencies.bind(MockedObject),
+    NullChance: With.NullChance.bind(MockedObject)
 };
 
-module.exports = MockedObject;
+module.exports = {
+    MockThis: MockedObject,
+    MockedTypes: Types,
+};
