@@ -1,6 +1,6 @@
-'use strict';
+import { Blueprint } from "./mockthis.blueprint";
+import { IMockThis } from "./models/mockthis";
 
-const topsort = require('topsort');
 const GeneratorFactory = require('./generators/generator.factory.js');
 
 const _getArrayLength = function (min, max) {
@@ -16,8 +16,9 @@ const _getDefaultType = function (blueprint, callingName) {
     }
 }
 
-const _generateValue = function (blueprint, prop, tempObject) {
+const _generateValue = function (blueprint: Blueprint, prop: string, tempObject) {
     const item = blueprint.schema.find(item => item.property === prop);
+    if (!item) return;
     let factoryValue = GeneratorFactory.getInstanceOf(item.property);
     if (!factoryValue || item.dependencies.length < 1) {
         if (blueprint.required.length < 1 || blueprint.required.includes(prop) || Math.random() >= blueprint.nullChance) {
@@ -29,23 +30,7 @@ const _generateValue = function (blueprint, prop, tempObject) {
     return factoryValue.call(null, _makeUnflat(tempObject));
 };
 
-const _sortSchema = function (blueprint) {
-    const deps = [];
-    blueprint.schema.forEach(prop => {
-        deps.push(...prop.dependencies.reduce((acc, curr) => {
-            if (prop.property.includes(curr)) {
-                throw new Error(`Property "${prop.property}" has invalid dependency "${curr}". A property cannot depend on itself or the entirety of its ancestors.`)
-            }
-            acc.push([curr, prop.property]);
-            return acc;
-        }, [[prop.property]]));
-    });
-    return topsort(deps)
-        .flatMap(dep => blueprint.schema.filter(item => item.property.includes(dep) || item.property.includes(dep + '.0')))
-        .filter(dep => !!dep);
-};
-
-const _makeUnflat = function (schema) {
+export const _makeUnflat = function (schema: Record<string, any>) {
     let unflat = {};
     const keys = Object.keys(schema);
     for (let i = 0; i < keys.length; i++) {
@@ -63,7 +48,7 @@ const _makeUnflat = function (schema) {
     return unflat;
 }
 
-let _generateObject = function (blueprint) {
+let _generateObject = function (blueprint: Blueprint) {
     let tempObject = {};
     blueprint.sortedSchema.forEach(prop => {
         let generatedValue;
@@ -71,7 +56,7 @@ let _generateObject = function (blueprint) {
             let arrayLength = _getArrayLength(blueprint.array.min, blueprint.array.max);
             for (let i = 0; i < arrayLength; i++) {
                 generatedValue = _generateValue(blueprint, prop.property, tempObject);
-                let newKey = prop.property.replace(/0/g, i);
+                let newKey = prop.property.replace(/0/g, i.toString());
                 generatedValue && (tempObject[newKey] = generatedValue);
             }
         } else {
@@ -83,9 +68,8 @@ let _generateObject = function (blueprint) {
     return _makeUnflat(tempObject);
 };
 
-let _generateData = function (blueprint) {
+let _generateData = function (blueprint: Blueprint) {
     const tempArray = [];
-    blueprint.sortedSchema = _sortSchema(blueprint);
     let arrayLength = _getArrayLength(blueprint.total.min, blueprint.total.max);
     for (let i = 0; i < arrayLength; i++) {
         tempArray.push(_generateObject(blueprint));
@@ -93,11 +77,14 @@ let _generateData = function (blueprint) {
     return tempArray.length > 1 ? tempArray : tempArray[0];
 };
 
-module.exports = {
-    Object: function () {
-        return _generateData(this.blueprint);
-    },
-    JSON: function (replacer, space) {
-        return JSON.stringify(_generateData(this.blueprint), replacer, space);
-    }
+export const Obj = function<T>(this: IMockThis<T>): any {
+    return _generateData(this.blueprint);
+};
+export const Json = function<T>(this: IMockThis<T>, replacer: () => any, space: number | string): string {
+    return JSON.stringify(_generateData(this.blueprint), replacer, space);
+}
+
+export interface IAs {
+    Object: typeof Obj;
+    JSON: typeof Json;
 }

@@ -1,6 +1,6 @@
-'use strict';
+import { IMockTypes } from "./models/mocktypes";
 
-module.exports = {
+export const MockTypes: IMockTypes = {
     Number: Symbol('Number'),
     Boolean: Symbol('Boolean'),
     Date: Symbol('Date'),

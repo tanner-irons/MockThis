@@ -1,9 +1,11 @@
 'use strict';
 
+import { MockThis } from ".";
+
 const UserDefGenerator = require('./generators/generator.userDef.js');
 const moment = require('moment');
 
-const _newType = function (newType, callback) {
+const _newType = function<T>(this: MockThis<T>, newType, callback): MockThis<T> {
     if (typeof newType != 'string') {
         throw new TypeError('User defined property name must be a string.')
     }
@@ -15,7 +17,7 @@ const _newType = function (newType, callback) {
     return this;
 };
 
-const _random = function (randomName, items) {
+const _random = function<T>(this: MockThis<T>, randomName, items): MockThis<T> {
     let randomCallback = () => {
         let random = Math.floor(Math.random() * items.length);
         return items[random]
@@ -23,17 +25,18 @@ const _random = function (randomName, items) {
     return _newType.call(this, randomName, randomCallback);
 };
 
-const _sequence = function (sequenceName, items) {
-    const sequenceGenerator = function* () {
-        let index = 0;
-        while (true) {
-            if (!items[index]) {
-                return;
-            }
-            yield items[index];
-            index++;
+const sequenceGenerator = function* (items) {
+    let index = 0;
+    while (true) {
+        if (!items[index]) {
+            return;
         }
+        yield items[index];
+        index++;
     }
+}
+
+const _sequence = function<T>(this: MockThis<T>, sequenceName, items): MockThis<T> {
     let sequence = sequenceGenerator(items);
 
     return _newType.call(this, sequenceName, () => {
@@ -46,7 +49,7 @@ const _sequence = function (sequenceName, items) {
     });
 }
 
-const _dependencies = function (prop, deps, callback) {
+const _dependencies = function<T>(this: MockThis<T>, prop, deps, callback): MockThis<T> {
     if (!(deps instanceof Array)) {
         throw new Error('Please add dependency array or use the NewType method.');
     }
@@ -63,7 +66,7 @@ const _dependencies = function (prop, deps, callback) {
     return this;
 };
 
-const _multiple = function (min, max) {
+const _multiple = function<T>(this: MockThis<T>, min, max): MockThis<T> {
     if (isNaN(min)) {
         throw new TypeError('Min argument must be a number.');
     }
@@ -83,7 +86,7 @@ const _multiple = function (min, max) {
     return this;
 };
 
-const _arrayLength = function (min, max) {
+const _arrayLength = function<T>(this: MockThis<T>, min, max): MockThis<T> {
     if (isNaN(min)) {
         throw new TypeError('Min argument must be a number.');
     }
@@ -103,7 +106,7 @@ const _arrayLength = function (min, max) {
     return this;
 };
 
-const _required = function (required) {
+const _required = function<T>(this: MockThis<T>, required): MockThis<T> {
     if (!(required instanceof Array)) {
         throw new TypeError('Required properties must be an array.')
     }
@@ -115,7 +118,7 @@ const _required = function (required) {
     return this;
 };
 
-const _dateFormat = function (dateFormat) {
+const _dateFormat = function<T>(this: MockThis<T>, dateFormat): MockThis<T> {
     if (moment().format(dateFormat).toString() === 'InvalidDate') {
         throw new TypeError('Date format argument must be a valid date format.');
     }
@@ -123,7 +126,7 @@ const _dateFormat = function (dateFormat) {
     return this;
 };
 
-const _nullChance = function (nullChance) {
+const _nullChance = function<T>(this: MockThis<T>, nullChance): MockThis<T> {
     if (isNaN(nullChance)) {
         throw new TypeError('Null chance argument must be a number.');
     }
@@ -134,14 +137,24 @@ const _nullChance = function (nullChance) {
     return this;
 };
 
-module.exports = {
-    Multiple: _multiple,
-    Required: _required,
-    NewType: _newType,
-    Random: _random,
-    Sequence: _sequence,
-    DateFormat: _dateFormat,
-    ArrayLength: _arrayLength,
-    Dependencies: _dependencies,
-    NullChance: _nullChance
+export const Multiple = _multiple;
+export const Required = _required;
+export const NewType = _newType;
+export const Random = _random;
+export const Sequence = _sequence;
+export const DateFormat = _dateFormat;
+export const ArrayLength = _arrayLength;
+export const Dependencies = _dependencies;
+export const NullChance = _nullChance;
+
+export interface IWith {
+    Multiple: typeof _multiple;
+    Required: typeof _required;
+    NewType: typeof _newType;
+    Random: typeof _random;
+    Sequence: typeof _sequence;
+    DateFormat: typeof _dateFormat;
+    ArrayLength: typeof _arrayLength;
+    Dependencies: typeof _dependencies;
+    NullChance: typeof _nullChance;
 }
