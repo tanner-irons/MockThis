@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES2022",
+      "module": "commonjs",
+      "outDir": "./dist/types",
+      "declaration": true,
+      "declarationDir": "./dist/types",
+      "sourceMap": true, 
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true
+    },
+    "include": ["mockthis/**/*.ts"],
+  }

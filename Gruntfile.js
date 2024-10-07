@@ -42,7 +42,7 @@ module.exports = function (grunt) {
                     ],
                     browserifyOptions: {
                         standalone: 'MockThis',
-                        debug: false
+                        debug: true
                     },
                 },
                 src: ['mockthis/lib/mockthis.js'],
