@@ -1,13 +1,6 @@
-import { IGenerator } from "../generator";
+import { GeneratorFunc } from "../../models/generator";
 import { IBlueprint } from "../../models/blueprint";
 
-export class State implements IGenerator<string> {
-    constructor(
-        private chance: Chance.Chance,
-        private blueprint: IBlueprint
-    ) { }
-
-    generateValue(blueprint: IBlueprint): string {
-        return this.chance.state();
-    }
+export const State: GeneratorFunc<string> = (chance: Chance.Chance, blueprint: IBlueprint) => {
+    return chance.state();
 }

@@ -1,6 +1,7 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const DtsBundleWebpack = require('dts-bundle-webpack');
+const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 module.exports = {
   entry: './mockthis/index.ts', // Entry point for your app
@@ -28,10 +29,17 @@ module.exports = {
     new DtsBundleWebpack({
       name: 'mockthis',
       main: 'dist/types/index.d.ts', // Path to the main declaration file
-      out: 'index.d.ts', // Output path for the bundled declaration file
+      out: '../index.d.ts', // Output path for the bundled declaration file
       removeSource: true,
       outputAsModuleFolder: true
-    })
+    }),
+    new WebpackShellPluginNext({
+      onBuildEnd: {
+        scripts: ['node scripts/removeEmptyDirs.js'],
+        blocking: false,
+        parallel: true,
+      },
+    }),
   ],
   // optimization: {
   //   minimize: true, // Enable minification

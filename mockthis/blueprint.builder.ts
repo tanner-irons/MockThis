@@ -10,7 +10,7 @@ export interface IBlueprintBuilder {
     setNullChance(nullChance: number): void;
 }
 
-class BlueprintBuilder implements IBlueprintBuilder{
+export class BlueprintBuilder implements IBlueprintBuilder{
     blueprint: IBlueprint = {
         total: {
             min: 1,
@@ -20,9 +20,9 @@ class BlueprintBuilder implements IBlueprintBuilder{
         formats: {},
         array: {
             min: 1,
-            max: 10
+            max: 5
         },
-        nullChance: .25
+        nullChance: 0
     };
 
     setMultiple(
@@ -95,5 +95,3 @@ class BlueprintBuilder implements IBlueprintBuilder{
         this.blueprint.nullChance = nullChance;
     }
 }
-
-export default BlueprintBuilder;

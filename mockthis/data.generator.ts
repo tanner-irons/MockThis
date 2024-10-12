@@ -1,99 +1,55 @@
 import { IBlueprint, SchemaItem } from './models/blueprint';
-import GeneratorFactory from './generators/generator.factory';
+import { ISchemaTransformer } from './schema.transformer';
 import { ISchema } from './models/schema';
 
-class DataGenerator<T> {
-  constructor(private generatorFactory: GeneratorFactory) { }
+export interface IDataGenerator<T extends ISchema> {
+  asObject(schema: T, blueprint: IBlueprint): T | T[];
+  asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number): string;
+}
 
-  asObject(schemaItems: SchemaItem[], blueprint: IBlueprint) {
-    return this.generateData(schemaItems, blueprint);
+export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
+  private arrayMatcher: RegExp = /^(.*\[(\d+)\])(.*)$/;
+
+  constructor(
+    private schemaTransformer: ISchemaTransformer,
+    private randomDataGenerator: L
+  ) { }
+
+  asObject(schema: T, blueprint: IBlueprint): T | T[] {
+    const preparedSchema = this.schemaTransformer.prepareSchema(schema, blueprint);
+    return this.generateData(preparedSchema, blueprint);
   }
 
-  asJSON(schemaItems: SchemaItem[], blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number) {
-    const data = this.generateData(schemaItems, blueprint);
+  asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number) {
+    const preparedSchema = this.schemaTransformer.prepareSchema(schema, blueprint);
+    const data = this.generateData(preparedSchema, blueprint);
     return JSON.stringify(data, replacer, space);
   }
 
-  private getArrayLength(min: number, max: number) {
-    return max && min !== max
-      ? Math.floor(Math.random() * (max - min + 1)) + min
-      : min;
-  }
+  private generateData(schemaItems: SchemaItem[], blueprint: IBlueprint): T | T[] {
+    const data: T[] = [];
+    const arrayLength = this.getArrayLength(blueprint.total.min, blueprint.total.max);
 
-  private makeUnflat(schemaData: Record<string, any>) {
-    const unflat: ISchema = {};
-    const keys = Object.keys(schemaData);
-    for (const key of keys) {
-      let current = unflat;
-      const parts = key.split('.');
-
-      for (let i = 0; i < parts.length - 1; i++) {
-        const part = parts[i];
-        const arrayMatch = part.match(/^(.+)\[(\d+)\]$/);
-
-        if (arrayMatch) {
-          const arrayName = arrayMatch[1];
-          const arrayIndex = parseInt(arrayMatch[2], 10);
-
-          if (!current[arrayName]) {
-            current[arrayName] = [];
-          }
-
-          if (!(current[arrayName] instanceof Array)) {
-            throw new Error(`Expected ${arrayName} to be an array`);
-          }
-
-          if (!current[arrayName][arrayIndex]) {
-            current[arrayName][arrayIndex] = {};
-          }
-
-          current = current[arrayName][arrayIndex];
-        } else {
-          if (!current[part]) {
-            current[part] = {};
-          }
-          current = current[part];
-        }
-      }
-
-      const lastPart = parts[parts.length - 1];
-      const value = schemaData[key];
-
-      if (Array.isArray(value)) {
-        value.forEach(item => {
-          current[lastPart] = current[lastPart] || [];
-          current[lastPart].push(item);
-        });
-      } else {
-        current[lastPart] = value;
-      }
+    for (let i = 0; i < arrayLength; i++) {
+      const rawObject = this.generateObject(schemaItems, blueprint);
+      const finalizedObject = this.schemaTransformer.finalizeSchema(rawObject);
+      data.push(finalizedObject);
     }
 
-    return unflat;
-  }
-
-  private generateValue(schemaItem: SchemaItem, blueprint: IBlueprint) {
-    if (!schemaItem) {
-      return;
-    };
-
-    const generatorType = Array.isArray(schemaItem.type) ? schemaItem.type[0] : schemaItem.type;
-    const generator = this.generatorFactory.getInstanceOf(generatorType);
-    return generator.generateValue(blueprint);
+    return data.length > 1 ? data : data[0];
   }
 
   private generateObject(schemaItems: SchemaItem[], blueprint: IBlueprint) {
     const schemaData: Record<string, any> = {};
 
     for (const schemaItem of schemaItems) {
-      if ((/.0/g).test(schemaItem.property)) {
-        const arrayLength = this.getArrayLength(blueprint.array.min, blueprint.array.max);
-
-        schemaData[schemaItem.property] = [];
-        for (let i = 0; i < arrayLength; i++) {
+      const arrayMatch = schemaItem.property.match(this.arrayMatcher);
+      if (arrayMatch) {
+        const expandedKeys = this.expandKeyRecursively(schemaItem.property);
+        for (const newKey of expandedKeys) {
           const generatedValue = this.generateValue(schemaItem, blueprint);
           if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
-            schemaData[schemaItem.property].push(generatedValue);
+            schemaData[newKey] = generatedValue;
           }
         }
       } else {
@@ -104,20 +60,77 @@ class DataGenerator<T> {
       }
     }
 
-    return this.makeUnflat(schemaData);
+    return schemaData;
   }
 
-  private generateData(schemaItems: SchemaItem[], blueprint: IBlueprint) {
-    const data: Record<string, unknown>[] = [];
-    const arrayLength = this.getArrayLength(blueprint.total.min, blueprint.total.max);
+  private generateValue(schemaItem: SchemaItem, blueprint: IBlueprint) {
+    if (!schemaItem) {
+      return;
+    };
 
-    for (let i = 0; i < arrayLength; i++) {
-      const object = this.generateObject(schemaItems, blueprint);
-      data.push(object);
+    const generatorFunc = Array.isArray(schemaItem.type) ? schemaItem.type[0] : schemaItem.type;
+    return generatorFunc(this.randomDataGenerator, blueprint);
+  }
+
+  private expandKeyRecursively(key: string): string[] {
+    const indexRegex = /(\w+)\[(\d+)\]/g;
+    const matches = [];
+    let match;
+
+    while ((match = indexRegex.exec(key)) !== null) {
+      matches.push({
+        base: match[1],
+        maxIndex: parseInt(match[2], 10),
+        startIndex: match.index,
+        length: match[0].length
+      });
     }
 
-    return data.length > 1 ? data : data[0];
+    if (matches.length === 0) {
+      return [key];
+    }
+
+    const ranges = matches.map(info => {
+      const indices = [];
+      for (let i = 0; i <= info.maxIndex - 1; i++) {
+        indices.push(i);
+      }
+      return indices;
+    });
+
+    const combinations = [];
+    const totalCombinations = ranges.reduce((acc, curr) => acc * curr.length, 1);
+
+    for (let i = 0; i < totalCombinations; i++) {
+      const combo = [];
+      let idx = i;
+      for (let j = ranges.length - 1; j >= 0; j--) {
+        combo.unshift(ranges[j][idx % ranges[j].length]);
+        idx = Math.floor(idx / ranges[j].length);
+      }
+      combinations.push(combo);
+    }
+
+    const expandedKeys = [];
+    for (const combo of combinations) {
+      let newKey = key;
+      for (let k = matches.length - 1; k >= 0; k--) {
+        let info = matches[k];
+        let newIndexPart = `${info.base}[${combo[k]}]`;
+        newKey =
+          newKey.slice(0, info.startIndex) +
+          newIndexPart +
+          newKey.slice(info.startIndex + info.length);
+      }
+      expandedKeys.push(newKey);
+    }
+
+    return expandedKeys;
+  }
+
+  private getArrayLength(min: number, max: number) {
+    return max && min !== max
+      ? Math.floor(Math.random() * (max - min + 1)) + min
+      : min;
   }
 }
-
-export default DataGenerator;

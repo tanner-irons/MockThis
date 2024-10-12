@@ -1,4 +1,4 @@
-import { NewableGenerator } from "../generators/generator";
+import { GeneratorFunc } from "./generator";
 
 export interface IBlueprint {
     total: IMinMax
@@ -12,7 +12,7 @@ export interface IBlueprint {
 
 export interface SchemaItem {
     property: string;
-    type: NewableGenerator | NewableGenerator[];
+    type: GeneratorFunc<any>;
     dependencies: string[];
 }
 

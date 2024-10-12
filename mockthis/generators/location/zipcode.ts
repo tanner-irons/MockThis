@@ -1,13 +1,6 @@
-import { IGenerator } from "../generator";
+import { GeneratorFunc } from "../../models/generator";
 import { IBlueprint } from "../../models/blueprint";
 
-export class ZipCode implements IGenerator<string> {
-    constructor(
-        private chance: Chance.Chance,
-        private blueprint: IBlueprint
-    ) { }
-
-    generateValue(blueprint: IBlueprint): string {
-        return this.chance.zip();
-    }
+export const ZipCode: GeneratorFunc<string> = (chance: Chance.Chance, blueprint: IBlueprint) => {
+    return chance.zip();
 }

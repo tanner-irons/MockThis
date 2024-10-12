@@ -1,14 +1,7 @@
 import moment from "moment";
-import { IGenerator } from "../generator";
+import { GeneratorFunc } from "../../models/generator";
 import { IBlueprint } from "../../models/blueprint";
 
-export class Date implements IGenerator<string> {
-    constructor(
-        private chance: Chance.Chance,
-        private blueprint: IBlueprint
-    ) { }
-
-    generateValue(blueprint: IBlueprint): string {
-        return moment(this.chance.date()).format(blueprint.formats.date);
-    }
+export const Date: GeneratorFunc<string> = (chance: Chance.Chance, blueprint: IBlueprint) => {
+    return moment(chance.date()).format(blueprint.formats.date);
 }
