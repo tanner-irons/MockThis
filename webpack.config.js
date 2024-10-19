@@ -35,7 +35,7 @@ module.exports = {
     }),
     new WebpackShellPluginNext({
       onBuildEnd: {
-        scripts: ['node scripts/removeEmptyDirs.js'],
+        scripts: ['sh scripts/removeEmptyDirs.sh'],
         blocking: false,
         parallel: true,
       },

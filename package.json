@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "example": "npx ts-node example/example.ts",
+    "example": "sh ./scripts/runExample.sh",
     "test": "vitest",
     "build": "npx webpack --mode production"
   },

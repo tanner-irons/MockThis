@@ -1,9 +1,8 @@
 import toposort from "toposort";
-import { GeneratorFunc } from "./models/generator";
+import { TypeFunc } from "./models/generator";
 import { IBlueprint, SchemaItem } from "./models/blueprint";
 import { ISchema } from "./models/schema";
 import { IStack } from "./models/stack";
-import { Utils } from "./utils";
 
 export interface ISchemaTransformer {
   prepareSchema(schema: ISchema, blueprint: IBlueprint): SchemaItem[];
@@ -15,10 +14,10 @@ export class SchemaTransformer implements ISchemaTransformer {
 
   prepareSchema(schema: ISchema, blueprint: IBlueprint) {
     const flattened = this.flattenSchema(schema, blueprint);
-    const schemaItems = Object.keys(flattened)
+    const schemaItems: SchemaItem[] = Object.keys(flattened)
       .map(prop => ({
         property: prop,
-        type: flattened[prop],
+        getValue: flattened[prop],
         dependencies: []
       }));
 
@@ -93,7 +92,7 @@ export class SchemaTransformer implements ISchemaTransformer {
   }
 
   private flattenSchema(schema: ISchema, blueprint: IBlueprint) {
-    let flattened: Record<string, GeneratorFunc<any>> = {};
+    let flattened: Record<string, TypeFunc<any, any>> = {};
     let stack: IStack[] = [{ parent: undefined, nodes: schema }];
 
     while (stack.length > 0) {
@@ -105,11 +104,14 @@ export class SchemaTransformer implements ISchemaTransformer {
       for (let i = 0; i < keys.length; i++) {
         let key = current.parent ? current.parent + '.' + keys[i] : keys[i];
         if (current.nodes[keys[i]] instanceof Array) {
-          const arrayLength = Utils.getRandomArrayLength(blueprint.array.min, blueprint.array.max);
-          stack.push({
-            parent: key + `[${arrayLength}]`,
-            nodes: current.nodes[keys[i]][0]
-          })
+          if (current.nodes[keys[i]][0] instanceof Function) {
+            flattened[key + `[0]`] = current.nodes[keys[i]][0];
+          } else {
+            stack.push({
+              parent: key + `[0]`,
+              nodes: current.nodes[keys[i]][0]
+            });
+          }
         }
         else if (Object.getPrototypeOf(current.nodes[keys[i]]) === Object.prototype) {
           stack.push({

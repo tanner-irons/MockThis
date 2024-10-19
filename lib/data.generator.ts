@@ -13,7 +13,8 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
 
   constructor(
     private schemaTransformer: ISchemaTransformer,
-    private randomDataGenerator: L
+    private randomDataGenerator: L,
+    private utils: Utils
   ) { }
 
   asObject(schema: T, blueprint: IBlueprint) {
@@ -29,7 +30,7 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
 
   private async generateData(schemaItems: SchemaItem[], blueprint: IBlueprint) {
     const data: T[] = [];
-    const arrayLength = Utils.getRandomArrayLength(blueprint.total.min, blueprint.total.max);
+    const arrayLength = this.utils.getRandomArrayLength(blueprint.total.min, blueprint.total.max);
 
     for (let i = 0; i < arrayLength; i++) {
       const rawObject = await this.generateObject(schemaItems, blueprint);
@@ -46,15 +47,15 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     for (const schemaItem of schemaItems) {
       const arrayMatch = schemaItem.property.match(this.arrayMatcher);
       if (arrayMatch) {
-        const expandedKeys = this.expandKeyRecursively(schemaItem.property);
+        const expandedKeys = this.expandKey(schemaItem.property, blueprint);
         for (const newKey of expandedKeys) {
-          const generatedValue = await this.generateValue(schemaItem, blueprint);
+          const generatedValue = await schemaItem.getValue(this.randomDataGenerator, blueprint);
           if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
             schemaData[newKey] = generatedValue;
           }
         }
       } else {
-        const generatedValue = await this.generateValue(schemaItem, blueprint);
+        const generatedValue = await schemaItem.getValue(this.randomDataGenerator, blueprint);
         if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
           schemaData[schemaItem.property] = generatedValue;
         }
@@ -64,25 +65,15 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     return schemaData;
   }
 
-  private async generateValue(schemaItem: SchemaItem, blueprint: IBlueprint) {
-    if (!schemaItem) {
-      return;
-    };
-
-    const generatorFunc = Array.isArray(schemaItem.type) ? schemaItem.type[0] : schemaItem.type;
-    const value = await generatorFunc(this.randomDataGenerator, blueprint);
-    return value;
-  }
-
-  private expandKeyRecursively(key: string) {
-    const indexRegex = /(\w+)\[(\d+)\]/g;
+  private expandKey(key: string, blueprint: IBlueprint) {
+    const indexRegex = /(\w+)\[(0)\]/g;
     const matches = [];
     let match;
 
     while ((match = indexRegex.exec(key)) !== null) {
       matches.push({
         base: match[1],
-        maxIndex: parseInt(match[2], 10),
+        maxIndex: this.utils.getRandomArrayLength(blueprint.array.min, blueprint.array.max),
         startIndex: match.index,
         length: match[0].length
       });

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { exec } from 'child_process';
 import { Address, Animal, Birthdate, City, Constant, DateTime, Dollar, Email, FirstName, LastName, MockThis, Number, Random, Sentence, Sequence, State, Url, ZipCode } from "../dist/index"
 import { Chance } from 'chance';
-import { Async } from '../lib/generators/util/async';
+import { Async } from '../lib/data.funcs/util/async';
 
 const ids = Array.from({ length: 100 }, (_, i) => i + 1);
 
@@ -25,9 +25,12 @@ const mockPetObject = {
         firstName: FirstName,
         lastName: LastName,
         birthdate: Birthdate,
-        email: Email,
+        emails: [Email],
         personalWebsite: Url,
         netWorth: Dollar,
+        test: [{
+            value: [Number]
+        }],
         favoriteNumbers: [Number],
         address: {
             street: Address,

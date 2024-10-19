@@ -1,4 +1,4 @@
-import { GeneratorFunc } from "./generator";
+import { TypeFunc as TypeFunc } from "./generator";
 
 export interface IBlueprint {
     total: IMinMax
@@ -12,7 +12,7 @@ export interface IBlueprint {
 
 export interface SchemaItem {
     property: string;
-    type: GeneratorFunc<any>;
+    getValue: TypeFunc<any, any>;
     dependencies: string[];
 }
 

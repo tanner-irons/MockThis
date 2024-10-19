@@ -1,5 +1,5 @@
 export class Utils {
-    static getRandomArrayLength(min: number, max: number): number {
+    getRandomArrayLength(min: number, max: number): number {
         return max && min !== max
             ? Math.floor(Math.random() * (max - min + 1)) + min
             : min;

@@ -3,6 +3,7 @@ import { BlueprintBuilder, IBlueprintBuilder } from "./blueprint.builder";
 import { ISchema } from "./models/schema";
 import { DataGenerator, IDataGenerator } from "./data.generator";
 import { SchemaTransformer } from "./schema.transformer";
+import { Utils } from "./utils";
 
 export class MockThisInstance<T extends ISchema> {
     constructor(
@@ -60,6 +61,7 @@ export class MockThisInstance<T extends ISchema> {
 export const MockThis = <T extends ISchema, L>(schema: T, randomDataGenerator?: L) => {
     const blueprintBuilder = new BlueprintBuilder();
     const schemaTransformer = new SchemaTransformer();
-    const dataGenerator = new DataGenerator(schemaTransformer, randomDataGenerator ?? new Chance() as L);
+    const utils = new Utils();
+    const dataGenerator = new DataGenerator(schemaTransformer, randomDataGenerator ?? new Chance() as L, utils);
     return new MockThisInstance(blueprintBuilder, dataGenerator, schema);
 };
