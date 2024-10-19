@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "target": "ES2022",
-      "module": "commonjs",
+      "module": "CommonJS",
       "outDir": "./dist",
       "declaration": true,
       "declarationDir": "./dist/types",

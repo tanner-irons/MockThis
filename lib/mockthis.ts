@@ -48,11 +48,11 @@ export class MockThisInstance<T extends ISchema> {
         return this;
     }
 
-    asObject(): T | T[] {
+    asObject(): Promise<T | T[]> {
         return this.dataGenerator.asObject(this.schema, this.blueprintBuilder.blueprint);
     }
 
-    asJson(replacer?: (this: any, key: string, value: any) => any, space?: string | number) {
+    asJson(replacer?: (this: any, key: string, value: any) => any, space?: string | number): Promise<string> {
         return this.dataGenerator.asJSON(this.schema, this.blueprintBuilder.blueprint, replacer, space);
     }
 }

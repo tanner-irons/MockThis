@@ -3,6 +3,7 @@ import { GeneratorFunc } from "./models/generator";
 import { IBlueprint, SchemaItem } from "./models/blueprint";
 import { ISchema } from "./models/schema";
 import { IStack } from "./models/stack";
+import { Utils } from "./utils";
 
 export interface ISchemaTransformer {
   prepareSchema(schema: ISchema, blueprint: IBlueprint): SchemaItem[];
@@ -91,16 +92,6 @@ export class SchemaTransformer implements ISchemaTransformer {
     return parts;
   }
 
-  private isClassInstance(obj: any) {
-    return obj && obj.constructor && obj.constructor !== Object;
-  }
-
-  private getArrayLength(min: number, max: number) {
-    return max && min !== max
-      ? Math.floor(Math.random() * (max - min + 1)) + min
-      : min;
-  }
-
   private flattenSchema(schema: ISchema, blueprint: IBlueprint) {
     let flattened: Record<string, GeneratorFunc<any>> = {};
     let stack: IStack[] = [{ parent: undefined, nodes: schema }];
@@ -114,15 +105,11 @@ export class SchemaTransformer implements ISchemaTransformer {
       for (let i = 0; i < keys.length; i++) {
         let key = current.parent ? current.parent + '.' + keys[i] : keys[i];
         if (current.nodes[keys[i]] instanceof Array) {
-          const arrayLength = this.getArrayLength(blueprint.array.min, blueprint.array.max);
-          if (this.isClassInstance(current.nodes[keys[i]][0])) {
-            flattened[key + `[${arrayLength}]`] = current.nodes[keys[i]][0];
-          } else {
-            stack.push({
-              parent: key + `[${arrayLength}]`,
-              nodes: current.nodes[keys[i]][0]
-            })
-          }
+          const arrayLength = Utils.getRandomArrayLength(blueprint.array.min, blueprint.array.max);
+          stack.push({
+            parent: key + `[${arrayLength}]`,
+            nodes: current.nodes[keys[i]][0]
+          })
         }
         else if (Object.getPrototypeOf(current.nodes[keys[i]]) === Object.prototype) {
           stack.push({

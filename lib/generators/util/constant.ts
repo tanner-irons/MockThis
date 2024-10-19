@@ -1,6 +1,6 @@
 import { IBlueprint } from "../../models/blueprint";
-import { ParamGeneratorFunc } from "../../models/generator";
+import { GeneratorFunc } from "../../models/generator";
 
-export const Constant: ParamGeneratorFunc<any> = (value: any) => {
+export const Constant: <T>(value: T) => GeneratorFunc<T> = <T>(value: T) => {
     return (chance: Chance.Chance, blueprint: IBlueprint) => value;
 };

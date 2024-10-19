@@ -1,10 +1,11 @@
 import { IBlueprint, SchemaItem } from './models/blueprint';
 import { ISchemaTransformer } from './schema.transformer';
 import { ISchema } from './models/schema';
+import { Utils } from './utils';
 
 export interface IDataGenerator<T extends ISchema> {
-  asObject(schema: T, blueprint: IBlueprint): T | T[];
-  asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number): string;
+  asObject(schema: T, blueprint: IBlueprint): Promise<T | T[]>;
+  asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number): Promise<string>;
 }
 
 export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
@@ -15,23 +16,23 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     private randomDataGenerator: L
   ) { }
 
-  asObject(schema: T, blueprint: IBlueprint): T | T[] {
+  asObject(schema: T, blueprint: IBlueprint) {
     const preparedSchema = this.schemaTransformer.prepareSchema(schema, blueprint);
     return this.generateData(preparedSchema, blueprint);
   }
 
-  asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number) {
+  async asJSON(schema: T, blueprint: IBlueprint, replacer?: (key: string, value: unknown) => unknown, space?: string | number) {
     const preparedSchema = this.schemaTransformer.prepareSchema(schema, blueprint);
-    const data = this.generateData(preparedSchema, blueprint);
+    const data = await this.generateData(preparedSchema, blueprint);
     return JSON.stringify(data, replacer, space);
   }
 
-  private generateData(schemaItems: SchemaItem[], blueprint: IBlueprint): T | T[] {
+  private async generateData(schemaItems: SchemaItem[], blueprint: IBlueprint) {
     const data: T[] = [];
-    const arrayLength = this.getArrayLength(blueprint.total.min, blueprint.total.max);
+    const arrayLength = Utils.getRandomArrayLength(blueprint.total.min, blueprint.total.max);
 
     for (let i = 0; i < arrayLength; i++) {
-      const rawObject = this.generateObject(schemaItems, blueprint);
+      const rawObject = await this.generateObject(schemaItems, blueprint);
       const finalizedObject = this.schemaTransformer.finalizeSchema(rawObject);
       data.push(finalizedObject);
     }
@@ -39,7 +40,7 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     return data.length > 1 ? data : data[0];
   }
 
-  private generateObject(schemaItems: SchemaItem[], blueprint: IBlueprint) {
+  private async generateObject(schemaItems: SchemaItem[], blueprint: IBlueprint) {
     const schemaData: Record<string, any> = {};
 
     for (const schemaItem of schemaItems) {
@@ -47,13 +48,13 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
       if (arrayMatch) {
         const expandedKeys = this.expandKeyRecursively(schemaItem.property);
         for (const newKey of expandedKeys) {
-          const generatedValue = this.generateValue(schemaItem, blueprint);
+          const generatedValue = await this.generateValue(schemaItem, blueprint);
           if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
             schemaData[newKey] = generatedValue;
           }
         }
       } else {
-        const generatedValue = this.generateValue(schemaItem, blueprint);
+        const generatedValue = await this.generateValue(schemaItem, blueprint);
         if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
           schemaData[schemaItem.property] = generatedValue;
         }
@@ -63,13 +64,14 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     return schemaData;
   }
 
-  private generateValue(schemaItem: SchemaItem, blueprint: IBlueprint) {
+  private async generateValue(schemaItem: SchemaItem, blueprint: IBlueprint) {
     if (!schemaItem) {
       return;
     };
 
     const generatorFunc = Array.isArray(schemaItem.type) ? schemaItem.type[0] : schemaItem.type;
-    return generatorFunc(this.randomDataGenerator, blueprint);
+    const value = await generatorFunc(this.randomDataGenerator, blueprint);
+    return value;
   }
 
   private expandKeyRecursively(key: string) {
@@ -126,11 +128,5 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     }
 
     return expandedKeys;
-  }
-
-  private getArrayLength(min: number, max: number) {
-    return max && min !== max
-      ? Math.floor(Math.random() * (max - min + 1)) + min
-      : min;
   }
 }
