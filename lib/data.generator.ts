@@ -72,7 +72,7 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     return generatorFunc(this.randomDataGenerator, blueprint);
   }
 
-  private expandKeyRecursively(key: string): string[] {
+  private expandKeyRecursively(key: string) {
     const indexRegex = /(\w+)\[(\d+)\]/g;
     const matches = [];
     let match;

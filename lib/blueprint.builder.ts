@@ -29,14 +29,16 @@ export class BlueprintBuilder implements IBlueprintBuilder{
         min: number,
         max?: number
     ) {
-        if (isNaN(min)) {
+        if (min == undefined || min == null || isNaN(min)) {
             throw new TypeError('Min argument must be a number.');
         } else if (min < 0) {
             throw new Error('Min argument must be a positive integer or 0.');
-        } else if (max !== undefined && isNaN(max)) {
+        } else if (max && isNaN(max)) {
             throw new TypeError('Max argument must be a number.');
-        } else if (max !== undefined && max < 0) {
+        } else if (max && max < 0) {
             throw new Error('Max argument must be a positive integer or 0.');
+        } else if (max && min > max) {
+            throw new Error('Min argument must be less than or equal to Max argument.');
         }
         this.blueprint.total = {
             min: min,
@@ -48,14 +50,16 @@ export class BlueprintBuilder implements IBlueprintBuilder{
         min: number,
         max?: number
     ) {
-        if (isNaN(min)) {
+        if (min == undefined || min == null || isNaN(min)) {
             throw new TypeError('Min argument must be a number.');
         } else if (min < 0) {
             throw new Error('Min argument must be a positive integer or 0.');
-        } else if (max !== undefined && isNaN(max)) {
+        } else if (max && isNaN(max)) {
             throw new TypeError('Max argument must be a number.');
-        } else if (max !== undefined && max < 0) {
+        } else if (max && max < 0) {
             throw new Error('Max argument must be a positive integer or 0.');
+        } else if (max && min > max) {
+            throw new Error('Min argument must be less than or equal to Max argument.');
         }
         this.blueprint.array = {
             min: min,
@@ -70,23 +74,17 @@ export class BlueprintBuilder implements IBlueprintBuilder{
             throw new TypeError('Required properties must be an array.');
         }
         if (this.blueprint.required.length > 0) {
-            console.warn(
-                'Required properties have already been declared. Please call Required method only once.'
-            );
-            return;
+            throw new Error('Required properties have already been declared.');
         }
         this.blueprint.required = required;
     }
 
     setDateFormat(dateFormat: string) {
-        if (moment().format(dateFormat).toString() === 'InvalidDate') {
-            throw new TypeError('Date format argument must be a valid date format.');
-        }
         this.blueprint.formats.date = dateFormat;
     }
 
-    setNullChance( nullChance: number) {
-        if (isNaN(nullChance)) {
+    setNullChance(nullChance: number) {
+        if (!nullChance || isNaN(nullChance)) {
             throw new TypeError('Null chance argument must be a number.');
         }
         if (nullChance < 0 || nullChance > 1) {

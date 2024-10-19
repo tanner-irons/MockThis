@@ -75,7 +75,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     return output;
   }
 
-  private parseKey(key: string): (string | number)[] {
+  private parseKey(key: string) {
     const regex = /([^\.\[\]]+)|\[(\d+)\]/g;
     const parts: (string | number)[] = [];
     let match: RegExpExecArray | null;
@@ -91,7 +91,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     return parts;
   }
 
-  private isClassInstance(obj: any): boolean {
+  private isClassInstance(obj: any) {
     return obj && obj.constructor && obj.constructor !== Object;
   }
 

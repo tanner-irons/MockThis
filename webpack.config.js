@@ -4,7 +4,7 @@ const DtsBundleWebpack = require('dts-bundle-webpack');
 const WebpackShellPluginNext = require('webpack-shell-plugin-next');
 
 module.exports = {
-  entry: './mockthis/index.ts', // Entry point for your app
+  entry: './lib/index.ts', // Entry point for your app
   devtool: 'source-map',
   module: {
     rules: [
@@ -41,8 +41,9 @@ module.exports = {
       },
     }),
   ],
-  // optimization: {
-  //   minimize: true, // Enable minification
-  //   minimizer: [new TerserPlugin()], // Use Terser for minification
-  // },
+  optimization: {
+    minimize: true, // Enable minification
+    minimizer: [new TerserPlugin()], // Use Terser for minification
+    usedExports: true, // Tree-shake unused exports
+  },
 };

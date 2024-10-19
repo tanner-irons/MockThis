@@ -20,21 +20,7 @@ const mockPetObject = {
             state: State,
             zip: ZipCode
         },
-    },
-    siblings: [
-        {
-            firstName: FirstName,
-            lastName: LastName,
-            birthdate: Date,
-            favoriteNumbers: [Number],
-            address: {
-                street: Address,
-                city: City,
-                state: State,
-                zip: ZipCode
-            },
-        }
-    ]
+    }
 };
 
 const start = performance.now();
@@ -42,8 +28,8 @@ const pets = MockThis(mockPetObject, new Chance())
     .setMultiple(5)
     .setArrayLength(5)
     .setDateFormat('DD/MM/YYYY')
+    .setNullChance(0.1) // broken
     .asJson();
-// .withNullChance(1)//broken
 
 console.log('Mock data generated in: ' + (performance.now() - start) + ' ms');
 fs.writeFile('./example/example.json', pets, () => { });

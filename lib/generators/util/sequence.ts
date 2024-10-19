@@ -1,4 +1,5 @@
 import { IBlueprint } from "../../models/blueprint";
+import { ParamGeneratorFunc } from "../../models/generator";
 
 const sequenceGenerator = function*<T>(sequence: T[]) {
     let index = 0;
@@ -11,7 +12,7 @@ const sequenceGenerator = function*<T>(sequence: T[]) {
     }
 }
 
-export const Sequence = <T>(sequence: T[]) => {
+export const Sequence: ParamGeneratorFunc<any> = <T>(sequence: T[]) => {
     let sequenceQueue = sequenceGenerator(sequence);
     return (chance: Chance.Chance, blueprint: IBlueprint) => {
         const result = sequenceQueue.next();
