@@ -49,16 +49,16 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
       if (arrayMatch) {
         const expandedKeys = this.expandKey(schemaItem.property, blueprint);
         for (const newKey of expandedKeys) {
-          const generatedValue = await schemaItem.getValue(this.randomDataGenerator, blueprint);
-          if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
-            schemaData[newKey] = generatedValue;
-          }
+          const generateNullValue = this.utils.generateNullValue(blueprint, newKey);
+          const deps = schemaItem.dependencies.map(dep => schemaData[dep]);
+          const generatedValue = generateNullValue ? null : await schemaItem.getValue(this.randomDataGenerator, blueprint, deps);
+          schemaData[newKey] = generatedValue;
         }
       } else {
-        const generatedValue = await schemaItem.getValue(this.randomDataGenerator, blueprint);
-        if (generatedValue !== undefined && generatedValue !== null) { // We want to allow 0s to be generated
-          schemaData[schemaItem.property] = generatedValue;
-        }
+        const generateNullValue = this.utils.generateNullValue(blueprint, schemaItem.property);
+        const deps = schemaItem.dependencies.map(dep => schemaData[dep]);
+        const generatedValue = generateNullValue ? null : await schemaItem.getValue(this.randomDataGenerator, blueprint, deps);
+        schemaData[schemaItem.property] = generatedValue;
       }
     }
 

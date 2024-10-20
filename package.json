@@ -7,7 +7,7 @@
   "scripts": {
     "example": "sh ./scripts/runExample.sh",
     "test": "vitest",
-    "build": "npx webpack --mode production"
+    "build": "npx webpack --mode development"
   },
   "author": "Tanner Irons",
   "license": "ISC",

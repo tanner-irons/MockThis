@@ -21,10 +21,11 @@ export { Paragraph } from "./data.funcs/string/paragraph";
 export { Word } from "./data.funcs/string/word";
 export { Sentence } from "./data.funcs/string/sentence";
 export { Constant } from "./data.funcs/util/constant";
-export { Boolean } from "./data.funcs/util/boolean"
-export { Async } from "./data.funcs/util/async"
+export { Boolean } from "./data.funcs/util/boolean";
+export { Async } from "./data.funcs/util/async";
+export { Dep } from "./data.funcs/util/dep";
 export { Email } from "./data.funcs/web/email";
 export { Url } from "./data.funcs/web/url";
-export { Dollar } from "./data.funcs/money/dollar"
-export { Euro } from "./data.funcs/money/euro"
-export { Currency } from "./data.funcs/money/currency"
+export { Dollar } from "./data.funcs/money/dollar";
+export { Euro } from "./data.funcs/money/euro";
+export { Currency } from "./data.funcs/money/currency";

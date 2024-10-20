@@ -1,5 +1,5 @@
 import toposort from "toposort";
-import { TypeFunc } from "./models/generator";
+import { DepTypeFunc, TypeFunc } from "./models/generator";
 import { IBlueprint, SchemaItem } from "./models/blueprint";
 import { ISchema } from "./models/schema";
 import { IStack } from "./models/stack";
@@ -14,11 +14,11 @@ export class SchemaTransformer implements ISchemaTransformer {
 
   prepareSchema(schema: ISchema, blueprint: IBlueprint) {
     const flattened = this.flattenSchema(schema, blueprint);
-    const schemaItems: SchemaItem[] = Object.keys(flattened)
-      .map(prop => ({
-        property: prop,
-        getValue: flattened[prop],
-        dependencies: []
+    const schemaItems: SchemaItem[] = Object.entries(flattened)
+      .map(([property, getValue]) => ({
+        property,
+        getValue,
+        dependencies: (getValue as DepTypeFunc<any, any>).deps ?? []
       }));
 
     return this.sortSchema(schemaItems);

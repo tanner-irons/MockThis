@@ -44,8 +44,8 @@ export class MockThisInstance<T extends ISchema> {
         return this;
     }
 
-    setNullChance(chance: number): this {
-        this.blueprintBuilder.setNullChance(chance);
+    setNullValueChance(chance: number): this {
+        this.blueprintBuilder.setNullValueChance(chance);
         return this;
     }
 

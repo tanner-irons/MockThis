@@ -6,7 +6,7 @@ export interface IBlueprintBuilder {
     setArrayLength(min: number, max?: number): void;
     setRequired(required: string[]): void;
     setDateFormat(dateFormat: string): void;
-    setNullChance(nullChance: number): void;
+    setNullValueChance(nullChance: number): void;
 }
 
 export class BlueprintBuilder implements IBlueprintBuilder{
@@ -21,7 +21,7 @@ export class BlueprintBuilder implements IBlueprintBuilder{
             min: 1,
             max: 5
         },
-        nullChance: 0
+        nullValueChance: 0
     };
 
     setMultiple(
@@ -82,13 +82,13 @@ export class BlueprintBuilder implements IBlueprintBuilder{
         this.blueprint.formats.date = dateFormat;
     }
 
-    setNullChance(nullChance: number) {
-        if (!nullChance || isNaN(nullChance)) {
+    setNullValueChance(nullChance: number) {
+        if (isNaN(nullChance)) {
             throw new TypeError('Null chance argument must be a number.');
         }
         if (nullChance < 0 || nullChance > 1) {
             throw new Error('Null chance argument must be a number between 0 and 1.');
         }
-        this.blueprint.nullChance = nullChance;
+        this.blueprint.nullValueChance = nullChance;
     }
 }

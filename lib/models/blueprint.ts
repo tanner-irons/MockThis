@@ -7,7 +7,7 @@ export interface IBlueprint {
         date?: string
     }
     array: IMinMax,
-    nullChance: number
+    nullValueChance: number
 };
 
 export interface SchemaItem {

@@ -41,9 +41,9 @@ module.exports = {
       },
     }),
   ],
-  optimization: {
-    minimize: true, // Enable minification
-    minimizer: [new TerserPlugin()], // Use Terser for minification
-    usedExports: true, // Tree-shake unused exports
-  },
+  // optimization: {
+  //   minimize: true, // Enable minification
+  //   minimizer: [new TerserPlugin()], // Use Terser for minification
+  //   usedExports: true, // Tree-shake unused exports
+  // },
 };
