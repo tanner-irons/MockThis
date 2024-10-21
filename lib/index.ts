@@ -21,7 +21,7 @@ export { Paragraph } from "./data.funcs/string/paragraph";
 export { Word } from "./data.funcs/string/word";
 export { Sentence } from "./data.funcs/string/sentence";
 export { Constant } from "./data.funcs/util/constant";
-export { Boolean } from "./data.funcs/util/boolean";
+export { Bool } from "./data.funcs/util/bool";
 export { Async } from "./data.funcs/util/async";
 export { Dep } from "./data.funcs/util/dep";
 export { Email } from "./data.funcs/web/email";

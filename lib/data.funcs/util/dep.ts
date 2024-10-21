@@ -10,8 +10,8 @@ export const Dep: <T>(
     ) => {
         const depCb: DepTypeFunc<any, any> = (chance: Chance.Chance, blueprint: IBlueprint, deps: string[]) => {
             const getValue = (getValue: TypeFunc<any, any>): Promise<any> | any => {
-                if (getValue.name === 'depCb') {
-                    throw new Error('Dep TypeFunc cannot be nested');
+                if (getValue.name === "depCb") {
+                    throw new Error("Dep TypeFunc cannot be nested");
                 }
                 return getValue(chance, blueprint, [])
             };

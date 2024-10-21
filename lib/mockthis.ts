@@ -3,7 +3,6 @@ import { BlueprintBuilder, IBlueprintBuilder } from "./blueprint.builder";
 import { ISchema } from "./models/schema";
 import { DataGenerator, IDataGenerator } from "./data.generator";
 import { SchemaTransformer } from "./schema.transformer";
-import { Utils } from "./utils";
 
 export class MockThisInstance<T extends ISchema> {
     constructor(
@@ -12,16 +11,11 @@ export class MockThisInstance<T extends ISchema> {
         private schema: T
     ) {
         if (!schema) {
-            throw new ReferenceError('Provided schema is undefined. Please provide a valid object literal as the schema.');
+            throw new ReferenceError("Provided schema is undefined. Please provide a valid object literal as the schema.");
         }
         if (!(schema instanceof Object) || schema instanceof Array) {
-            throw new TypeError('Provided schema should be a valid object literal.');
+            throw new TypeError("Provided schema should be a valid object literal.");
         }
-    }
-
-    addDependency(prop: string, deps: string[], callback?: () => any): this {
-        // TODO: figure this out
-        return this;
     }
 
     setMultiple(min: number, max?: number): this {
@@ -61,7 +55,6 @@ export class MockThisInstance<T extends ISchema> {
 export const MockThis = <T extends ISchema, L>(schema: T, randomDataGenerator?: L) => {
     const blueprintBuilder = new BlueprintBuilder();
     const schemaTransformer = new SchemaTransformer();
-    const utils = new Utils();
-    const dataGenerator = new DataGenerator(schemaTransformer, randomDataGenerator ?? new Chance() as L, utils);
+    const dataGenerator = new DataGenerator(schemaTransformer, randomDataGenerator ?? new Chance());
     return new MockThisInstance(blueprintBuilder, dataGenerator, schema);
 };

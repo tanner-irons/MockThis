@@ -12,7 +12,7 @@ export interface ISchemaTransformer {
 export class SchemaTransformer implements ISchemaTransformer {
   constructor() { }
 
-  prepareSchema(schema: ISchema, blueprint: IBlueprint) {
+  prepareSchema(schema: ISchema, blueprint: IBlueprint): SchemaItem[] {
     const flattened = this.flattenSchema(schema, blueprint);
     const schemaItems: SchemaItem[] = Object.entries(flattened)
       .map(([property, getValue]) => ({
@@ -25,6 +25,7 @@ export class SchemaTransformer implements ISchemaTransformer {
   }
 
   finalizeSchema(schema: ISchema): any {
+    // TODO: figure out a way to keep generated schema in the same order as the original schema
     const output: any = {};
 
     for (const key in schema) {
@@ -37,7 +38,7 @@ export class SchemaTransformer implements ISchemaTransformer {
 
         if (i === parts.length - 1) {
           // Assign the value to the last key or index
-          if (typeof part === 'number') {
+          if (typeof part === "number") {
             if (!Array.isArray(currentLevel)) {
               currentLevel = [];
             }
@@ -47,24 +48,24 @@ export class SchemaTransformer implements ISchemaTransformer {
           }
         } else {
           const nextPart = parts[i + 1];
-          if (typeof part === 'number') {
+          if (typeof part === "number") {
             // Ensure currentLevel is an array
             if (!Array.isArray(currentLevel)) {
               currentLevel = [];
             }
-            // Initialize the array element if it doesn't exist
+            // Initialize the array element if it doesn"t exist
             if (currentLevel[part] === undefined) {
-              currentLevel[part] = typeof nextPart === 'number' ? [] : {};
+              currentLevel[part] = typeof nextPart === "number" ? [] : {};
             }
             currentLevel = currentLevel[part];
           } else {
             // Ensure currentLevel is an object
-            if (typeof currentLevel !== 'object' || Array.isArray(currentLevel)) {
+            if (typeof currentLevel !== "object" || Array.isArray(currentLevel)) {
               currentLevel = {};
             }
-            // Initialize the object property if it doesn't exist
+            // Initialize the object property if it doesn"t exist
             if (currentLevel[part] === undefined) {
-              currentLevel[part] = typeof nextPart === 'number' ? [] : {};
+              currentLevel[part] = typeof nextPart === "number" ? [] : {};
             }
             currentLevel = currentLevel[part];
           }
@@ -75,7 +76,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     return output;
   }
 
-  private parseKey(key: string) {
+  private parseKey(key: string): (string | number)[] {
     const regex = /([^\.\[\]]+)|\[(\d+)\]/g;
     const parts: (string | number)[] = [];
     let match: RegExpExecArray | null;
@@ -91,7 +92,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     return parts;
   }
 
-  private flattenSchema(schema: ISchema, blueprint: IBlueprint) {
+  private flattenSchema(schema: ISchema, blueprint: IBlueprint): Record<string, TypeFunc<any, any>> {
     let flattened: Record<string, TypeFunc<any, any>> = {};
     let stack: IStack[] = [{ parent: undefined, nodes: schema }];
 
@@ -100,15 +101,27 @@ export class SchemaTransformer implements ISchemaTransformer {
       if (!current || Object.keys(current.nodes || {}).length === 0) {
         continue;
       }
-      let keys = Object.keys(current.nodes);
+      let keys = Array.isArray(current.nodes) ? current.nodes.map((n, i) => i) : Object.keys(current.nodes);
       for (let i = 0; i < keys.length; i++) {
-        let key = current.parent ? current.parent + '.' + keys[i] : keys[i];
+        let key;
+        if (current.parent) {
+          if (isNaN(keys[i] as number)) {
+            key = current.parent + "." + keys[i];
+          } else {
+            key = current.parent + "[0]";
+          }
+        } else {
+          if (isNaN(keys[i] as number)) {
+            key = keys[i];
+          }
+        }
         if (current.nodes[keys[i]] instanceof Array) {
+          key += "[0]";
           if (current.nodes[keys[i]][0] instanceof Function) {
-            flattened[key + `[0]`] = current.nodes[keys[i]][0];
+            flattened[key!] = current.nodes[keys[i]][0];
           } else {
             stack.push({
-              parent: key + `[0]`,
+              parent: key,
               nodes: current.nodes[keys[i]][0]
             });
           }
@@ -119,7 +132,7 @@ export class SchemaTransformer implements ISchemaTransformer {
             nodes: current.nodes[keys[i]]
           });
         } else {
-          flattened[key] = current.nodes[keys[i]];
+          flattened[key!] = current.nodes[keys[i]];
         }
       }
     }
@@ -131,7 +144,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     const deps = schema.flatMap(prop => prop.dependencies
       .reduce<[string, string | undefined][]>((acc, curr) => {
         if (prop.property.includes(curr)) {
-          throw new Error(`Property "${prop.property}" has invalid dependency "${curr}". A property cannot depend on itself or its ancestors.`)
+          throw new Error(`Property "${prop.property}" has invalid dependency "${curr}". A property cannot depend on itself.`)
         }
 
         acc.push([curr, prop.property]);
@@ -141,7 +154,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     );
 
     return toposort(deps)
-      .flatMap(dep => schema.filter(item => item.property.includes(dep) || item.property.includes(dep + '.0')))
+      .flatMap(dep => schema.filter(item => item.property.includes(dep) || item.property.includes(dep + ".0")))
       .filter(dep => !!dep);
   }
 }

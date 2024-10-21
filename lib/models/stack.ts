@@ -1,4 +1,4 @@
 export interface IStack {
-    parent?: string,
-    nodes: Record<string, any>
+    parent?: string | number;
+    nodes: Record<string, any>;
 };

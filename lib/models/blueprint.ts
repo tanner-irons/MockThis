@@ -1,13 +1,14 @@
 import { TypeFunc as TypeFunc } from "./generator";
 
 export interface IBlueprint {
-    total: IMinMax
-    required: string[],
-    formats: {
-        date?: string
-    }
-    array: IMinMax,
-    nullValueChance: number
+    total: IMinMax;
+    required: string[];
+    formats: IFormats;
+    array: IMinMax;
+    nullValueChance: number;
+    getRandomTotalLength: () => number;
+    getRandomArrayLength: () => number;
+    forceNullValue: (key: string) => boolean;
 };
 
 export interface SchemaItem {
@@ -19,4 +20,8 @@ export interface SchemaItem {
 export interface IMinMax {
     min: number;
     max: number;
+}
+
+export interface IFormats {
+    date?: string;
 }
