@@ -4,6 +4,12 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/index.js",
+    "dist/index.d.ts",
+    "package.json",
+    "README.md"
+  ],
   "scripts": {
     "example": "sh ./scripts/runExample.sh",
     "test": "vitest",
@@ -21,6 +27,7 @@
     "@types/chance": "^1.1.6",
     "@types/node": "^22.7.4",
     "@types/toposort": "^2.0.7",
+    "@types/webpack-node-externals": "^3.0.4",
     "dts-bundle-webpack": "^1.0.2",
     "terser-webpack-plugin": "^5.3.10",
     "ts-loader": "^9.5.1",

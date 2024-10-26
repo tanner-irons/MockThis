@@ -10,5 +10,5 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
     },
-    "files": ["lib/index.ts"]
+    "files": ["src/index.ts"]
   }

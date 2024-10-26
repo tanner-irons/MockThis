@@ -1,11 +1,12 @@
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-const DtsBundleWebpack = require('dts-bundle-webpack');
-const WebpackShellPluginNext = require('webpack-shell-plugin-next');
-const nodeExternals  = require('webpack-node-externals');
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import DtsBundleWebpack from 'dts-bundle-webpack';
+import WebpackShellPluginNext from 'webpack-shell-plugin-next';
+import nodeExternals from 'webpack-node-externals';
+import { Configuration } from 'webpack';
 
-module.exports = (env, argv) => ({
-  entry: './lib/index.ts', // Entry point for your app
+export default (env: any, argv: any): Configuration => ({
+  entry: './src/index.ts', // Entry point for your app
   devtool: argv.mode === 'production' ? false : 'source-map',
   module: {
     rules: [
