@@ -8,11 +8,9 @@ export interface IDataGenerator<T extends ISchema> {
 }
 
 export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
-  private arrayMatcher: RegExp = /^(.*\[(\d+)\])(.*)$/;
-
   constructor(
-    private schemaTransformer: ISchemaTransformer,
-    private randomDataGenerator: L
+    private schemaTransformer: ISchemaTransformer<T>,
+    private randomValueGenerator: L
   ) { }
 
   asObject(schema: T, blueprint: IBlueprint): Promise<T | T[]> {
@@ -28,8 +26,8 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
 
   private async generateData(schemaItems: SchemaItem[], blueprint: IBlueprint): Promise<T | T[]> {
     const data: T[] = [];
-    const totalLength = blueprint.getRandomArrayLength();
 
+    const totalLength = blueprint.getRandomTotalLength();
     for (let i = 0; i < totalLength; i++) {
       const rawSchema = await this.generateObject(schemaItems, blueprint);
       const finalizedSchema = this.schemaTransformer.finalizeSchema(rawSchema);
@@ -39,22 +37,19 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
     return data.length > 1 ? data : data[0];
   }
 
-  private async generateObject(schemaItems: SchemaItem[], blueprint: IBlueprint): Promise<ISchema> {
-    const schemaData: Record<string, any> = {};
+  private async generateObject(schemaItems: SchemaItem[], blueprint: IBlueprint): Promise<T> {
+    const schemaData: ISchema = {};
 
     for (const schemaItem of schemaItems) {
-      const arrayMatch = schemaItem.property.match(this.arrayMatcher);
-      if (arrayMatch) {
-        const expandedKeys = this.expandKey(schemaItem.property, blueprint);
-        for (const newKey of expandedKeys) {
-          const deps = schemaItem.dependencies.map(dep => schemaData[dep]);
-          const generatedValue = blueprint.forceNullValue(newKey) ? null : await schemaItem.getValue(this.randomDataGenerator, blueprint, deps);
-          schemaData[newKey] = generatedValue;
+      const expandedKeys = this.expandKey(schemaItem.property, blueprint);
+      for (const newKey of expandedKeys) {
+        if (blueprint.shouldGenerateNullValue(newKey)) {
+          schemaData[newKey] = null;
+          continue;
         }
-      } else {
+        
         const deps = schemaItem.dependencies.map(dep => schemaData[dep]);
-        const generatedValue = blueprint.forceNullValue(schemaItem.property) ? null : await schemaItem.getValue(this.randomDataGenerator, blueprint, deps);
-        schemaData[schemaItem.property] = generatedValue;
+        schemaData[newKey] = await schemaItem.getValue(this.randomValueGenerator, blueprint, deps);
       }
     }
 
@@ -63,53 +58,40 @@ export class DataGenerator<T extends ISchema, L> implements IDataGenerator<T> {
 
   private expandKey(key: string, blueprint: IBlueprint): string[] {
     const indexRegex = new RegExp(/(\[0\]|\w+)/g);
-    const matches = [];
-    let match;
-
-    while ((match = indexRegex.exec(key)) !== null) {
-      matches.push({
-        base: match[0] !== "[0]" ? match[0] : "",
+    const matches = Array.from(
+      key.matchAll(indexRegex),
+      match => ({
+        base: match[0] === "[0]" ? "" : match[0],
         maxIndex: blueprint.getRandomArrayLength(),
         startIndex: match.index,
         length: match[0].length
-      });
-    }
+      })
+    );
 
     if (matches.length === 0) {
       return [key];
     }
 
-    const ranges = matches.filter(info => !info.base).map(info => {
-      const indices: number[] = [];
-      for (let i = 0; i <= info.maxIndex - 1; i++) {
-        indices.push(i);
-      }
-      return indices;
-    });
+    const ranges = matches
+      .filter(info => !info.base)
+      .map(info => Array.from({ length: info.maxIndex }, (_, i) => i));
 
-    const combinations = [];
-    const totalCombinations = ranges.reduce((acc, curr) => acc * curr.length, 1);
-
-    for (let i = 0; i < totalCombinations; i++) {
-      const combo = [];
-      let idx = i;
-      for (let j = ranges.length - 1; j >= 0; j--) {
-        combo.unshift(ranges[j][idx % ranges[j].length]);
-        idx = Math.floor(idx / ranges[j].length);
-      }
-      combinations.push(combo);
-    }
+    const combinations = ranges.reduce(
+      (acc: number[][], curr: number[]) =>
+        acc.flatMap(prev => curr.map(item => [...prev, item])),
+      [[]] as number[][]
+    );
 
     const expandedKeys = [];
     for (const combo of combinations) {
       let newKey = "";
       let comboIndex = 0;
-      for (let i = 0; i < matches.length; i++) {
-        const info = matches[i];
+      for (const info of matches) {
         newKey += info.base ? `.${info.base}` : `[${combo[comboIndex++]}]`;
-      };
+      }
       expandedKeys.push(newKey.replace(/^\./, ""));
     }
+
     return expandedKeys;
   }
 }

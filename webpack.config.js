@@ -2,10 +2,11 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const DtsBundleWebpack = require('dts-bundle-webpack');
 const WebpackShellPluginNext = require('webpack-shell-plugin-next');
+const nodeExternals  = require('webpack-node-externals');
 
-module.exports = {
+module.exports = (env, argv) => ({
   entry: './lib/index.ts', // Entry point for your app
-  devtool: 'source-map',
+  devtool: argv.mode === 'production' ? false : 'source-map',
   module: {
     rules: [
       {
@@ -18,6 +19,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'], // Automatically resolve .ts and .js extensions
   },
+  externals: [nodeExternals()],
   output: {
     filename: 'index.js', // Name of the output bundle
     path: path.resolve(__dirname, 'dist'),
@@ -41,9 +43,9 @@ module.exports = {
       },
     }),
   ],
-  // optimization: {
-  //   minimize: true, // Enable minification
-  //   minimizer: [new TerserPlugin()], // Use Terser for minification
-  //   usedExports: true, // Tree-shake unused exports
-  // },
-};
+  optimization: {
+    minimize: true, // Enable minification
+    minimizer: [new TerserPlugin()], // Use Terser for minification
+    usedExports: true, // Tree-shake unused exports
+  },
+});

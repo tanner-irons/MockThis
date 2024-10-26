@@ -4,15 +4,15 @@ import { IBlueprint, SchemaItem } from "./models/blueprint";
 import { ISchema } from "./models/schema";
 import { IStack } from "./models/stack";
 
-export interface ISchemaTransformer {
-  prepareSchema(schema: ISchema, blueprint: IBlueprint): SchemaItem[];
-  finalizeSchema(schema: ISchema): any;
+export interface ISchemaTransformer<T extends ISchema> {
+  prepareSchema(schema: T, blueprint: IBlueprint): SchemaItem[];
+  finalizeSchema(schema: T): T;
 }
 
-export class SchemaTransformer implements ISchemaTransformer {
+export class SchemaTransformer<T extends ISchema> implements ISchemaTransformer<T> {
   constructor() { }
 
-  prepareSchema(schema: ISchema, blueprint: IBlueprint): SchemaItem[] {
+  prepareSchema(schema: T, blueprint: IBlueprint): SchemaItem[] {
     const flattened = this.flattenSchema(schema, blueprint);
     const schemaItems: SchemaItem[] = Object.entries(flattened)
       .map(([property, getValue]) => ({
@@ -24,7 +24,7 @@ export class SchemaTransformer implements ISchemaTransformer {
     return this.sortSchema(schemaItems);
   }
 
-  finalizeSchema(schema: ISchema): any {
+  finalizeSchema(schema: ISchema): T {
     // TODO: figure out a way to keep generated schema in the same order as the original schema
     const output: any = {};
 
@@ -92,16 +92,17 @@ export class SchemaTransformer implements ISchemaTransformer {
     return parts;
   }
 
-  private flattenSchema(schema: ISchema, blueprint: IBlueprint): Record<string, TypeFunc<any, any>> {
-    let flattened: Record<string, TypeFunc<any, any>> = {};
-    let stack: IStack[] = [{ parent: undefined, nodes: schema }];
+  private flattenSchema(schema: T, blueprint: IBlueprint): Record<string, TypeFunc<any, any>> {
+    const flattened: Record<string, TypeFunc<any, any>> = {};
+    const stack: IStack[] = [{ parent: undefined, nodes: schema }];
 
     while (stack.length > 0) {
-      let current = stack.pop();
+      const current = stack.pop();
       if (!current || Object.keys(current.nodes || {}).length === 0) {
         continue;
       }
-      let keys = Array.isArray(current.nodes) ? current.nodes.map((n, i) => i) : Object.keys(current.nodes);
+
+      const keys = current.nodes instanceof Array ? Array.from(current.nodes, (n, i) => i) : Object.keys(current.nodes);
       for (let i = 0; i < keys.length; i++) {
         let key;
         if (current.parent) {
@@ -115,25 +116,31 @@ export class SchemaTransformer implements ISchemaTransformer {
             key = keys[i];
           }
         }
-        if (current.nodes[keys[i]] instanceof Array) {
+        
+        const currentNode = current.nodes[keys[i]];
+
+        if (currentNode instanceof Function) {
+          flattened[key!] = currentNode;
+          continue;
+        }
+        
+        if (Array.isArray(currentNode)) {
           key += "[0]";
-          if (current.nodes[keys[i]][0] instanceof Function) {
-            flattened[key!] = current.nodes[keys[i]][0];
+          if (currentNode[0] instanceof Function) {
+            flattened[key!] = currentNode[0];
           } else {
             stack.push({
               parent: key,
-              nodes: current.nodes[keys[i]][0]
+              nodes: currentNode[0]
             });
           }
+          continue;
         }
-        else if (Object.getPrototypeOf(current.nodes[keys[i]]) === Object.prototype) {
-          stack.push({
-            parent: key,
-            nodes: current.nodes[keys[i]]
-          });
-        } else {
-          flattened[key!] = current.nodes[keys[i]];
-        }
+        
+        stack.push({
+          parent: key,
+          nodes: currentNode
+        });
       }
     }
 

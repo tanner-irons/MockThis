@@ -7,7 +7,8 @@
   "scripts": {
     "example": "sh ./scripts/runExample.sh",
     "test": "vitest",
-    "build": "npx webpack --mode development"
+    "build": "npx webpack --mode development",
+    "build:production": "npx webpack --mode production"
   },
   "author": "Tanner Irons",
   "license": "ISC",
@@ -28,6 +29,7 @@
     "vitest": "^2.1.2",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0",
     "webpack-shell-plugin-next": "^2.3.2"
   }
 }

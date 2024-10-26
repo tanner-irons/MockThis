@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import { exec } from "child_process";
-import { Address, Animal, Birthdate, City, Constant, Coordinates, Country, Currency, DateTime, Decimal, Dep, Dollar, Email, Euro, FirstName, LastName, Letter, Bool, MockThis, Number, Paragraph, PhoneNumber, Random, Sentence, Sequence, SocialSecurityNumber, State, Url, Word, ZipCode } from "../dist/index"
-import { Async } from "../lib/data.funcs/util/async";
+import { Address, Animal, Birthdate, City, Constant, Coordinates, Country, Currency, DateTime, Decimal, Dep, Dollar, Email, Euro, FirstName, LastName, Letter, Bool, MockThis, Integer, Paragraph, PhoneNumber, Random, Sentence, Sequence, SocialSecurityNumber, State, Url, Word, ZipCode, IntegerRange, DecimalRange, Async } from "../dist/index"
 
 const colors = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white", "brown", "pink"];
 
@@ -29,8 +28,10 @@ const schema = {
         euro: Euro,
     },
     numbers: {
+        integer: Integer,
+        integerRange: IntegerRange(-100, 100),
         decimal: Decimal,
-        number: Number,
+        decimalRange: DecimalRange(-100, 100),
     },
     string: {
         letter: Letter,
@@ -47,10 +48,11 @@ const schema = {
         phoneNumber: PhoneNumber
     },
     util: {
-        // async: Async(async () => {
-        //     const response = await fetch("https://jsonplaceholder.typicode.com/todos/1");
-        //     return response.json();
-        // }),
+        async: Async(async () => {
+            // const response = await fetch("https://jsonplaceholder.typicode.com/todos/1");
+            // return response.json();
+            return "Async Value";
+        }),
         dep: Dep(
             ["location.address", "location.city", "location.state", "location.zip"],
             ([address, city, state, zip], getValue) => {

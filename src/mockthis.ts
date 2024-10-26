@@ -44,17 +44,17 @@ export class MockThisInstance<T extends ISchema> {
     }
 
     asObject(): Promise<T | T[]> {
-        return this.dataGenerator.asObject(this.schema, this.blueprintBuilder.blueprint);
+        return this.dataGenerator.asObject(this.schema, this.blueprintBuilder.getBlueprint());
     }
 
     asJson(replacer?: (this: any, key: string, value: any) => any, space?: string | number): Promise<string> {
-        return this.dataGenerator.asJSON(this.schema, this.blueprintBuilder.blueprint, replacer, space);
+        return this.dataGenerator.asJSON(this.schema, this.blueprintBuilder.getBlueprint(), replacer, space);
     }
 }
 
-export const MockThis = <T extends ISchema, L>(schema: T, randomDataGenerator?: L) => {
+export const MockThis = <T extends ISchema, L>(schema: T, randomValueGenerator?: L) => {
+    const schemaTransformer = new SchemaTransformer<T>();
+    const dataGenerator = new DataGenerator<T, L>(schemaTransformer, randomValueGenerator ?? new Chance() as L);
     const blueprintBuilder = new BlueprintBuilder();
-    const schemaTransformer = new SchemaTransformer();
-    const dataGenerator = new DataGenerator(schemaTransformer, randomDataGenerator ?? new Chance());
-    return new MockThisInstance(blueprintBuilder, dataGenerator, schema);
+    return new MockThisInstance<T>(blueprintBuilder, dataGenerator, schema);
 };

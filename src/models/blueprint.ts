@@ -8,7 +8,7 @@ export interface IBlueprint {
     nullValueChance: number;
     getRandomTotalLength: () => number;
     getRandomArrayLength: () => number;
-    forceNullValue: (key: string) => boolean;
+    shouldGenerateNullValue: (key: string) => boolean;
 };
 
 export interface SchemaItem {

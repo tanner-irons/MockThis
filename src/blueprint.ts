@@ -14,18 +14,20 @@ export class Blueprint implements IBlueprint {
     nullValueChance: number = 0;
 
     getRandomTotalLength(): number {
-        return this.total.max && this.total.min !== this.total.max
-            ? Math.floor(Math.random() * (this.total.max - this.total.min + 1)) + this.total.min
-            : this.total.min;
+        const { min, max } = this.total;
+        return max && min !== max
+            ? Math.floor(Math.random() * (max - min + 1)) + min
+            : min;
     }
 
     getRandomArrayLength(): number {
-        return this.array.max && this.array.min !== this.array.max
-            ? Math.floor(Math.random() * (this.array.max - this.array.min + 1)) + this.array.min
-            : this.array.min;
+        const { min, max } = this.array;
+        return max && min !== max
+            ? Math.floor(Math.random() * (max - min + 1)) + min
+            : min;
     }
 
-    forceNullValue(key: string): boolean {
+    shouldGenerateNullValue(key: string): boolean {
         if (this.required.some(r => this.keyIncludes(key, r))) {
             return false;
         }

@@ -1,0 +1,1 @@
+export type ISchema = Record<any, any>;

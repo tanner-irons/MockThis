@@ -2,7 +2,7 @@ import { IBlueprint } from "./models/blueprint";
 import { Blueprint } from "./blueprint";
 
 export interface IBlueprintBuilder {
-    blueprint: IBlueprint;
+    getBlueprint(): IBlueprint;
     setMultiple(min: number, max?: number): void;
     setArrayLength(min: number, max?: number): void;
     setRequired(required: string[]): void;
@@ -11,23 +11,27 @@ export interface IBlueprintBuilder {
 }
 
 export class BlueprintBuilder implements IBlueprintBuilder {
-    public blueprint: IBlueprint;
+    private blueprint: IBlueprint;
 
     constructor() { 
         this.blueprint = new Blueprint();
     }
 
+    getBlueprint(): IBlueprint {
+        return this.blueprint;
+    }
+
     setMultiple(min: number, max?: number): void {
-        if (min == undefined || min == null || isNaN(min)) {
-            throw new TypeError("Min argument must be a number.");
+        if (min == null || isNaN(min)) {
+            throw new TypeError("Min must be a number.");
         } else if (min < 0) {
-            throw new Error("Min argument must be a positive integer or 0.");
-        } else if (max && isNaN(max)) {
-            throw new TypeError("Max argument must be a number.");
-        } else if (max && max < 0) {
-            throw new Error("Max argument must be a positive integer or 0.");
-        } else if (max && min > max) {
-            throw new Error("Min argument must be less than or equal to Max argument.");
+            throw new Error("Min must be non-negative.");
+        } else if (max == null || isNaN(max)) {
+            throw new TypeError("Max must be a number.");
+        } else if (max < 0) {
+            throw new Error("Max must be non-negative.");
+        } else if (min > max) {
+            throw new Error("Min must be less than or equal to Max.");
         }
         this.blueprint.total = {
             min: min,
@@ -36,16 +40,16 @@ export class BlueprintBuilder implements IBlueprintBuilder {
     }
 
     setArrayLength(min: number, max?: number): void {
-        if (min == undefined || min == null || isNaN(min)) {
-            throw new TypeError("Min argument must be a number.");
+        if (min == null || isNaN(min)) {
+            throw new TypeError("Min must be a number.");
         } else if (min < 0) {
-            throw new Error("Min argument must be a positive integer or 0.");
-        } else if (max && isNaN(max)) {
-            throw new TypeError("Max argument must be a number.");
-        } else if (max && max < 0) {
-            throw new Error("Max argument must be a positive integer or 0.");
-        } else if (max && min > max) {
-            throw new Error("Min argument must be less than or equal to Max argument.");
+            throw new Error("Min must be non-negative.");
+        } else if (max == null || isNaN(max)) {
+            throw new TypeError("Max must be a number.");
+        } else if (max < 0) {
+            throw new Error("Max must be non-negative.");
+        } else if (min > max) {
+            throw new Error("Min must be less than or equal to Max.");
         }
         this.blueprint.array = {
             min: min,
